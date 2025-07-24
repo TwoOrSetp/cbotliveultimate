@@ -15,12 +15,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'src/index.html'
-      },
-      output: {
-        manualChunks: {
-          loader: ['./js/loader.js'],
-          main: ['./js/main.js']
-        }
       }
     }
   },
