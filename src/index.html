@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GeoDash Mods - Ultimate Geometry Dash Modifications</title>
-    <meta name="description" content="GeoDash Mods - Professional Geometry Dash modifications and enhancements">
+    <title>Cbot Mods - Ultimate Geometry Dash Modifications</title>
+    <meta name="description" content="Cbot Mods - Professional Geometry Dash modifications and enhancements">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,7 @@
     <link rel="preload" href="./js/loader.js" as="script">
     <link rel="preload" href="./js/main.js" as="script">
     <link rel="preload" href="./js/image-manager.js" as="script">
+    <link rel="preload" href="./js/background-effects.js" as="script">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
 
     <link rel="stylesheet" href="./styles/main.css">
@@ -29,7 +30,7 @@
         <nav class="nav">
             <div class="nav-container">
                 <div class="nav-brand">
-                    <h1>GeoDash</h1>
+                    <h1>Cbot</h1>
                 </div>
                 <ul class="nav-menu">
                     <li><a href="#features">Mods</a></li>
@@ -50,7 +51,7 @@
         <section class="hero">
             <div class="hero-container">
                 <div class="hero-content">
-                    <h1 class="hero-title">Ultimate Geometry Dash Mods</h1>
+                    <h1 class="hero-title">Cbot best clickbot for geometry dash lol</h1>
                     <p class="hero-description">Transform your Geometry Dash experience with our collection of professional-grade modifications, custom levels, and enhanced gameplay features.</p>
                     <div class="hero-buttons">
                         <a href="#download" class="btn btn-primary">Download Mods</a>
@@ -101,7 +102,7 @@
                         <h3>Latest Mod Pack</h3>
                         <p class="version">v2.2.1</p>
                         <p>Compatible with Geometry Dash 2.2+</p>
-                        <a href="#" class="btn btn-primary btn-large">Download GeoDash Mods</a>
+                        <a href="#" class="btn btn-primary btn-large">Download Cbot Mods</a>
                     </div>
                     <div class="download-requirements">
                         <h4>Requirements</h4>
@@ -121,7 +122,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <h3>GeoDash</h3>
+                    <h3>Cbot</h3>
                     <p>Ultimate Geometry Dash Mods</p>
                 </div>
                 <div class="footer-links">
@@ -144,18 +145,24 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 GeoDash Mods. All rights reserved.</p>
+                <p>&copy; 2025 Cbot Mods. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script type="module">
         import { LoadingScreen } from './js/loader.js';
+        import { BackgroundEffects } from './js/background-effects.js';
 
         const loadingScreen = new LoadingScreen();
+        let backgroundEffects = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             document.body.style.visibility = 'visible';
+
+            // Initialize background effects
+            backgroundEffects = new BackgroundEffects();
+
             await loadingScreen.start();
         });
 

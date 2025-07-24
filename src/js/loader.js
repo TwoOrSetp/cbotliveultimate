@@ -292,7 +292,7 @@ class LoadingScreen {
             <div class="loading-container">
                 <div class="loading-logo">
                     <div class="loading-cube"></div>
-                    <h1>GeoDash</h1>
+                    <h1 class="loading-title"></h1>
                 </div>
                 <div class="loading-progress">
                     <div class="progress-bar">
@@ -300,15 +300,46 @@ class LoadingScreen {
                     </div>
                     <div class="progress-text">Loading... 0%</div>
                 </div>
-                <div class="loading-status">Initializing...</div>
+                <div class="loading-status"></div>
             </div>
         `;
-        
+
         document.body.appendChild(this.loadingScreen);
-        
+
         this.progressBar = this.loadingScreen.querySelector('.progress-fill');
         this.progressText = this.loadingScreen.querySelector('.progress-text');
         this.statusText = this.loadingScreen.querySelector('.loading-status');
+        this.titleElement = this.loadingScreen.querySelector('.loading-title');
+
+        // Start typewriter effects immediately
+        this.startLoadingTypewriter();
+    }
+
+    async startLoadingTypewriter() {
+        // Type the title first
+        await this.typeText(this.titleElement, 'GeoDash', 150);
+
+        // Start status typewriter
+        await this.typeText(this.statusText, 'Initializing systems...', 60);
+    }
+
+    async typeText(element, text, speed = 100) {
+        element.textContent = '';
+
+        for (let i = 0; i < text.length; i++) {
+            element.textContent = text.substring(0, i + 1);
+            await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 30));
+        }
+
+        // Add cursor
+        element.innerHTML = text + '<span class="loading-cursor">_</span>';
+
+        // Remove cursor after 1 second
+        setTimeout(() => {
+            if (element.innerHTML.includes('loading-cursor')) {
+                element.textContent = text;
+            }
+        }, 1000);
     }
 
     setupLoader() {
@@ -354,33 +385,39 @@ class LoadingScreen {
     async typewriterStatus(message) {
         if (!this.statusText) return;
 
+        // Don't interrupt if already typing the same message
+        if (this.currentlyTyping === message) return;
+        this.currentlyTyping = message;
+
         // Clear current text
         this.statusText.textContent = '';
 
         // Type each character with variable speed
         for (let i = 0; i < message.length; i++) {
-            if (this.statusText) {
+            if (this.statusText && this.currentlyTyping === message) {
                 this.statusText.textContent = message.substring(0, i + 1);
 
                 // Variable typing speed
-                let delay = 40;
-                if (message[i] === '.') delay = 200; // Pause at dots
-                if (message[i] === ' ') delay = 20;  // Faster for spaces
+                let delay = 50;
+                if (message[i] === '.') delay = 300; // Pause at dots
+                if (message[i] === ' ') delay = 30;  // Faster for spaces
+                if (message[i] === ',') delay = 150; // Pause at commas
 
                 await new Promise(resolve => setTimeout(resolve, delay + Math.random() * 20));
             }
         }
 
         // Add blinking cursor
-        if (this.statusText) {
+        if (this.statusText && this.currentlyTyping === message) {
             this.statusText.innerHTML = message + '<span class="loading-cursor">_</span>';
 
-            // Remove cursor after 1 second
+            // Remove cursor after 2 seconds
             setTimeout(() => {
                 if (this.statusText && this.statusText.innerHTML.includes('loading-cursor')) {
                     this.statusText.textContent = message;
                 }
-            }, 1000);
+                this.currentlyTyping = null;
+            }, 2000);
         }
     }
 
