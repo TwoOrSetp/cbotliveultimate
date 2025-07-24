@@ -17,7 +17,10 @@ async function initializeApp() {
 
 async function initializeGeometryDashHero() {
     try {
-        const { ImageManager, GeometryDashHero } = await import('./image-manager.js');
+        const { ImageManager, GeometryDashHero, IconManager } = await import('./image-manager.js');
+
+        const iconManager = new IconManager();
+        await iconManager.loadNavIcon();
 
         const imageManager = new ImageManager();
         await imageManager.initialize();
@@ -25,7 +28,23 @@ async function initializeGeometryDashHero() {
         const gdHero = new GeometryDashHero(imageManager);
         await gdHero.initialize();
 
-        console.log('Geometry Dash hero initialized with image:', imageManager.getSelectedImage()?.name);
+        const selectedImage = imageManager.getSelectedImage();
+        const allImages = imageManager.getAllImages();
+        const allIcons = iconManager.getAvailableIcons();
+
+        console.log('🎮 Geometry Dash Hero Initialized:');
+        console.log(`📸 Selected image: ${selectedImage?.name} (${selectedImage?.type})`);
+        console.log(`🖼️ Total discovered images: ${allImages.length}`);
+        console.log(`🎯 Available icons: ${allIcons.length}`);
+
+        if (allImages.length > 0) {
+            console.log('📋 All discovered images:', allImages.map(img => `${img.name} (${img.type})`));
+        }
+
+        // Test random selection by cycling through a few images
+        if (allImages.length > 1) {
+            console.log('🔄 Testing random image cycling...');
+        }
     } catch (error) {
         console.error('Failed to initialize Geometry Dash hero:', error);
     }

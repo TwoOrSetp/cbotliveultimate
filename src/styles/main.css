@@ -1,20 +1,24 @@
 :root {
-  --primary-color: #00ff88;
-  --secondary-color: #0066cc;
-  --accent-color: #ff3366;
-  --gd-orange: #ff6b35;
-  --gd-blue: #4ecdc4;
-  --dark-bg: #0a0a0a;
-  --darker-bg: #050505;
+  --primary-color: #4a9eff;
+  --secondary-color: #1e3a8a;
+  --accent-color: #ffffff;
+  --theme-black: #000000;
+  --theme-white: #ffffff;
+  --theme-blue: #4a9eff;
+  --theme-blue-dark: #1e3a8a;
+  --theme-blue-light: #93c5fd;
+  --dark-bg: #000000;
+  --darker-bg: #000000;
   --card-bg: #1a1a1a;
   --text-primary: #ffffff;
-  --text-secondary: #cccccc;
-  --text-muted: #888888;
-  --border-color: #333333;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  --gd-gradient: linear-gradient(135deg, var(--gd-orange), var(--gd-blue));
-  --hover-gradient: linear-gradient(135deg, var(--accent-color), var(--gd-orange));
+  --text-secondary: #e5e7eb;
+  --text-muted: #9ca3af;
+  --border-color: #374151;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --gradient: linear-gradient(135deg, var(--theme-blue), var(--theme-blue-dark));
+  --theme-gradient: linear-gradient(135deg, var(--theme-white), var(--theme-blue));
+  --hover-gradient: linear-gradient(135deg, var(--theme-blue-light), var(--theme-white));
+  --icon-filter: brightness(0) saturate(100%) invert(100%);
 }
 
 * {
@@ -201,13 +205,31 @@ body.app-initialized .features {
   margin: 0 auto;
 }
 
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .nav-brand h1 {
-  background: var(--gradient);
+  background: var(--theme-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-size: 1.8rem;
   font-weight: 700;
+  margin: 0;
+}
+
+.nav-icon {
+  width: 32px;
+  height: 32px;
+  filter: var(--icon-filter);
+  transition: transform 0.3s ease;
+}
+
+.nav-icon:hover {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .nav-menu {
@@ -243,7 +265,7 @@ body.app-initialized .features {
 
 .hero {
   padding: 120px 0 80px;
-  background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, rgba(74, 158, 255, 0.15) 0%, transparent 70%);
   transition: background 0.5s ease;
   position: relative;
   overflow: hidden;
@@ -256,7 +278,7 @@ body.app-initialized .features {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, transparent 30%, rgba(255, 107, 53, 0.05) 50%, transparent 70%);
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.08) 50%, transparent 70%);
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
@@ -310,24 +332,27 @@ body.app-initialized .features {
 }
 
 .btn-primary {
-  background: var(--gradient);
-  color: var(--dark-bg);
+  background: var(--theme-gradient);
+  color: var(--theme-black);
+  border: 2px solid var(--theme-blue);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 25px rgba(74, 158, 255, 0.4);
+  background: var(--hover-gradient);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--text-primary);
-  border: 2px solid var(--border-color);
+  border: 2px solid var(--theme-blue);
 }
 
 .btn-secondary:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+  border-color: var(--theme-white);
+  color: var(--theme-white);
+  background: rgba(74, 158, 255, 0.1);
 }
 
 .btn-large {
@@ -363,14 +388,15 @@ body.app-initialized .features {
 .cube {
   width: 200px;
   height: 200px;
-  background: var(--gd-gradient);
+  background: var(--theme-gradient);
   border-radius: 20px;
   animation: float 3s ease-in-out infinite;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--theme-blue);
 }
 
 .cube.gd-mod-showcase {
@@ -398,8 +424,9 @@ body.app-initialized .features {
 .cube:hover {
   transform: scale(1.2) translateY(-10px);
   border-radius: 50%;
-  box-shadow: 0 20px 40px rgba(255, 51, 102, 0.4);
+  box-shadow: 0 20px 40px rgba(74, 158, 255, 0.6);
   background: var(--hover-gradient);
+  border-color: var(--theme-white);
 }
 
 .cube:active {
@@ -409,17 +436,138 @@ body.app-initialized .features {
 .cube[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: -40px;
+  bottom: -60px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--card-bg);
-  color: var(--text-primary);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  background: linear-gradient(135deg, var(--theme-black), var(--card-bg));
+  color: var(--theme-white);
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
   white-space: nowrap;
   z-index: 1000;
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--theme-blue);
+  box-shadow: 0 8px 25px rgba(74, 158, 255, 0.3);
+  animation: tooltipFadeIn 0.3s ease-out;
+  max-width: 300px;
+  text-align: center;
+}
+
+.cube[data-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--theme-blue);
+  z-index: 1001;
+  animation: tooltipFadeIn 0.3s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.click-instruction {
+  position: absolute;
+  top: 50%;
+  right: -200px;
+  transform: translateY(-50%);
+  z-index: 100;
+  animation: instructionSlideIn 1s ease-out 2s both;
+  pointer-events: none;
+}
+
+.click-instruction.fade-out {
+  animation: instructionFadeOut 1s ease-out forwards;
+}
+
+.instruction-content {
+  background: linear-gradient(135deg, var(--theme-blue), var(--theme-blue-dark));
+  color: var(--theme-white);
+  padding: 16px 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(74, 158, 255, 0.4);
+  border: 2px solid var(--theme-white);
+  text-align: center;
+  min-width: 180px;
+  position: relative;
+}
+
+.instruction-content::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid var(--theme-blue);
+}
+
+.instruction-icon {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 8px;
+  animation: pointingAnimation 2s ease-in-out infinite;
+}
+
+.instruction-text {
+  font-size: 16px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.instruction-subtext {
+  font-size: 12px;
+  opacity: 0.8;
+  display: block;
+}
+
+@keyframes instructionSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@keyframes instructionFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50%) translateX(50px);
+  }
+}
+
+@keyframes pointingAnimation {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 @keyframes float {
@@ -454,11 +602,14 @@ body.app-initialized .features {
   border-radius: 15px;
   border: 1px solid var(--border-color);
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .feature-card:hover {
   transform: translateY(-5px);
+  border-color: var(--theme-blue);
+  box-shadow: 0 10px 30px rgba(74, 158, 255, 0.2);
+  background: linear-gradient(135deg, var(--card-bg), rgba(74, 158, 255, 0.05));
 }
 
 .feature-icon {

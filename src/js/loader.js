@@ -72,16 +72,20 @@ class AssetLoader {
     }
 
     addDynamicImages() {
-        const gdImages = [
-            './assets/images/gd-mod-1.svg',
-            './assets/images/gd-mod-2.svg',
-            './assets/images/gd-mod-3.svg',
-            './assets/images/gd-mod-4.svg'
+        // Add known icons
+        const gdIcons = [
+            './assets/icons/geodash-icon.svg'
         ];
 
-        gdImages.forEach(imagePath => {
-            this.addAsset(imagePath, 'image', true);
+        gdIcons.forEach(iconPath => {
+            this.addAsset(iconPath, 'image', true);
         });
+
+        // Images will be discovered dynamically by ImageManager
+        // We'll add a placeholder for the assets directory to ensure it's tracked
+        this.addAsset('./assets/images/', 'directory', false);
+
+        console.log('Dynamic image discovery will be handled by ImageManager');
     }
 
     extractBackgroundImages() {
