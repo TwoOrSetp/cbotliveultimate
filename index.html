@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoDash Pro - Advanced Gaming Platform</title>
+    <meta name="description" content="Professional Geometry Dash gaming platform with advanced features">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-container">
+            <div class="loading-logo">
+                <div class="logo-placeholder">GD</div>
+                <div class="loading-text">
+                    <span class="typing-text" data-text="GeoDash Pro"></span>
+                </div>
+            </div>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="loading-status">Initializing...</div>
+            </div>
+        </div>
+        <div class="loading-particles"></div>
+    </div>
+
+    <div id="app" class="app-container" style="display: none;">
+        <header class="header">
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <div class="nav-logo-placeholder">GD</div>
+                    <span class="brand-text">GeoDash Pro</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#download" class="nav-link">Download</a>
+                    <a href="#settings" class="nav-link">Settings</a>
+                    <a href="#about" class="nav-link">About</a>
+                </div>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <section class="hero-section">
+                <div class="hero-background">
+                    <div class="geometric-shapes"></div>
+                </div>
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="typing-text" data-text="Advanced Geometry Dash"></span>
+                        <br>
+                        <span class="typing-text" data-text="Gaming Platform" data-delay="2000"></span>
+                    </h1>
+                    <p class="hero-subtitle">Professional gaming platform with advanced features and analytics</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" id="start-game">Start Game</button>
+                        <button class="btn btn-secondary" id="configure-settings">Settings</button>
+                        <button class="btn btn-accent" id="open-dashboard">Dashboard</button>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="99.8">0</span>
+                        <span class="stat-label">Performance %</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="60">0</span>
+                        <span class="stat-label">FPS</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="50000">0</span>
+                        <span class="stat-label">Players</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="features" class="features-section">
+                <div class="container">
+                    <h2 class="section-title">Advanced Features</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎮</div>
+                            <h3>Enhanced Gaming</h3>
+                            <p>Advanced gaming features with smooth performance and visual effects</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>High Performance</h3>
+                            <p>Optimized for minimal latency and maximum responsiveness</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎨</div>
+                            <h3>Visual Effects</h3>
+                            <p>Stunning particle systems and dynamic visual enhancements</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">⚙️</div>
+                            <h3>Customizable</h3>
+                            <p>Extensive configuration options for personalized gaming experience</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔊</div>
+                            <h3>Audio System</h3>
+                            <p>Advanced sound effects and audio processing for immersive gameplay</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <h3>Analytics</h3>
+                            <p>Real-time performance monitoring and detailed gaming statistics</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="settings-section">
+                <div class="container">
+                    <h2 class="section-title">Game Configuration</h2>
+                    <div class="settings-panel">
+                        <div class="settings-group">
+                            <h3>Performance Settings</h3>
+                            <div class="setting-item">
+                                <label for="frame-rate">Target FPS</label>
+                                <input type="range" id="frame-rate" min="30" max="120" value="60">
+                                <span class="setting-value">60 FPS</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="quality">Graphics Quality</label>
+                                <input type="range" id="quality" min="1" max="5" value="4">
+                                <span class="setting-value">High</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="effects-intensity">Effects Intensity</label>
+                                <input type="range" id="effects-intensity" min="0" max="100" value="75">
+                                <span class="setting-value">75%</span>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Audio Settings</h3>
+                            <div class="setting-item">
+                                <label for="master-volume">Master Volume</label>
+                                <input type="range" id="master-volume" min="0" max="100" value="50">
+                                <span class="setting-value">50%</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="sound-effects">Sound Effects</label>
+                                <input type="checkbox" id="sound-effects" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="background-music">Background Music</label>
+                                <input type="checkbox" id="background-music" checked>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Visual Settings</h3>
+                            <div class="setting-item">
+                                <label for="particle-effects">Particle Effects</label>
+                                <input type="checkbox" id="particle-effects" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="screen-effects">Screen Effects</label>
+                                <input type="checkbox" id="screen-effects" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="fullscreen-mode">Fullscreen Mode</label>
+                                <input type="checkbox" id="fullscreen-mode">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <div class="footer-logo-placeholder">GD</div>
+                        <span>GeoDash Pro</span>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#privacy">Privacy</a>
+                        <a href="#terms">Terms</a>
+                        <a href="#support">Support</a>
+                        <a href="#api">API</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
