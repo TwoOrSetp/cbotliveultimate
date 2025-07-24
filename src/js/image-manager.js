@@ -48,10 +48,7 @@ class ImageManager {
     async scanImagesDirectory(imageExtensions) {
         const discoveredImages = [];
         const checkPromises = [];
-
-        // Tạo danh sách TẤT CẢ các tên file có thể có
         const possibleNames = [
-            // Tên file cụ thể
             'images', 'image', 'img', 'pic', 'picture', 'photo',
             'gd-mod-1', 'gd-mod-2', 'gd-mod-3', 'gd-mod-4', 'gd-mod-5', 'gd-mod-6',
             'mod-1', 'mod-2', 'mod-3', 'mod-4', 'mod-5', 'mod-6',
@@ -67,15 +64,11 @@ class ImageManager {
             'demo-1', 'demo-2', 'demo-3', 'demo-4',
             'sample-1', 'sample-2', 'sample-3', 'sample-4',
             'test-1', 'test-2', 'test-3', 'test-4',
-            // Tất cả chữ cái đơn
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            // Tất cả số đơn và kép
             '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-            // Tên phổ biến
             'avatar', 'banner', 'logo', 'header', 'footer', 'main', 'home', 'index', 'default', 'temp', 'new',
             'screenshot', 'capture', 'wallpaper', 'texture', 'background', 'bg',
-            // Tên ngẫu nhiên có thể có
             'abc', 'xyz', 'test', 'demo', 'sample', 'example', 'random', 'random-name',
             'file', 'data', 'asset', 'resource', 'content', 'media'
         ];
@@ -156,17 +149,20 @@ class ImageManager {
 
         await Promise.allSettled(checkPromises);
 
-        // Kiểm tra trực tiếp file images.jpg nếu chưa tìm thấy
-        if (!discoveredImages.some(img => img.includes('images'))) {
-            console.log('🔍 Checking specifically for images.jpg...');
-            try {
-                const response = await fetch(this.basePath + 'images.jpg', { method: 'HEAD' });
-                if (response.ok) {
-                    discoveredImages.push('images.jpg');
-                    console.log('✅ Found images.jpg directly!');
+        // Direct check for common files that might exist
+        const directCheckFiles = ['images.jpg', 'image.jpg', 'img.jpg', 'photo.jpg', 'pic.jpg'];
+
+        for (const fileName of directCheckFiles) {
+            if (!discoveredImages.includes(fileName)) {
+                try {
+                    const response = await fetch(this.basePath + fileName, { method: 'HEAD' });
+                    if (response.ok) {
+                        discoveredImages.push(fileName);
+                        console.log(`✅ Direct check found: ${fileName}`);
+                    }
+                } catch (error) {
+                    // Silent fail for direct checks
                 }
-            } catch (error) {
-                console.log('❌ images.jpg not found');
             }
         }
 
@@ -350,40 +346,53 @@ class ImageManager {
     }
 
     createFallbackImage() {
+        console.log('🎨 Creating fallback image...');
+
         const canvas = document.createElement('canvas');
-        canvas.width = 200;
-        canvas.height = 200;
+        canvas.width = 400;
+        canvas.height = 400;
         const ctx = canvas.getContext('2d');
 
+        // Background
         ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, 200, 200);
+        ctx.fillRect(0, 0, 400, 400);
 
-        const gradient = ctx.createLinearGradient(0, 0, 200, 200);
+        // Main gradient
+        const gradient = ctx.createLinearGradient(0, 0, 400, 400);
         gradient.addColorStop(0, '#ffffff');
         gradient.addColorStop(0.5, '#4a9eff');
         gradient.addColorStop(1, '#1e3a8a');
 
         ctx.fillStyle = gradient;
-        ctx.fillRect(40, 40, 120, 120);
+        ctx.fillRect(50, 50, 300, 300);
 
+        // Inner frame
         ctx.fillStyle = '#000000';
-        ctx.fillRect(60, 60, 80, 80);
+        ctx.fillRect(100, 100, 200, 200);
 
+        // Center icon
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 24px Arial';
+        ctx.font = 'bold 48px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('GD', 100, 100);
+        ctx.fillText('GD', 200, 200);
 
-        const fallbackDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        // Decorative elements
+        ctx.strokeStyle = '#4a9eff';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(75, 75, 250, 250);
+
+        const fallbackDataUrl = canvas.toDataURL('image/png', 1.0);
 
         this.availableImages.push({
-            name: 'fallback.jpg',
+            name: 'fallback-generated.png',
             path: fallbackDataUrl,
-            type: 'jpg',
-            priority: 0,
-            source: 'fallback'
+            type: 'png',
+            priority: 999, // Low priority
+            source: 'generated-fallback'
         });
+
+        console.log('✅ Fallback image created successfully');
     }
 
     selectRandomImage() {
@@ -447,10 +456,30 @@ class ImageManager {
     }
 
     async initialize() {
-        await this.discoverImages();
-        this.selectRandomImage();
-        await this.preloadAllImages();
-        return this.selectedImage;
+        try {
+            console.log('🔍 Starting image discovery...');
+            await this.discoverImages();
+
+            if (this.availableImages.length === 0) {
+                console.warn('⚠️ No images discovered, creating fallback');
+                this.createFallbackImage();
+            }
+
+            console.log(`📸 Discovered ${this.availableImages.length} images`);
+            this.selectRandomImage();
+
+            console.log('⏳ Preloading images...');
+            await this.preloadAllImages();
+
+            console.log('✅ ImageManager initialized successfully');
+            return this.selectedImage;
+
+        } catch (error) {
+            console.error('❌ ImageManager initialization failed:', error);
+            this.createFallbackImage();
+            this.selectRandomImage();
+            return this.selectedImage;
+        }
     }
 }
 
@@ -479,24 +508,63 @@ class GeometryDashHero {
 
     async setupDynamicImage() {
         const selectedImage = this.imageManager.getSelectedImage();
-        
+
         if (!selectedImage) {
-            console.warn('No image selected');
+            console.warn('⚠️ No image selected - using fallback');
+            this.setFallbackDisplay();
             return;
         }
 
-        this.imageElement.style.backgroundImage = `url(${selectedImage.path})`;
-        this.imageElement.style.backgroundSize = 'cover';
-        this.imageElement.style.backgroundPosition = 'center';
-        this.imageElement.style.backgroundRepeat = 'no-repeat';
-        this.imageElement.style.background = `url(${selectedImage.path}) center/cover no-repeat, var(--gradient)`;
+        try {
+            // Preload image to ensure it exists
+            await this.preloadImageElement(selectedImage.path);
 
-        // Update tooltip with current image info
-        const totalImages = this.imageManager.getAllImages().length;
-        this.imageElement.setAttribute('data-tooltip', `🎮 ${selectedImage.name} | Click to cycle through ${totalImages} mods | Hover for effects`);
+            // Apply image with proper layering
+            this.imageElement.style.backgroundImage = `url("${selectedImage.path}")`;
+            this.imageElement.style.backgroundSize = 'cover';
+            this.imageElement.style.backgroundPosition = 'center';
+            this.imageElement.style.backgroundRepeat = 'no-repeat';
+            this.imageElement.style.backgroundBlendMode = 'overlay';
 
-        // Update status indicator
-        this.updateStatusIndicator(selectedImage, totalImages);
+            // Update UI elements
+            const totalImages = this.imageManager.getAllImages().length;
+            this.updateTooltip(selectedImage, totalImages);
+            this.updateStatusIndicator(selectedImage, totalImages);
+
+            console.log(`✅ Image loaded successfully: ${selectedImage.name}`);
+
+        } catch (error) {
+            console.error(`❌ Failed to load image: ${selectedImage.name}`, error);
+            this.setFallbackDisplay();
+        }
+    }
+
+    async preloadImageElement(imagePath) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error(`Failed to load: ${imagePath}`));
+            img.src = imagePath;
+        });
+    }
+
+    setFallbackDisplay() {
+        this.imageElement.style.backgroundImage = 'none';
+        this.imageElement.style.background = 'var(--theme-gradient)';
+        this.imageElement.setAttribute('data-tooltip', '🎮 Loading mods... | Click to refresh');
+
+        // Add fallback text
+        if (!this.imageElement.querySelector('.fallback-text')) {
+            const fallbackText = document.createElement('div');
+            fallbackText.className = 'fallback-text';
+            fallbackText.innerHTML = '<span>GD</span>';
+            this.imageElement.appendChild(fallbackText);
+        }
+    }
+
+    updateTooltip(selectedImage, totalImages) {
+        const tooltipText = `🎮 ${selectedImage.name} | ${selectedImage.type.toUpperCase()} | ${totalImages} mods available | Click to cycle`;
+        this.imageElement.setAttribute('data-tooltip', tooltipText);
     }
 
     setupHoverEffects() {
@@ -511,6 +579,7 @@ class GeometryDashHero {
         });
 
         this.imageElement.addEventListener('click', () => {
+            this.showClickFeedback();
             this.rotateToNextImage();
         });
     }
@@ -551,38 +620,63 @@ class GeometryDashHero {
         const currentImage = this.imageManager.getSelectedImage();
         const allImages = this.imageManager.getAllImages();
 
-        if (allImages.length <= 1) return;
-
-        // Instead of sequential rotation, randomly select a different image
-        let nextImage;
-        let attempts = 0;
-        const maxAttempts = 10;
-
-        do {
-            const randomIndex = Math.floor(Math.random() * allImages.length);
-            nextImage = allImages[randomIndex];
-            attempts++;
-        } while (nextImage.path === currentImage.path && attempts < maxAttempts);
-
-        // If we couldn't find a different image after max attempts, use sequential
-        if (nextImage.path === currentImage.path) {
-            const currentIndex = allImages.findIndex(img => img.path === currentImage.path);
-            const nextIndex = (currentIndex + 1) % allImages.length;
-            nextImage = allImages[nextIndex];
+        if (allImages.length === 0) {
+            console.warn('⚠️ No images available for rotation');
+            return;
         }
 
+        if (allImages.length === 1) {
+            console.log('ℹ️ Only one image available, refreshing current');
+            await this.setupDynamicImage();
+            return;
+        }
+
+        // Smart image selection - avoid current image
+        const nextImage = this.selectNextImage(currentImage, allImages);
         this.imageManager.selectedImage = nextImage;
 
-        console.log(`Rotating to image: ${nextImage.name} (${nextImage.type})`);
+        console.log(`🔄 Rotating: ${currentImage?.name} → ${nextImage.name} (${nextImage.type})`);
 
+        // Smooth transition animation
+        await this.performImageTransition();
+    }
+
+    selectNextImage(currentImage, allImages) {
+        const availableImages = allImages.filter(img =>
+            !currentImage || img.path !== currentImage.path
+        );
+
+        if (availableImages.length === 0) {
+            return allImages[0]; // Fallback to first image
+        }
+
+        // Random selection from available images
+        const randomIndex = Math.floor(Math.random() * availableImages.length);
+        return availableImages[randomIndex];
+    }
+
+    async performImageTransition() {
+        // Start transition
+        this.imageElement.style.transition = 'all 0.3s ease';
         this.imageElement.style.opacity = '0';
-        this.imageElement.style.transform = 'scale(0.8) rotate(180deg)';
+        this.imageElement.style.transform = 'scale(0.9) rotate(5deg)';
 
+        // Wait for fade out
+        await new Promise(resolve => setTimeout(resolve, 150));
+
+        // Load new image
+        await this.setupDynamicImage();
+
+        // Fade in with new image
+        this.imageElement.style.opacity = '1';
+        this.imageElement.style.transform = this.isHovered
+            ? 'scale(1.2) translateY(-10px)'
+            : 'scale(1) translateY(0)';
+
+        // Reset transition
         setTimeout(() => {
-            this.setupDynamicImage();
-            this.imageElement.style.opacity = '1';
-            this.imageElement.style.transform = this.isHovered ? 'scale(1.2) translateY(-10px)' : 'scale(1) translateY(0)';
-        }, 200);
+            this.imageElement.style.transition = '';
+        }, 300);
     }
 
     setupImageRotation() {
@@ -627,6 +721,82 @@ class GeometryDashHero {
         this.imageElement.addEventListener('click', hideInstruction);
         this.imageElement.addEventListener('mouseenter', hideInstruction);
     }
+
+    updateStatusIndicator(selectedImage, totalImages) {
+        // Option to disable status indicator - set this to false if you don't want it
+        const showStatusIndicator = false; // Change to true if you want the status indicator
+
+        if (!showStatusIndicator) {
+            // Remove existing status indicator if disabled
+            const existingStatus = this.heroElement.querySelector('.image-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            return;
+        }
+
+        // Remove existing status indicator
+        const existingStatus = this.heroElement.querySelector('.image-status');
+        if (existingStatus) {
+            existingStatus.remove();
+        }
+
+        // Create new status indicator
+        const statusElement = document.createElement('div');
+        statusElement.className = 'image-status';
+        statusElement.innerHTML = `
+            <div class="status-content">
+                <div class="status-header">
+                    <span class="status-icon">🖼️</span>
+                    <span class="status-title">Current Mod</span>
+                </div>
+                <div class="status-info">
+                    <div class="status-name">${selectedImage.name}</div>
+                    <div class="status-details">${selectedImage.type.toUpperCase()} • ${totalImages} total mods</div>
+                </div>
+            </div>
+        `;
+
+        this.heroElement.appendChild(statusElement);
+
+        // Animate in
+        setTimeout(() => {
+            statusElement.classList.add('show');
+        }, 100);
+    }
+
+    showClickFeedback() {
+        // Create click ripple effect
+        const ripple = document.createElement('div');
+        ripple.className = 'click-ripple';
+        this.imageElement.appendChild(ripple);
+
+        // Remove ripple after animation
+        setTimeout(() => {
+            if (ripple.parentNode) {
+                ripple.parentNode.removeChild(ripple);
+            }
+        }, 600);
+
+        // Show temporary click text
+        const clickText = document.createElement('div');
+        clickText.className = 'click-feedback-text';
+        clickText.textContent = '🔄 Switching mod...';
+        this.heroElement.appendChild(clickText);
+
+        setTimeout(() => {
+            clickText.classList.add('show');
+        }, 50);
+
+        setTimeout(() => {
+            clickText.classList.add('fade-out');
+            setTimeout(() => {
+                if (clickText.parentNode) {
+                    clickText.parentNode.removeChild(clickText);
+                }
+            }, 300);
+        }, 1500);
+    }
 }
 
 class IconManager {
@@ -660,37 +830,78 @@ class IconManager {
     }
 
     async loadNavIcon() {
-        await this.discoverIcons();
+        try {
+            console.log('🎯 Discovering navigation icons...');
+            await this.discoverIcons();
 
-        if (this.availableIcons.length === 0) {
-            console.warn('No icons found');
-            return;
+            if (this.availableIcons.length === 0) {
+                console.warn('⚠️ No icons found, creating fallback');
+                this.createFallbackIcon();
+            }
+
+            const navBrand = document.querySelector('.nav-brand');
+            if (!navBrand) {
+                console.error('❌ Nav brand element not found');
+                return;
+            }
+
+            // Remove existing icon if present
+            const existingIcon = navBrand.querySelector('.nav-icon');
+            if (existingIcon) {
+                existingIcon.remove();
+                console.log('🗑️ Removed existing icon');
+            }
+
+            // Create and configure icon element
+            const icon = document.createElement('img');
+            icon.src = this.availableIcons[0].path;
+            icon.alt = 'GeoDash Icon';
+            icon.className = 'nav-icon';
+            icon.loading = 'eager';
+
+            // Add error handling for icon loading
+            icon.onerror = () => {
+                console.error('❌ Failed to load icon, using fallback');
+                icon.style.display = 'none';
+            };
+
+            icon.onload = () => {
+                console.log('✅ Navigation icon loaded successfully');
+            };
+
+            // Insert icon before the h1 element
+            const h1 = navBrand.querySelector('h1');
+            if (h1) {
+                navBrand.insertBefore(icon, h1);
+                console.log('📍 Icon inserted before title');
+            } else {
+                navBrand.appendChild(icon);
+                console.log('📍 Icon appended to nav brand');
+            }
+
+            console.log(`🎯 Navigation icon loaded: ${this.availableIcons[0].name}`);
+
+        } catch (error) {
+            console.error('❌ Failed to load navigation icon:', error);
         }
+    }
 
-        const navBrand = document.querySelector('.nav-brand');
-        if (!navBrand) {
-            console.warn('Nav brand element not found');
-            return;
-        }
+    createFallbackIcon() {
+        // Create a simple fallback icon using data URL
+        const fallbackSvg = `data:image/svg+xml;base64,${btoa(`
+            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="16" cy="16" r="15" fill="#4a9eff" stroke="#ffffff" stroke-width="2"/>
+                <text x="16" y="20" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="10" font-weight="bold">GD</text>
+            </svg>
+        `)}`;
 
-        const existingIcon = navBrand.querySelector('.nav-icon');
-        if (existingIcon) {
-            existingIcon.remove();
-        }
+        this.availableIcons.push({
+            name: 'fallback-icon.svg',
+            path: fallbackSvg,
+            type: 'svg'
+        });
 
-        const icon = document.createElement('img');
-        icon.src = this.availableIcons[0].path;
-        icon.alt = 'GeoDash Icon';
-        icon.className = 'nav-icon';
-
-        const h1 = navBrand.querySelector('h1');
-        if (h1) {
-            navBrand.insertBefore(icon, h1);
-        } else {
-            navBrand.appendChild(icon);
-        }
-
-        console.log('Navigation icon loaded:', this.availableIcons[0].name);
+        console.log('🎨 Created fallback navigation icon');
     }
 
     getAvailableIcons() {

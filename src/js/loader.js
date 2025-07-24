@@ -323,25 +323,64 @@ class LoadingScreen {
 
     updateProgress(progress, loaded, total) {
         const roundedProgress = Math.round(progress);
-        
+
         if (this.progressBar) {
             this.progressBar.style.width = `${progress}%`;
         }
-        
+
         if (this.progressText) {
             this.progressText.textContent = `Loading... ${roundedProgress}%`;
         }
-        
+
         if (this.statusText) {
+            let newStatus = '';
             if (progress < 30) {
-                this.statusText.textContent = 'Loading stylesheets...';
+                newStatus = 'Loading stylesheets...';
             } else if (progress < 60) {
-                this.statusText.textContent = 'Loading scripts...';
+                newStatus = 'Loading scripts...';
             } else if (progress < 90) {
-                this.statusText.textContent = 'Loading fonts...';
+                newStatus = 'Loading fonts...';
             } else {
-                this.statusText.textContent = 'Finalizing...';
+                newStatus = 'Finalizing...';
             }
+
+            // Only update if status changed
+            if (this.statusText.textContent !== newStatus) {
+                this.typewriterStatus(newStatus);
+            }
+        }
+    }
+
+    async typewriterStatus(message) {
+        if (!this.statusText) return;
+
+        // Clear current text
+        this.statusText.textContent = '';
+
+        // Type each character with variable speed
+        for (let i = 0; i < message.length; i++) {
+            if (this.statusText) {
+                this.statusText.textContent = message.substring(0, i + 1);
+
+                // Variable typing speed
+                let delay = 40;
+                if (message[i] === '.') delay = 200; // Pause at dots
+                if (message[i] === ' ') delay = 20;  // Faster for spaces
+
+                await new Promise(resolve => setTimeout(resolve, delay + Math.random() * 20));
+            }
+        }
+
+        // Add blinking cursor
+        if (this.statusText) {
+            this.statusText.innerHTML = message + '<span class="loading-cursor">_</span>';
+
+            // Remove cursor after 1 second
+            setTimeout(() => {
+                if (this.statusText && this.statusText.innerHTML.includes('loading-cursor')) {
+                    this.statusText.textContent = message;
+                }
+            }, 1000);
         }
     }
 
