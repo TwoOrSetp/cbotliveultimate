@@ -1,4 +1,4 @@
-function initializeApp() {
+async function initializeApp() {
     initializeNavigation();
     initializeSmoothScrolling();
     initializeAnimations();
@@ -6,11 +6,29 @@ function initializeApp() {
     initializeDownloadTracking();
     initializeFormValidation();
 
+    await initializeGeometryDashHero();
+
     if (window.innerWidth > 768) {
         createParticleEffect();
     }
 
     document.body.classList.add('app-initialized');
+}
+
+async function initializeGeometryDashHero() {
+    try {
+        const { ImageManager, GeometryDashHero } = await import('./image-manager.js');
+
+        const imageManager = new ImageManager();
+        await imageManager.initialize();
+
+        const gdHero = new GeometryDashHero(imageManager);
+        await gdHero.initialize();
+
+        console.log('Geometry Dash hero initialized with image:', imageManager.getSelectedImage()?.name);
+    } catch (error) {
+        console.error('Failed to initialize Geometry Dash hero:', error);
+    }
 }
 
 function initializeNavigation() {

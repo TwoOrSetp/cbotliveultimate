@@ -64,9 +64,24 @@ class AssetLoader {
             this.addAsset(url, 'image', false);
         });
 
+        this.addDynamicImages();
+
         this.addAsset(window.location.href, 'document', true);
 
         this.totalCount = this.criticalAssets.length;
+    }
+
+    addDynamicImages() {
+        const gdImages = [
+            './assets/images/gd-mod-1.svg',
+            './assets/images/gd-mod-2.svg',
+            './assets/images/gd-mod-3.svg',
+            './assets/images/gd-mod-4.svg'
+        ];
+
+        gdImages.forEach(imagePath => {
+            this.addAsset(imagePath, 'image', true);
+        });
     }
 
     extractBackgroundImages() {
@@ -273,7 +288,7 @@ class LoadingScreen {
             <div class="loading-container">
                 <div class="loading-logo">
                     <div class="loading-cube"></div>
-                    <h1>CBot</h1>
+                    <h1>GeoDash</h1>
                 </div>
                 <div class="loading-progress">
                     <div class="progress-bar">

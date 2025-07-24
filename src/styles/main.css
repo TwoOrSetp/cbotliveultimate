@@ -1,6 +1,9 @@
 :root {
   --primary-color: #00ff88;
   --secondary-color: #0066cc;
+  --accent-color: #ff3366;
+  --gd-orange: #ff6b35;
+  --gd-blue: #4ecdc4;
   --dark-bg: #0a0a0a;
   --darker-bg: #050505;
   --card-bg: #1a1a1a;
@@ -10,6 +13,8 @@
   --border-color: #333333;
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  --gd-gradient: linear-gradient(135deg, var(--gd-orange), var(--gd-blue));
+  --hover-gradient: linear-gradient(135deg, var(--accent-color), var(--gd-orange));
 }
 
 * {
@@ -239,6 +244,26 @@ body.app-initialized .features {
 .hero {
   padding: 120px 0 80px;
   background: radial-gradient(ellipse at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+  transition: background 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 107, 53, 0.05) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.hero.hover-active::before {
+  opacity: 1;
 }
 
 .hero-container {
@@ -317,22 +342,84 @@ body.app-initialized .features {
 }
 
 .hero-placeholder {
-  width: 300px;
-  height: 300px;
+  width: 350px;
+  height: 350px;
   display: flex;
   justify-content: center;
   align-items: center;
   background: var(--card-bg);
-  border-radius: 20px;
+  border-radius: 25px;
   border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.hero-placeholder:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 15px 35px rgba(255, 51, 102, 0.2);
 }
 
 .cube {
-  width: 100px;
-  height: 100px;
-  background: var(--gradient);
-  border-radius: 10px;
+  width: 200px;
+  height: 200px;
+  background: var(--gd-gradient);
+  border-radius: 20px;
   animation: float 3s ease-in-out infinite;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.cube.gd-mod-showcase {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cube::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cube:hover::before {
+  opacity: 1;
+}
+
+.cube:hover {
+  transform: scale(1.2) translateY(-10px);
+  border-radius: 50%;
+  box-shadow: 0 20px 40px rgba(255, 51, 102, 0.4);
+  background: var(--hover-gradient);
+}
+
+.cube:active {
+  transform: scale(1.1) translateY(-5px);
+}
+
+.cube[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  border: 1px solid var(--border-color);
 }
 
 @keyframes float {
