@@ -2,13 +2,12 @@
   "compilerOptions": {
     "target": "ES2020",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
+    "module": "ES2020",
     "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "preserve",
     "strict": true,
     "noUnusedLocals": true,
@@ -20,7 +19,7 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./js",
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
@@ -39,6 +38,7 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "js"
   ]
 }

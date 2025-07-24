@@ -198,6 +198,24 @@
         </footer>
     </div>
 
+    <script src="https://unpkg.com/typescript@5.0.0/lib/typescript.js"></script>
+    <script type="module">
+        // Import and compile TypeScript modules
+        import('./src/main.js').catch(() => {
+            // Fallback: load main.ts and compile it
+            fetch('./src/main.ts')
+                .then(response => response.text())
+                .then(tsCode => {
+                    const jsCode = ts.transpile(tsCode, {
+                        target: ts.ScriptTarget.ES2020,
+                        module: ts.ModuleKind.ES2020
+                    });
+                    const blob = new Blob([jsCode], { type: 'application/javascript' });
+                    const url = URL.createObjectURL(blob);
+                    import(url);
+                });
+        });
+    </script>
     <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
