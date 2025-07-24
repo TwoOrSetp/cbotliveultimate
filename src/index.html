@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cbot Mods - Ultimate Geometry Dash Modifications</title>
-    <meta name="description" content="Cbot Mods - Professional Geometry Dash modifications and enhancements">
+    <title>GeoDash Pro - Ultimate Geometry Dash Experience</title>
+    <meta name="description" content="GeoDash Pro - Professional Geometry Dash modifications and enhancements">
+    <meta name="cache-control" content="no-cache">
+    <!-- GeoDash Pro v2.0 -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +20,8 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
 
     <link rel="stylesheet" href="./styles/main.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/advanced.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         body { visibility: hidden; }
@@ -26,11 +29,14 @@
     </style>
 </head>
 <body>
+    <!-- Advanced Loading Screen -->
+    <div class="loading-screen"></div>
+
     <header class="header">
         <nav class="nav">
             <div class="nav-container">
                 <div class="nav-brand">
-                    <h1>Cbot</h1>
+                    <h1>GeoDash</h1>
                 </div>
                 <ul class="nav-menu">
                     <li><a href="#features">Mods</a></li>
@@ -51,11 +57,23 @@
         <section class="hero">
             <div class="hero-container">
                 <div class="hero-content">
-                    <h1 class="hero-title">Cbot best clickbot for geometry dash lol</h1>
+                    <h1 class="hero-title">GeoDash Pro - Ultimate Geometry Dash Experience</h1>
                     <p class="hero-description">Transform your Geometry Dash experience with our collection of professional-grade modifications, custom levels, and enhanced gameplay features.</p>
                     <div class="hero-buttons">
-                        <a href="#download" class="btn btn-primary">Download Mods</a>
-                        <a href="#features" class="btn btn-secondary">Explore Mods</a>
+                        <a href="#download" class="btn-advanced btn-primary btn-lg">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+                        </svg>
+                        Download Mods
+                    </a>
+                        <a href="#features" class="btn-advanced btn-secondary btn-lg">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                            <path d="M2 17L12 22L22 17"/>
+                            <path d="M2 12L12 17L22 12"/>
+                        </svg>
+                        Explore Mods
+                    </a>
                     </div>
                 </div>
                 <div class="hero-image">
@@ -122,7 +140,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <h3>Cbot</h3>
+                    <h3>GeoDash</h3>
                     <p>Ultimate Geometry Dash Mods</p>
                 </div>
                 <div class="footer-links">
@@ -145,33 +163,287 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Cbot Mods. All rights reserved.</p>
+                <p>&copy; 2025 GeoDash Pro. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
+    <script type="module" src="./main.ts"></script>
     <script type="module">
-        import { LoadingScreen } from './js/loader.js';
-        import { BackgroundEffects } from './js/background-effects.js';
+        // Advanced GeoDash Application - TypeScript Version
+        console.log('🚀 Starting GeoDash Advanced App...');
 
-        const loadingScreen = new LoadingScreen();
-        let backgroundEffects = null;
-
+        // Initialize immediately when DOM is ready
         document.addEventListener('DOMContentLoaded', async () => {
             document.body.style.visibility = 'visible';
+            document.body.classList.add('dark-theme');
 
-            // Initialize background effects
-            backgroundEffects = new BackgroundEffects();
+            console.log('🎮 GeoDash Advanced App ready to initialize!');
 
-            await loadingScreen.start();
+            // The TypeScript main.ts will handle all initialization
+            // This is just a fallback for basic functionality
         });
 
-        document.addEventListener('siteLoaded', async () => {
-            const { default: initializeApp } = await import('./js/main.js');
-            if (typeof initializeApp === 'function') {
-                initializeApp();
+        function initializeParticleSystem() {
+            console.log('✨ Initializing particle system...');
+
+            // Create particle container
+            const particleContainer = document.createElement('div');
+            particleContainer.className = 'particle-container';
+            particleContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: -1;
+                overflow: hidden;
+            `;
+            document.body.appendChild(particleContainer);
+
+            // Create particles
+            for (let i = 0; i < 50; i++) {
+                createParticle(particleContainer);
             }
-        });
+
+            // Add click effect
+            document.addEventListener('click', (e) => {
+                createClickBurst(e.clientX, e.clientY);
+            });
+        }
+
+        function createParticle(container) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            const size = Math.random() * 3 + 1;
+            const colors = ['#4a9eff', '#ffffff', '#1e3a8a'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            particle.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                background: ${color};
+                border-radius: 50%;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                opacity: ${Math.random() * 0.7 + 0.3};
+                animation: float ${Math.random() * 3 + 2}s ease-in-out infinite;
+                animation-delay: ${Math.random() * 2}s;
+                box-shadow: 0 0 10px ${color};
+            `;
+
+            container.appendChild(particle);
+        }
+
+        function createClickBurst(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const burst = document.createElement('div');
+                burst.className = 'click-burst';
+
+                const angle = (Math.PI * 2 * i) / 8;
+                const distance = 50 + Math.random() * 50;
+                const endX = x + Math.cos(angle) * distance;
+                const endY = y + Math.sin(angle) * distance;
+
+                burst.style.cssText = `
+                    position: fixed;
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: 4px;
+                    height: 4px;
+                    background: #4a9eff;
+                    border-radius: 50%;
+                    pointer-events: none;
+                    animation: burst-${i} 1s ease-out forwards;
+                    z-index: 1000;
+                `;
+
+                document.body.appendChild(burst);
+
+                // Animate to end position
+                burst.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                    { transform: `translate(${endX - x}px, ${endY - y}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out'
+                });
+
+                setTimeout(() => {
+                    if (burst.parentNode) {
+                        burst.parentNode.removeChild(burst);
+                    }
+                }, 1000);
+            }
+        }
+
+        function initializeTypewriterEffects() {
+            console.log('⌨️ Initializing typewriter effects...');
+
+            // Main hero title
+            const heroTitle = document.querySelector('.hero-title');
+            if (heroTitle) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            typeText(heroTitle, heroTitle.textContent || 'Ultimate Geometry Dash Mods', 80);
+                            observer.unobserve(heroTitle);
+                        }
+                    });
+                });
+                observer.observe(heroTitle);
+            }
+
+            // Section titles
+            const sectionTitles = document.querySelectorAll('.section-title');
+            sectionTitles.forEach((title, index) => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setTimeout(() => {
+                                typeText(title, title.textContent || 'Section Title', 60);
+                            }, index * 200);
+                            observer.unobserve(title);
+                        }
+                    });
+                });
+                observer.observe(title);
+            });
+        }
+
+        function initializeBackgroundEffects() {
+            console.log('🌟 Initializing background effects...');
+
+            // Create starfield
+            createStarfield();
+
+            // Create meteor shower
+            setInterval(() => {
+                if (Math.random() < 0.3) {
+                    createMeteor();
+                }
+            }, 3000);
+        }
+
+        function createStarfield() {
+            const starCount = window.innerWidth > 768 ? 100 : 50;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+
+                const size = Math.random() < 0.7 ? 'small' : Math.random() < 0.9 ? 'medium' : 'large';
+                star.classList.add(size);
+
+                star.style.cssText = `
+                    position: fixed;
+                    background: white;
+                    border-radius: 50%;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    opacity: ${0.3 + Math.random() * 0.7};
+                    animation: twinkle ${2 + Math.random() * 2}s ease-in-out infinite;
+                    animation-delay: ${Math.random() * 3}s;
+                    z-index: -1;
+                    pointer-events: none;
+                `;
+
+                if (size === 'small') {
+                    star.style.width = star.style.height = '1px';
+                } else if (size === 'medium') {
+                    star.style.width = star.style.height = '2px';
+                    star.style.boxShadow = '0 0 6px rgba(255, 255, 255, 0.8)';
+                } else {
+                    star.style.width = star.style.height = '3px';
+                    star.style.boxShadow = '0 0 10px rgba(74, 158, 255, 0.9)';
+                }
+
+                document.body.appendChild(star);
+            }
+        }
+
+        function createMeteor() {
+            const meteor = document.createElement('div');
+            meteor.className = 'meteor';
+
+            meteor.style.cssText = `
+                position: fixed;
+                width: 2px;
+                height: 2px;
+                background: linear-gradient(45deg, #ffffff, #4a9eff);
+                border-radius: 50%;
+                left: ${Math.random() * 100}%;
+                top: -50px;
+                z-index: -1;
+                pointer-events: none;
+                box-shadow: 0 0 10px #ffffff, 0 0 20px #4a9eff;
+            `;
+
+            meteor.style.setProperty('--end-x', Math.random() * 100 + '%');
+            meteor.style.setProperty('--end-y', '100vh');
+
+            document.body.appendChild(meteor);
+
+            meteor.animate([
+                { transform: 'translate(0, 0)', opacity: 1 },
+                { transform: 'translate(100vw, 100vh)', opacity: 0 }
+            ], {
+                duration: 2000 + Math.random() * 1000,
+                easing: 'linear'
+            });
+
+            setTimeout(() => {
+                if (meteor.parentNode) {
+                    meteor.parentNode.removeChild(meteor);
+                }
+            }, 3000);
+        }
+
+        function initializeFallback() {
+            console.log('🔧 Initializing fallback mode...');
+            document.body.classList.add('loaded');
+
+            const loadingScreen = document.querySelector('.loading-screen');
+            if (loadingScreen) {
+                loadingScreen.style.display = 'none';
+            }
+
+            // Add basic functionality
+            const buttons = document.querySelectorAll('.btn-advanced');
+            buttons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    button.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        button.style.transform = '';
+                    }, 150);
+                });
+            });
+        }
+
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple-expand {
+                0% { transform: scale(0); opacity: 1; }
+                100% { transform: scale(4); opacity: 0; }
+            }
+
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-20px) rotate(180deg); }
+            }
+
+            @keyframes twinkle {
+                0%, 100% { opacity: 0.3; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.2); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('🎮 GeoDash Advanced App ready to initialize!');
     </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 {
-  "name": "cbot-website",
+  "name": "geodash-website",
   "version": "1.0.0",
-  "description": "CBot Website",
+  "description": "GeoDash Pro Website",
   "main": "index.js",
   "type": "module",
   "scripts": {
