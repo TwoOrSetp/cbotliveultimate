@@ -1,0 +1,28 @@
+{
+  "name": "cbot-website",
+  "version": "1.0.0",
+  "description": "CBot Website",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "website",
+    "vite",
+    "javascript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "eslint": "^8.0.0",
+    "@vitejs/plugin-legacy": "^5.0.0"
+  },
+  "dependencies": {}
+}

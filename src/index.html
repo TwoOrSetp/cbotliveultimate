@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBot - Advanced Minecraft Client</title>
+    <meta name="description" content="CBot - Professional Minecraft client with advanced features">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+
+    <link rel="preload" href="./styles/main.css" as="style">
+    <link rel="preload" href="./js/loader.js" as="script">
+    <link rel="preload" href="./js/main.js" as="script">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
+
+    <link rel="stylesheet" href="./styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { visibility: hidden; }
+        .loading-screen { visibility: visible; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h1>CBot</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#download">Download</a></li>
+                    <li><a href="#docs">Documentation</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Advanced Minecraft Client</h1>
+                    <p class="hero-description">Experience Minecraft like never before with our professional-grade client featuring advanced modules and optimizations.</p>
+                    <div class="hero-buttons">
+                        <a href="#download" class="btn btn-primary">Download Now</a>
+                        <a href="#features" class="btn btn-secondary">Learn More</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-placeholder">
+                        <div class="cube"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Performance Optimized</h3>
+                        <p>Highly optimized code for maximum performance and minimal resource usage.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Advanced Security</h3>
+                        <p>Built-in security features and anti-detection mechanisms.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎮</div>
+                        <h3>Rich Module System</h3>
+                        <p>Comprehensive collection of modules for enhanced gameplay.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h3>Highly Configurable</h3>
+                        <p>Extensive configuration options to customize your experience.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="download" class="download">
+            <div class="container">
+                <h2 class="section-title">Download</h2>
+                <div class="download-content">
+                    <div class="download-info">
+                        <h3>Latest Version</h3>
+                        <p class="version">v1.0.0</p>
+                        <p>Compatible with Minecraft 1.20.x</p>
+                        <a href="#" class="btn btn-primary btn-large">Download CBot</a>
+                    </div>
+                    <div class="download-requirements">
+                        <h4>System Requirements</h4>
+                        <ul>
+                            <li>Java 17 or higher</li>
+                            <li>Minecraft Java Edition</li>
+                            <li>4GB RAM minimum</li>
+                            <li>Windows 10/11, macOS, or Linux</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>CBot</h3>
+                    <p>Advanced Minecraft Client</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#features">Features</a></li>
+                            <li><a href="#download">Download</a></li>
+                            <li><a href="#docs">Documentation</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#contact">Contact</a></li>
+                            <li><a href="#faq">FAQ</a></li>
+                            <li><a href="#help">Help</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CBot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { LoadingScreen } from './js/loader.js';
+
+        const loadingScreen = new LoadingScreen();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.body.style.visibility = 'visible';
+            await loadingScreen.start();
+        });
+
+        document.addEventListener('siteLoaded', async () => {
+            const { default: initializeApp } = await import('./js/main.js');
+            if (typeof initializeApp === 'function') {
+                initializeApp();
+            }
+        });
+    </script>
+</body>
+</html>

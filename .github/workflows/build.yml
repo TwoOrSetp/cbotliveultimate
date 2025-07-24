@@ -1,0 +1,168 @@
+name: Build and Deploy Website
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run linting
+      run: npm run lint
+      continue-on-error: true
+    
+    - name: Build website
+      run: npm run build
+      env:
+        NODE_ENV: production
+    
+    - name: Run tests
+      run: npm test
+      continue-on-error: true
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: website-build-${{ matrix.node-version }}
+        path: dist/
+        retention-days: 30
+    
+    - name: Setup Pages (Node 20.x only)
+      if: matrix.node-version == '20.x'
+      uses: actions/configure-pages@v3
+    
+    - name: Upload to GitHub Pages (Node 20.x only)
+      if: matrix.node-version == '20.x'
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: dist/
+
+  deploy:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Run security audit
+      run: npm audit --audit-level moderate
+      continue-on-error: true
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run dependency check
+      run: npx audit-ci --moderate
+      continue-on-error: true
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build website
+      run: npm run build
+    
+    - name: Serve website
+      run: npm run preview &
+      
+    - name: Wait for server
+      run: sleep 10
+    
+    - name: Run Lighthouse CI
+      run: |
+        npm install -g @lhci/cli@0.12.x
+        lhci autorun
+      env:
+        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+    if: always()
+    
+    steps:
+    - name: Notify on success
+      if: needs.build.result == 'success' && needs.deploy.result == 'success'
+      run: |
+        echo "✅ Website built and deployed successfully!"
+        echo "🚀 Site URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+    
+    - name: Notify on failure
+      if: needs.build.result == 'failure' || needs.deploy.result == 'failure'
+      run: |
+        echo "❌ Build or deployment failed!"
+        echo "Please check the logs for more information."
