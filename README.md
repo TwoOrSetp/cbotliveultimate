@@ -1,13 +1,15 @@
-# Professional Portfolio Website
+# cbot Official Website
 
-A modern, responsive portfolio website built with vanilla HTML, CSS, and JavaScript. Features a sleek black theme, typing animations, and direct file download functionality.
+A modern, responsive multi-page website for cbot - Advanced Minecraft client. Built with vanilla HTML, CSS, and JavaScript, featuring GitHub API integration for dynamic release downloads.
 
 ## 🌟 Features
 
+- **Multi-Page Architecture**: Three distinct pages (Home, About, Download)
+- **GitHub API Integration**: Dynamic release information and download links
 - **Modern Design**: Professional black-themed design with gradient accents
 - **Typing Animations**: Smooth typewriter effects for text display
 - **Responsive Layout**: Optimized for all device sizes
-- **Direct Downloads**: File download functionality without GitHub redirects
+- **Direct Downloads**: Real-time GitHub release file downloads
 - **Social Integration**: Links to Discord, YouTube, and GitHub
 - **Smooth Animations**: CSS animations and transitions throughout
 - **Accessibility**: Keyboard navigation and reduced motion support
@@ -20,16 +22,19 @@ The website is automatically deployed to GitHub Pages when changes are pushed to
 ## 📁 Project Structure
 
 ```
-├── index.html              # Main HTML file
+├── index.html              # Home page
+├── about.html              # About cbot page
+├── download.html           # Download page with GitHub API
 ├── css/
 │   ├── style.css          # Main stylesheet
 │   ├── animations.css     # Animation definitions
 │   └── responsive.css     # Responsive design rules
 ├── js/
 │   ├── main.js           # Core functionality
-│   └── downloads.js      # Download management
+│   ├── downloads.js      # Download management (legacy)
+│   └── github-api.js     # GitHub API integration
 ├── assets/
-│   └── downloads/        # Downloadable files directory
+│   └── downloads/        # Static downloadable files
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml    # GitHub Actions deployment
@@ -37,13 +42,45 @@ The website is automatically deployed to GitHub Pages when changes are pushed to
 └── README.md           # Project documentation
 ```
 
+## 📄 Pages
+
+### 🏠 Home Page (`index.html`)
+- Hero section with cbot branding
+- Feature highlights
+- Call-to-action buttons
+- Professional landing experience
+
+### ℹ️ About Page (`about.html`)
+- Detailed cbot information
+- Feature explanations
+- Benefits and capabilities
+- Professional presentation
+
+### 📥 Download Page (`download.html`)
+- GitHub API integration
+- Dynamic release information
+- Real-time download links
+- Installation guide
+- Fallback content for API errors
+
 ## 🛠️ Technologies Used
 
-- **HTML5**: Semantic markup structure
+- **HTML5**: Semantic markup structure across multiple pages
 - **CSS3**: Modern styling with custom properties, flexbox, and grid
-- **JavaScript (ES6+)**: Interactive functionality and animations
+- **JavaScript (ES6+)**: Interactive functionality and GitHub API integration
+- **GitHub API**: Dynamic release data fetching
 - **GitHub Actions**: Automated deployment pipeline
 - **GitHub Pages**: Static site hosting
+
+## 🔗 GitHub API Integration
+
+The download page dynamically fetches release information from the cbot repository:
+
+- **Real-time Data**: Latest release version, description, and files
+- **Direct Downloads**: Links to actual GitHub release assets
+- **Error Handling**: Graceful fallback when API is unavailable
+- **Caching**: Efficient API usage with proper error recovery
+- **File Information**: File sizes, download counts, and metadata
 
 ## 📱 Responsive Design
 
