@@ -362,6 +362,14 @@ export class Application {
     return this.eventEmitter
   }
 
+  public getThemeManager(): ThemeManager {
+    return this.themeManager
+  }
+
+  public getPerformanceMonitor(): PerformanceMonitor {
+    return this.performanceMonitor
+  }
+
   public getConfig(): ApplicationConfig {
     return { ...this.config }
   }
@@ -374,6 +382,7 @@ export class Application {
   public destroy(): void {
     this.eventEmitter.removeAllListeners()
     this.performanceMonitor.destroy()
+    this.themeManager.destroy()
     this.isInitialized = false
     console.log('Application destroyed')
   }

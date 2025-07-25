@@ -107,16 +107,22 @@ class Main {
 
   private startTypingAnimations(): void {
     const typingElements = document.querySelectorAll('.typing-text')
-    
+
     typingElements.forEach((element, index) => {
       const htmlElement = element as HTMLElement
       const text = htmlElement.dataset.text || ''
-      const delay = parseInt(htmlElement.dataset.delay || '0') + (index * 500)
-      
+      const delay = parseInt(htmlElement.dataset.delay || '0') + (index * 800)
+      const effect = htmlElement.dataset.effect || 'typewriter'
+
       setTimeout(() => {
         this.typingAnimation.animate(htmlElement, text, {
-          speed: 50,
-          cursor: true
+          speed: 60,
+          cursor: true,
+          effect: effect as any,
+          cursorStyle: 'line',
+          randomDelay: true,
+          highlightWords: ['Cbot', 'Geometry Dash', 'Automation'],
+          soundEnabled: false
         })
       }, delay)
     })
@@ -126,10 +132,33 @@ class Main {
       const codeText = codeElement.dataset.text || ''
       setTimeout(() => {
         this.typingAnimation.animate(codeElement, codeText, {
-          speed: 30,
-          cursor: false
+          speed: 40,
+          cursor: false,
+          effect: 'matrix',
+          randomDelay: true
         })
-      }, 3000)
+      }, 4000)
+    }
+
+    this.startContinuousAnimations()
+  }
+
+  private startContinuousAnimations(): void {
+    const heroTitle = document.querySelector('.hero-title .gradient-text') as HTMLElement
+    if (heroTitle) {
+      setInterval(() => {
+        if (!this.typingAnimation.isAnimating(heroTitle)) {
+          const effects = ['glitch', 'wave', 'matrix']
+          const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+
+          this.typingAnimation.animate(heroTitle, heroTitle.dataset.text || 'Geometry Dash Automation', {
+            speed: 80,
+            cursor: false,
+            effect: randomEffect as any,
+            highlightWords: ['Geometry Dash', 'Automation']
+          })
+        }
+      }, 15000)
     }
   }
 
@@ -159,6 +188,7 @@ class Main {
     this.setupNavigation()
     this.setupScrollEffects()
     this.setupStatsAnimation()
+    this.setupThemeToggle()
   }
 
   private setupNavigation(): void {
@@ -249,11 +279,22 @@ class Main {
     if (section) {
       const headerHeight = 80
       const targetPosition = section.offsetTop - headerHeight
-      
+
+      console.log(`📍 Scrolling to section: ${sectionId} at position: ${targetPosition}`)
+
       window.scrollTo({
         top: targetPosition,
         behavior: 'smooth'
       })
+
+      // Highlight the section briefly
+      section.style.boxShadow = '0 0 20px var(--color-primary)'
+      setTimeout(() => {
+        section.style.boxShadow = ''
+      }, 2000)
+    } else {
+      console.warn(`⚠️ Section '${sectionId}' not found`)
+      this.showNotification(`Section '${sectionId}' not found`, 'error')
     }
   }
 
@@ -268,8 +309,34 @@ class Main {
   }
 
   private handleDownloadRedirect(): void {
-    this.scrollToSection('download')
-    this.showNotification('Redirecting to download section...', 'info')
+    // Check if download section exists, if not create it first
+    const downloadSection = document.getElementById('download')
+    if (!downloadSection) {
+      // Force create download section with latest release data
+      const release = this.downloadManager.getLatestRelease()
+      if (release) {
+        this.addDownloadSectionToHTML(release)
+      } else {
+        this.showNotification('Loading download information...', 'info')
+        // Wait for release data and then scroll
+        setTimeout(() => {
+          const updatedRelease = this.downloadManager.getLatestRelease()
+          if (updatedRelease) {
+            this.addDownloadSectionToHTML(updatedRelease)
+            setTimeout(() => this.scrollToSection('download'), 100)
+          } else {
+            this.showNotification('Download information not available. Please try again.', 'error')
+          }
+        }, 1000)
+        return
+      }
+    }
+
+    // Scroll to download section
+    setTimeout(() => {
+      this.scrollToSection('download')
+      this.showNotification('Download section loaded!', 'success')
+    }, 100)
   }
 
   private showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
@@ -322,10 +389,12 @@ class Main {
     eventEmitter.on('download:initialized', (data) => {
       this.updateDownloadSection(data.release)
       this.updateModStatus('Ready')
+      console.log('📦 Download section initialized with release data')
     })
 
     eventEmitter.on('download:release-fetched', (release) => {
       this.updateDownloadSection(release)
+      console.log('📦 Download section updated with new release data')
     })
 
     eventEmitter.on('download:started', (data) => {
@@ -354,15 +423,11 @@ class Main {
   private updateDownloadSection(release: any): void {
     if (!release) return
 
-    this.createDownloadSection(release)
-  }
-
-  private createDownloadSection(release: any): void {
     const downloadSection = document.getElementById('download')
-    if (!downloadSection) {
-      this.addDownloadSectionToHTML(release)
-    } else {
+    if (downloadSection) {
       this.updateExistingDownloadSection(release, downloadSection)
+    } else {
+      this.addDownloadSectionToHTML(release)
     }
   }
 
@@ -384,11 +449,58 @@ class Main {
   }
 
   private updateExistingDownloadSection(release: any, section: HTMLElement): void {
-    const container = section.querySelector('.container')
-    if (container) {
-      container.innerHTML = this.generateDownloadContent(release)
-      this.setupDownloadButtons()
+    const releaseDate = this.downloadManager.formatReleaseDate(release.published_at)
+    const totalSize = this.downloadManager.getTotalDownloadSize()
+
+    // Update title
+    const titleElement = section.querySelector('.download-title')
+    if (titleElement) titleElement.textContent = release.name
+
+    // Update tag
+    const tagElement = section.querySelector('.download-tag')
+    if (tagElement) tagElement.textContent = release.tag_name
+
+    // Update info
+    const dateElement = section.querySelector('.download-date')
+    if (dateElement) dateElement.textContent = `Released: ${releaseDate}`
+
+    const sizeElement = section.querySelector('.download-size')
+    if (sizeElement) sizeElement.textContent = `Total Size: ${totalSize}`
+
+    const assetsElement = section.querySelector('.download-assets')
+    if (assetsElement) assetsElement.textContent = `${release.assets.length} files available`
+
+    // Update description
+    const descElement = section.querySelector('.download-description p')
+    if (descElement) descElement.textContent = this.formatReleaseBody(release.body)
+
+    // Update download all button
+    const downloadAllBtn = section.querySelector('#download-all') as HTMLButtonElement
+    if (downloadAllBtn) {
+      downloadAllBtn.textContent = 'Download All Files'
+      downloadAllBtn.disabled = false
     }
+
+    // Update files list
+    const filesListElement = section.querySelector('.files-list')
+    if (filesListElement) {
+      filesListElement.innerHTML = release.assets.map((asset: any) => `
+        <div class="file-item">
+          <span class="file-name">${asset.name}</span>
+          <span class="file-size">${this.downloadManager.formatFileSize(asset.size)}</span>
+          <button class="btn btn-outline btn-small download-file" data-asset="${asset.name}">
+            Download
+          </button>
+        </div>
+      `).join('')
+    }
+
+    // Update files header
+    const filesHeaderElement = section.querySelector('.download-files h4')
+    if (filesHeaderElement) filesHeaderElement.textContent = 'Individual Files:'
+
+    this.setupDownloadButtons()
+    console.log('✅ Download section updated successfully')
   }
 
   private generateDownloadHTML(release: any): string {
@@ -529,6 +641,73 @@ class Main {
         button.classList.remove('loading')
       }
     })
+  }
+
+  private setupThemeToggle(): void {
+    const themeToggle = document.getElementById('theme-toggle')
+    const themeManager = this.app.getThemeManager()
+
+    if (themeToggle && themeManager) {
+      // Set initial theme
+      const savedTheme = themeManager.getThemePreference()
+      themeManager.setTheme(savedTheme)
+
+      themeToggle.addEventListener('click', () => {
+        themeManager.toggleTheme()
+        this.showNotification('Theme switched!', 'info')
+
+        // Add click effect
+        themeToggle.style.transform = 'scale(0.95)'
+        setTimeout(() => {
+          themeToggle.style.transform = 'scale(1)'
+        }, 150)
+      })
+
+      // Listen for theme changes
+      themeManager.onThemeChange((theme) => {
+        this.updateThemeEffects(theme)
+      })
+    }
+  }
+
+  private updateThemeEffects(theme: string): void {
+    const body = document.body
+
+    // Add theme transition effect
+    body.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+
+    // Update gradient orbs based on theme
+    const orbs = document.querySelectorAll('.gradient-orb')
+    orbs.forEach((orb, index) => {
+      const htmlOrb = orb as HTMLElement
+      if (theme === 'light') {
+        htmlOrb.style.opacity = '0.2'
+        htmlOrb.style.filter = 'blur(40px)'
+      } else {
+        htmlOrb.style.opacity = '0.3'
+        htmlOrb.style.filter = 'blur(60px)'
+      }
+    })
+
+    // Restart typing animations with theme-appropriate effects
+    setTimeout(() => {
+      this.restartTypingAnimations()
+    }, 300)
+  }
+
+  private restartTypingAnimations(): void {
+    const heroTitle = document.querySelector('.hero-title .gradient-text') as HTMLElement
+    if (heroTitle && !this.typingAnimation.isAnimating(heroTitle)) {
+      const currentTheme = document.documentElement.getAttribute('data-theme')
+      const effect = currentTheme === 'light' ? 'fade' : 'glitch'
+
+      this.typingAnimation.animate(heroTitle, heroTitle.dataset.text || 'Geometry Dash Automation', {
+        speed: 60,
+        cursor: false,
+        effect: effect as any,
+        highlightWords: ['Geometry Dash', 'Automation']
+      })
+    }
   }
 }
 

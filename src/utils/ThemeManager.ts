@@ -6,12 +6,18 @@ export interface ThemeColors {
   accent: string
   background: string
   surface: string
+  surfaceElevated: string
   text: string
   textSecondary: string
+  textMuted: string
   border: string
+  borderHover: string
   success: string
   warning: string
   error: string
+  info: string
+  shadow: string
+  glow: string
 }
 
 export interface ThemeConfig {
@@ -61,17 +67,23 @@ export class ThemeManager {
     const lightTheme: ThemeConfig = {
       name: 'light',
       colors: {
-        primary: '#667eea',
-        secondary: '#764ba2',
-        accent: '#f093fb',
+        primary: '#00ff88',
+        secondary: '#0066ff',
+        accent: '#ff6600',
         background: '#ffffff',
         surface: '#f8fafc',
+        surfaceElevated: '#ffffff',
         text: '#1a202c',
         textSecondary: '#4a5568',
+        textMuted: '#718096',
         border: '#e2e8f0',
+        borderHover: '#cbd5e0',
         success: '#48bb78',
         warning: '#ed8936',
-        error: '#f56565'
+        error: '#f56565',
+        info: '#4299e1',
+        shadow: 'rgba(0, 0, 0, 0.1)',
+        glow: 'rgba(0, 255, 136, 0.3)'
       },
       fonts: {
         primary: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
@@ -100,17 +112,23 @@ export class ThemeManager {
     const darkTheme: ThemeConfig = {
       name: 'dark',
       colors: {
-        primary: '#667eea',
-        secondary: '#764ba2',
-        accent: '#f093fb',
+        primary: '#00ff88',
+        secondary: '#0066ff',
+        accent: '#ff6600',
         background: '#0a0a0a',
         surface: '#1a1a1a',
+        surfaceElevated: '#2d2d2d',
         text: '#ffffff',
-        textSecondary: '#a0aec0',
-        border: '#2d3748',
+        textSecondary: '#cccccc',
+        textMuted: '#a0aec0',
+        border: '#333333',
+        borderHover: '#4a5568',
         success: '#68d391',
         warning: '#fbb040',
-        error: '#fc8181'
+        error: '#fc8181',
+        info: '#63b3ed',
+        shadow: 'rgba(0, 0, 0, 0.5)',
+        glow: 'rgba(0, 255, 136, 0.4)'
       },
       fonts: {
         primary: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
