@@ -1,234 +1,170 @@
-# 🎮 Cbot Website
+# Professional Portfolio Website
 
-[![Build and Deploy](https://github.com/therealsnopphin/cbot/actions/workflows/build.yml/badge.svg)](https://github.com/therealsnopphin/cbot/actions/workflows/build.yml)
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://therealsnopphin.github.io/cbot)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-> **Advanced Geometry Dash Mod Website** - Professional, modern, and feature-rich website for the Cbot Geometry Dash automation tool.
+A modern, responsive portfolio website built with vanilla HTML, CSS, and JavaScript. Features a sleek black theme, typing animations, and direct file download functionality.
 
 ## 🌟 Features
 
-### ✨ **Modern Design**
-- **Responsive Layout** - Perfect on all devices
-- **Dark/Light Themes** - Multiple theme options including Anime Aura
-- **Smooth Animations** - Advanced typing effects and transitions
-- **Professional UI** - Clean, modern interface design
+- **Modern Design**: Professional black-themed design with gradient accents
+- **Typing Animations**: Smooth typewriter effects for text display
+- **Responsive Layout**: Optimized for all device sizes
+- **Direct Downloads**: File download functionality without GitHub redirects
+- **Social Integration**: Links to Discord, YouTube, and GitHub
+- **Smooth Animations**: CSS animations and transitions throughout
+- **Accessibility**: Keyboard navigation and reduced motion support
+- **Auto-deployment**: GitHub Actions workflow for automatic deployment
 
-### 🚀 **Advanced Functionality**
-- **Direct Downloads** - Automatic file downloads from GitHub releases
-- **Real-time Updates** - Live release information fetching
-- **Performance Optimized** - Fast loading and smooth interactions
-- **Cross-browser Compatible** - Works on all modern browsers
+## 🚀 Live Demo
 
-### 🎨 **Interactive Elements**
-- **Typing Animations** - Matrix, glitch, and typewriter effects
-- **Particle Systems** - Dynamic background animations
-- **Theme Switching** - Instant theme changes with animations
-- **Loading Screens** - Beautiful loading animations with progress
-
-### 📱 **Mobile Experience**
-- **Touch Optimized** - Perfect mobile navigation
-- **Responsive Design** - Adapts to any screen size
-- **Fast Performance** - Optimized for mobile devices
-
-## 🛠️ Technology Stack
-
-- **Frontend**: Pure JavaScript (ES6+), HTML5, CSS3
-- **Build Tool**: Vite
-- **Deployment**: GitHub Pages
-- **CI/CD**: GitHub Actions
-- **Package Manager**: npm
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/therealsnopphin/cbot.git
-cd cbot
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Development Commands
-
-```bash
-# Development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Run linting
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-```
+The website is automatically deployed to GitHub Pages when changes are pushed to the main branch.
 
 ## 📁 Project Structure
 
 ```
-cbot/
-├── src/
-│   ├── app/                 # Core application logic
-│   │   ├── Application.js   # Main application class
-│   │   └── CbotManager.js   # Download management
-│   ├── utils/               # Utility classes
-│   │   ├── EventEmitter.js  # Event system
-│   │   ├── LoadingManager.js # Loading screens
-│   │   ├── ThemeManager.js  # Theme switching
-│   │   ├── TypingAnimation.js # Text animations
-│   │   └── ...              # Other utilities
-│   ├── styles/              # CSS styles
-│   │   └── main.css         # Main stylesheet
-│   └── main.js              # Application entry point
-├── .github/                 # GitHub configuration
-│   ├── workflows/           # GitHub Actions
-│   ├── ISSUE_TEMPLATE/      # Issue templates
-│   └── ...                  # Other GitHub files
-├── dist/                    # Production build output
-├── public/                  # Static assets
-├── index.html               # Main HTML file
-├── package.json             # Dependencies and scripts
-└── vite.config.js           # Build configuration
+├── index.html              # Main HTML file
+├── css/
+│   ├── style.css          # Main stylesheet
+│   ├── animations.css     # Animation definitions
+│   └── responsive.css     # Responsive design rules
+├── js/
+│   ├── main.js           # Core functionality
+│   └── downloads.js      # Download management
+├── assets/
+│   └── downloads/        # Downloadable files directory
+├── .github/
+│   └── workflows/
+│       └── deploy.yml    # GitHub Actions deployment
+├── .gitignore           # Git ignore rules
+└── README.md           # Project documentation
 ```
 
-## 🎯 Key Components
+## 🛠️ Technologies Used
 
-### **Application Core**
-- `Application.js` - Main application initialization and management
-- `CbotManager.js` - GitHub release fetching and download handling
-- `main.js` - Entry point and component orchestration
+- **HTML5**: Semantic markup structure
+- **CSS3**: Modern styling with custom properties, flexbox, and grid
+- **JavaScript (ES6+)**: Interactive functionality and animations
+- **GitHub Actions**: Automated deployment pipeline
+- **GitHub Pages**: Static site hosting
 
-### **User Interface**
-- `ThemeManager.js` - Dynamic theme switching system
-- `TypingAnimation.js` - Advanced text animation effects
-- `LoadingManager.js` - Loading screens and progress tracking
+## 📱 Responsive Design
 
-### **Performance**
-- `PerformanceMonitor.js` - Real-time performance tracking
-- `EventEmitter.js` - Efficient event management system
+The website is fully responsive and optimized for:
+- Desktop (1200px+)
+- Tablet (768px - 1199px)
+- Mobile (320px - 767px)
 
-## 🔧 Configuration
+## ⚡ Performance Features
 
-### Environment Variables
-No environment variables required for basic functionality.
+- Optimized CSS with custom properties
+- Efficient JavaScript with event delegation
+- Lazy loading for animations
+- Minimal external dependencies
+- Compressed assets
 
-### Build Configuration
-- `vite.config.js` - Vite build settings
-- `package.json` - Dependencies and scripts
-- `.github/workflows/build.yml` - CI/CD pipeline
+## 🎨 Customization
+
+### Colors
+Edit CSS custom properties in `css/style.css`:
+```css
+:root {
+    --primary-color: #6366f1;
+    --background-primary: #000000;
+    --text-primary: #ffffff;
+    /* ... more variables */
+}
+```
+
+### Content
+- Update social links in `index.html`
+- Modify download items in `js/downloads.js`
+- Add new sections by following existing patterns
+
+### Animations
+- Typing speed: Modify `typeText()` function in `js/main.js`
+- Animation delays: Update `data-delay` attributes in HTML
+- Custom animations: Add to `css/animations.css`
+
+## 📦 Adding Downloads
+
+1. Place files in `assets/downloads/` directory
+2. Update the downloads map in `js/downloads.js`:
+```javascript
+this.downloads.set('filename.ext', {
+    name: 'Display Name',
+    size: 'File Size',
+    description: 'Description',
+    url: 'assets/downloads/filename.ext',
+    type: 'mime/type'
+});
+```
+3. Add corresponding HTML card in `index.html`
 
 ## 🚀 Deployment
 
 ### Automatic Deployment
-The website automatically deploys to GitHub Pages when you push to the main branch.
+The site automatically deploys to GitHub Pages when you:
+1. Push changes to the main branch
+2. The GitHub Actions workflow runs
+3. Site updates within minutes
 
 ### Manual Deployment
-```bash
-# Build the project
-npm run build
-
-# Deploy the dist/ folder to your hosting service
-```
-
-### GitHub Pages Setup
 1. Enable GitHub Pages in repository settings
-2. Set source to "GitHub Actions"
-3. Push to main branch to trigger deployment
+2. Select "GitHub Actions" as the source
+3. Push changes to trigger deployment
 
-## 🧪 Testing
+## 🔧 Local Development
 
-### Local Testing
+1. Clone the repository:
 ```bash
-# Start development server
-npm run dev
-
-# Build and preview
-npm run build
-npm run preview
+git clone <repository-url>
+cd <repository-name>
 ```
 
-### Automated Testing
-- **GitHub Actions** - Automatic testing on push/PR
-- **Multi-browser Testing** - Chrome, Firefox, Safari, Edge
-- **Performance Testing** - Bundle size and Lighthouse audits
-- **Security Scanning** - Dependency vulnerability checks
+2. Open `index.html` in a web browser or use a local server:
+```bash
+# Using Python
+python -m http.server 8000
 
-## 🎨 Customization
+# Using Node.js
+npx serve .
 
-### Adding New Themes
-1. Edit `src/utils/ThemeManager.js`
-2. Add theme colors and configuration
-3. Update CSS variables in `src/styles/main.css`
+# Using PHP
+php -S localhost:8000
+```
 
-### Modifying Animations
-1. Edit `src/utils/TypingAnimation.js` for text effects
-2. Update `src/utils/AnimeAuraBackground.js` for background animations
-3. Modify CSS animations in `src/styles/main.css`
+3. Navigate to `http://localhost:8000`
 
-### Adding New Pages
-1. Create new HTML files in the root directory
-2. Update navigation in `index.html`
-3. Add routing logic in `src/utils/PageManager.js`
+## 🌐 Browser Support
 
-## 📊 Performance
+- Chrome 60+
+- Firefox 60+
+- Safari 12+
+- Edge 79+
 
-- **Bundle Size**: ~63KB (modern) / ~127KB (legacy)
-- **Load Time**: <2 seconds on 3G
-- **Lighthouse Score**: 95+ Performance
-- **Mobile Optimized**: Perfect mobile experience
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow existing code style
-- Test on multiple browsers
-- Ensure mobile compatibility
-- Update documentation as needed
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Vite** - Fast build tool
-- **GitHub Pages** - Free hosting
-- **GitHub Actions** - CI/CD pipeline
-- **Modern Web APIs** - For advanced functionality
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/therealsnopphin/cbot/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/therealsnopphin/cbot/discussions)
-- **Discord**: [Join our Discord](https://discord.gg/cpZpH75ajv)
+For questions or support:
+- Discord: [Join Server](https://discord.gg/cpZpH75ajv)
+- YouTube: [Visit Channel](https://youtube.com/@snopphin?si=V63UTu4bZspr3frz)
+- GitHub: [View Profile](https://github.com/therealsnopphin)
 
-## 🔗 Links
+## 🔄 Updates
 
-- **Live Website**: [https://therealsnopphin.github.io/cbot](https://therealsnopphin.github.io/cbot)
-- **GitHub Repository**: [https://github.com/therealsnopphin/cbot](https://github.com/therealsnopphin/cbot)
-- **Cbot Releases**: [https://github.com/therealsnopphin/CBot/releases](https://github.com/therealsnopphin/CBot/releases)
+The website includes:
+- Automatic dependency updates
+- Security patches
+- Performance improvements
+- New feature additions
 
----
-
-**Made with ❤️ for the Geometry Dash community**
+Check the repository for the latest updates and releases.
