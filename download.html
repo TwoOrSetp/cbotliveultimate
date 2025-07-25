@@ -13,82 +13,82 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <nav class="nav">
-                <div class="nav-brand">
-                    <img src="assets/icon/logo.jpg" alt="cbot logo" class="nav-logo">
-                    <span class="typing-text" data-text="cbot"></span>
-                </div>
-                <ul class="nav-links">
-                    <li>
-                        <a href="index.html" class="nav-link">
-                            <img src="assets/icon/home.svg" alt="" class="nav-icon">
-                            <span>Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="about.html" class="nav-link">
-                            <img src="assets/icon/about.svg" alt="" class="nav-icon">
-                            <span>About</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="download.html" class="nav-link active">
-                            <img src="assets/icon/download.svg" alt="" class="nav-icon">
-                            <span>Download</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </header>
+<div class="container">
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <img src="assets/icon/logo.jpg" alt="cbot logo" class="nav-logo">
+                <span class="typing-text" data-text="cbot"></span>
+            </div>
+            <ul class="nav-links">
+                <li>
+                    <a href="index.html" class="nav-link">
+                        <img src="assets/icon/home.svg" alt="" class="nav-icon">
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="about.html" class="nav-link">
+                        <img src="assets/icon/about.svg" alt="" class="nav-icon">
+                        <span>About</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="download.html" class="nav-link active">
+                        <img src="assets/icon/download.svg" alt="" class="nav-icon">
+                        <span>Download</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
-        <main class="main">
-            <section class="page-hero">
-                <div class="page-hero-content">
-                    <h1 class="page-title">
-                        <span class="typing-text" data-text="Download cbot"></span>
-                    </h1>
-                    <p class="page-subtitle">
-                        <span class="typing-text" data-text="Get the latest version with all the newest features" data-delay="2000"></span>
-                    </p>
-                </div>
-            </section>
+    <main class="main">
+        <section class="page-hero">
+            <div class="page-hero-content">
+                <h1 class="page-title">
+                    <span class="typing-text" data-text="Download cbot"></span>
+                </h1>
+                <p class="page-subtitle">
+                    <span class="typing-text" data-text="Get the latest version with all the newest features" data-delay="2000"></span>
+                </p>
+            </div>
+        </section>
 
-            <section class="download-section">
-                <div class="content-wrapper">
-                    <div class="release-info" id="release-info">
-                        <div class="loading-state" id="loading-state">
-                            <div class="loading-spinner">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
-                                </svg>
+        <section class="download-section">
+            <div class="content-wrapper">
+                <div class="release-info" id="release-info">
+                    <div class="loading-state" id="loading-state">
+                        <div class="loading-spinner">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,4V2A10,10 0 0,0 2,12H4A8,8 0 0,1 12,4Z"/>
+                            </svg>
+                        </div>
+                        <p class="loading-text">
+                            <span class="typing-text" data-text="Loading latest release..." data-delay="3000"></span>
+                        </p>
+                    </div>
+
+                    <div class="release-content" id="release-content" style="display: none;">
+                        <div class="release-header">
+                            <h2 class="release-title" id="release-title">Latest Release</h2>
+                            <div class="release-meta">
+                                <span class="release-version" id="release-version">v1.0.0</span>
+                                <span class="release-date" id="release-date">Released on January 1, 2024</span>
                             </div>
-                            <p class="loading-text">
-                                <span class="typing-text" data-text="Loading latest release..." data-delay="3000"></span>
-                            </p>
                         </div>
 
-                        <div class="release-content" id="release-content" style="display: none;">
-                            <div class="release-header">
-                                <h2 class="release-title" id="release-title">Latest Release</h2>
-                                <div class="release-meta">
-                                    <span class="release-version" id="release-version">v1.0.0</span>
-                                    <span class="release-date" id="release-date">Released on January 1, 2024</span>
-                                </div>
-                            </div>
+                        <div class="release-description" id="release-description">
+                            <p>Release description will be loaded here...</p>
+                        </div>
 
-                            <div class="release-description" id="release-description">
-                                <p>Release description will be loaded here...</p>
-                            </div>
-
-                            <div class="download-files" id="download-files">
-                                <h3 class="files-title">Download Files</h3>
-                                <div class="files-grid" id="files-grid">
-                                    <!-- Files will be populated by JavaScript -->
-                                </div>
+                        <div class="download-files" id="download-files">
+                            <h3 class="files-title">Download Files</h3>
+                            <div class="files-grid" id="files-grid">
+                                <!-- Files will be populated by JavaScript -->
                             </div>
                         </div>
+                    </div>
 
 
                     <div class="download-info">
@@ -104,59 +104,25 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="installation-guide">
-                        <h2 class="section-title">Installation Guide</h2>
-                        <div class="steps-container">
-                            <div class="step">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h3 class="step-title">Download</h3>
-                                    <p class="step-description">Download the latest release file from the options above.</p>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h3 class="step-title">Extract</h3>
-                                    <p class="step-description">Extract the downloaded file to your desired location.</p>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h3 class="step-title">Install</h3>
-                                    <p class="step-description">Follow the included installation instructions for your platform.</p>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <div class="step-number">4</div>
-                                <div class="step-content">
-                                    <h3 class="step-title">Enjoy</h3>
-                                    <p class="step-description">Launch Minecraft and enjoy the enhanced gameplay experience.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </section>
-        </main>
+        </section>
+    </main>
 
-        <footer class="footer">
-            <div class="footer-content">
-                <p>&copy;2025 cbot. All rights reserved.</p>
-                <div class="social-links-footer">
-                    <a href="https://discord.gg/cpZpH75ajv" class="social-link-footer" target="_blank" rel="noopener">Discord</a>
-                    <a href="https://youtube.com/@snopphin?si=V63UTu4bZspr3frz" class="social-link-footer" target="_blank" rel="noopener">YouTube</a>
-                    <a href="https://github.com/therealsnopphin" class="social-link-footer" target="_blank" rel="noopener">GitHub</a>
-                </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy;2025 cbot. All rights reserved.</p>
+            <div class="social-links-footer">
+                <a href="https://discord.gg/cpZpH75ajv" class="social-link-footer" target="_blank" rel="noopener">Discord</a>
+                <a href="https://youtube.com/@snopphin?si=V63UTu4bZspr3frz" class="social-link-footer" target="_blank" rel="noopener">YouTube</a>
+                <a href="https://github.com/therealsnopphin" class="social-link-footer" target="_blank" rel="noopener">GitHub</a>
             </div>
-        </footer>
-    </div>
+        </div>
+    </footer>
+</div>
 
-    <script src="js/fallback.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/github-api.js"></script>
-    <script src="js/image-utils.js"></script>
+<script src="js/fallback.js"></script>
+<script src="js/main.js"></script>
+<script src="js/github-api.js"></script>
+<script src="js/image-utils.js"></script>
 </body>
 </html>
