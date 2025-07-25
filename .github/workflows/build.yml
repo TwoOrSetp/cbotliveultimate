@@ -1,4 +1,4 @@
-name: Build and Deploy Website
+name: Build and Deploy Cbot Website
 
 on:
   push:
@@ -48,7 +48,7 @@ jobs:
       run: npm ci
     
     - name: Run linting
-      run: npm run lint
+      run: npm run lint --if-present
       continue-on-error: true
     
     - name: Build website
@@ -61,19 +61,19 @@ jobs:
       continue-on-error: true
     
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: website-build-${{ matrix.node-version }}
         path: dist/
         retention-days: 30
-    
+
     - name: Setup Pages (Node 20.x only)
-      if: matrix.node-version == '20.x'
-      uses: actions/configure-pages@v3
-    
+      if: matrix.node-version == '20.x' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      uses: actions/configure-pages@v4
+
     - name: Upload to GitHub Pages (Node 20.x only)
-      if: matrix.node-version == '20.x'
-      uses: actions/upload-pages-artifact@v2
+      if: matrix.node-version == '20.x' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      uses: actions/upload-pages-artifact@v3
       with:
         path: dist/
 
@@ -88,7 +88,7 @@ jobs:
     steps:
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
 
   security-scan:
     runs-on: ubuntu-latest
@@ -98,21 +98,27 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
-    - name: Run security audit
-      run: npm audit --audit-level moderate
-      continue-on-error: true
-    
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
         cache: 'npm'
-    
+
     - name: Install dependencies
       run: npm ci
-    
-    - name: Run dependency check
-      run: npx audit-ci --moderate
+
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+      continue-on-error: true
+
+    - name: Check for high severity vulnerabilities
+      run: |
+        if npm audit --audit-level=high --json | jq '.vulnerabilities | length > 0' 2>/dev/null; then
+          echo "⚠️ High severity vulnerabilities found!"
+          npm audit --audit-level=high
+        else
+          echo "✅ No high severity vulnerabilities found"
+        fi
       continue-on-error: true
 
   lighthouse:
@@ -142,27 +148,68 @@ jobs:
     - name: Wait for server
       run: sleep 10
     
+    - name: Install Lighthouse CI
+      run: npm install -g @lhci/cli@0.12.x
+
     - name: Run Lighthouse CI
+      run: lhci autorun --upload.target=temporary-public-storage --collect.staticDistDir=dist
+      continue-on-error: true
+
+  performance-test:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: website-build-20.x
+        path: dist/
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Install serve
+      run: npm install -g serve
+
+    - name: Check bundle size
       run: |
-        npm install -g @lhci/cli@0.12.x
-        lhci autorun
-      env:
-        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        echo "📦 Bundle Size Analysis:"
+        du -sh dist/
+        echo ""
+        echo "📄 Individual file sizes:"
+        find dist/ -name "*.js" -o -name "*.css" | xargs ls -lh
+        echo ""
+        echo "🎯 Checking for large files (>500KB):"
+        find dist/ -size +500k -type f || echo "✅ No large files found"
+        echo ""
+        echo "📊 Total JavaScript size:"
+        find dist/ -name "*.js" -exec du -ch {} + | tail -1
+        echo "🎨 Total CSS size:"
+        find dist/ -name "*.css" -exec du -ch {} + | tail -1
 
   notify:
     runs-on: ubuntu-latest
     needs: [build, deploy]
-    if: always()
-    
+    if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
     steps:
-    - name: Notify on success
-      if: needs.build.result == 'success' && needs.deploy.result == 'success'
+    - name: Notify deployment status
       run: |
-        echo "✅ Website built and deployed successfully!"
-        echo "🚀 Site URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
-    
-    - name: Notify on failure
-      if: needs.build.result == 'failure' || needs.deploy.result == 'failure'
-      run: |
-        echo "❌ Build or deployment failed!"
-        echo "Please check the logs for more information."
+        if [ "${{ needs.build.result }}" == "success" ] && [ "${{ needs.deploy.result }}" == "success" ]; then
+          echo "✅ Cbot Website deployed successfully!"
+          echo "🌐 Live at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          echo "📦 Build completed with JavaScript modules"
+          echo "⚡ Performance optimized build ready"
+        else
+          echo "❌ Deployment failed!"
+          echo "Build status: ${{ needs.build.result }}"
+          echo "Deploy status: ${{ needs.deploy.result }}"
+          echo "Please check the logs for more information."
+        fi

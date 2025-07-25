@@ -614,6 +614,50 @@ body::before {
   z-index: 99999;
   transition: opacity 0.8s ease, visibility 0.8s ease;
   overflow: hidden;
+  cursor: pointer;
+}
+
+.loading-screen::after {
+  content: "Click to skip loading";
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Ensure main app shows after loading */
+#app {
+  opacity: 1;
+  display: block;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Only hide app when loading class is present AND loading screen exists */
+body.loading:has(.loading-screen:not(.hidden)) #app {
+  opacity: 0;
+  display: none;
+}
+
+/* Show app by default and when loading is complete */
+#app {
+  opacity: 1;
+  display: block;
+}
+
+/* Fallback for browsers without :has() support */
+@supports not selector(:has(*)) {
+  body.loading #app {
+    opacity: 0;
+    display: none;
+  }
 }
 
 /* Prevent scrolling during loading */

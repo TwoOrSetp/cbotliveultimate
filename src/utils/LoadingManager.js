@@ -21,6 +21,12 @@ export class LoadingManager {
     this.initializeAssets()
 
     document.body.classList.add('loading')
+
+    // Emergency backup to remove loading class
+    setTimeout(() => {
+      document.body.classList.remove('loading')
+      console.log('🚨 Emergency: Removed loading class')
+    }, 2000)
   }
 
   initializeElements() {
@@ -69,7 +75,7 @@ export class LoadingManager {
     this.maxLoadingTimeout = setTimeout(() => {
       console.warn('⚠️ Loading timeout reached, forcing completion')
       this.forceComplete()
-    }, 15000)
+    }, 5000)
 
     try {
       await this.simulateAssetLoading()
@@ -101,8 +107,8 @@ export class LoadingManager {
       }
       
       this.updateAssetsDisplay()
-      
-      const delay = Math.random() * 200 + 100
+
+      const delay = Math.random() * 50 + 25
       await new Promise(resolve => setTimeout(resolve, delay))
     }
   }

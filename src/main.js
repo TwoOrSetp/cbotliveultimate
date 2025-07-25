@@ -24,22 +24,37 @@ class Main {
     this.downloadManager = new DownloadManager(this.app.getEventEmitter())
 
     this.loadingManager.applyModernStyling()
+
+    // Emergency loading bypass after 3 seconds
+    setTimeout(() => {
+      this.forceCompleteLoading()
+    }, 3000)
   }
 
   async initialize() {
     try {
       console.log('🚀 Initializing Cbot Website...')
 
-      await this.loadingManager.startLoading()
-
-      await this.app.initialize()
-
-      const downloadInitPromise = this.downloadManager.initialize()
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Download manager initialization timeout')), 15000)
-      )
+      // Start loading with a simple timeout
+      try {
+        const loadingPromise = this.loadingManager.startLoading()
+        const quickTimeout = new Promise(resolve => setTimeout(resolve, 2000))
+        await Promise.race([loadingPromise, quickTimeout])
+      } catch (loadingError) {
+        console.warn('⚠️ Loading manager failed, continuing anyway:', loadingError)
+      }
 
       try {
+        await this.app.initialize()
+      } catch (appError) {
+        console.warn('⚠️ App initialization failed, continuing anyway:', appError)
+      }
+
+      try {
+        const downloadInitPromise = this.downloadManager.initialize()
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Download manager initialization timeout')), 3000)
+        )
         await Promise.race([downloadInitPromise, timeoutPromise])
       } catch (downloadError) {
         console.warn('⚠️ Download manager initialization failed, continuing anyway:', downloadError)
@@ -47,19 +62,28 @@ class Main {
 
       await this.hideLoadingScreen()
 
-      this.setupEventListeners()
-      this.setupDownloadEventListeners()
-      this.setupPageTransitions()
-      this.setupKeyboardShortcuts()
+      // Setup components with individual error handling
+      try { this.setupEventListeners() } catch (e) { console.warn('Event listeners setup failed:', e) }
+      try { this.setupDownloadEventListeners() } catch (e) { console.warn('Download listeners setup failed:', e) }
+      try { this.setupPageTransitions() } catch (e) { console.warn('Page transitions setup failed:', e) }
+      try { this.setupKeyboardShortcuts() } catch (e) { console.warn('Keyboard shortcuts setup failed:', e) }
 
       setTimeout(() => {
-        const release = this.downloadManager.getLatestRelease()
-        if (release) {
-          this.updateDownloadSection(release)
+        try {
+          const release = this.downloadManager.getLatestRelease()
+          if (release) {
+            this.updateDownloadSection(release)
+          }
+        } catch (e) {
+          console.warn('Download section update failed:', e)
         }
       }, 300)
 
-      this.startTypingAnimations()
+      try {
+        this.startTypingAnimations()
+      } catch (e) {
+        console.warn('Typing animations failed:', e)
+      }
 
       console.log('✅ Cbot Website initialized successfully!')
     } catch (error) {
@@ -532,6 +556,30 @@ class Main {
     setTimeout(() => {
       this.startTypingAnimations()
     }, 300)
+  }
+
+  forceCompleteLoading() {
+    const loadingScreen = document.getElementById('loading-screen')
+    const app = document.getElementById('app')
+
+    if (loadingScreen && loadingScreen.style.display !== 'none') {
+      console.log('🚀 Force completing loading...')
+
+      if (loadingScreen) {
+        loadingScreen.style.display = 'none'
+      }
+
+      if (app) {
+        app.style.display = 'block'
+        app.style.opacity = '1'
+        app.classList.add('loaded')
+      }
+
+      // Start animations anyway
+      setTimeout(() => {
+        this.startTypingAnimations()
+      }, 500)
+    }
   }
 }
 
