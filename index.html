@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Website - TypeScript + Vite</title>
+    <meta name="description" content="Modern professional website built with TypeScript and Vite">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-container">
+            <div class="loading-logo">
+                <div class="logo-spinner"></div>
+                <div class="loading-text">
+                    <span class="typing-text" data-text="Loading..."></span>
+                </div>
+            </div>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="loading-status">Initializing application...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app" class="app-container" style="display: none;">
+        <header class="header">
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <div class="nav-logo">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
+                            <path d="M8 12L16 8L24 12L16 16L8 12Z" fill="white" opacity="0.9"/>
+                            <path d="M8 20L16 16L24 20L16 24L8 20Z" fill="white" opacity="0.7"/>
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#667eea"/>
+                                    <stop offset="100%" style="stop-color:#764ba2"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="brand-text">ProSite</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#home" class="nav-link">Home</a>
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-outline">Sign In</button>
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <section id="home" class="hero-section">
+                <div class="hero-background">
+                    <div class="gradient-orb orb-1"></div>
+                    <div class="gradient-orb orb-2"></div>
+                    <div class="gradient-orb orb-3"></div>
+                </div>
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="typing-text" data-text="Build Amazing"></span>
+                        <br>
+                        <span class="typing-text gradient-text" data-text="Web Experiences" data-delay="1500"></span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Professional website built with modern TypeScript and Vite for blazing fast performance
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-large" id="get-started">
+                            Get Started
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-outline btn-large" id="learn-more">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="99.9">0</span>
+                        <span class="stat-label">Uptime %</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="150">0</span>
+                        <span class="stat-label">ms Response</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="10000">0</span>
+                        <span class="stat-label">Active Users</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="features" class="features-section">
+                <div class="container">
+                    <h2 class="section-title">Powerful Features</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <rect width="48" height="48" rx="12" fill="url(#featureGradient1)"/>
+                                    <path d="M24 12L32 20L24 28L16 20L24 12Z" fill="white" opacity="0.9"/>
+                                    <defs>
+                                        <linearGradient id="featureGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#667eea"/>
+                                            <stop offset="100%" style="stop-color:#764ba2"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h3>Lightning Fast</h3>
+                            <p>Built with Vite for instant hot module replacement and optimized production builds</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <rect width="48" height="48" rx="12" fill="url(#featureGradient2)"/>
+                                    <path d="M16 16H32V32H16V16ZM20 20V28H28V20H20Z" fill="white" opacity="0.9"/>
+                                    <defs>
+                                        <linearGradient id="featureGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#f093fb"/>
+                                            <stop offset="100%" style="stop-color:#f5576c"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h3>Type Safe</h3>
+                            <p>Full TypeScript support with strict type checking for robust development</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <rect width="48" height="48" rx="12" fill="url(#featureGradient3)"/>
+                                    <circle cx="24" cy="24" r="8" fill="white" opacity="0.9"/>
+                                    <defs>
+                                        <linearGradient id="featureGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#4facfe"/>
+                                            <stop offset="100%" style="stop-color:#00f2fe"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h3>Modern Design</h3>
+                            <p>Beautiful, responsive design with smooth animations and modern UI patterns</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="about-section">
+                <div class="container">
+                    <div class="about-content">
+                        <div class="about-text">
+                            <h2 class="section-title">About This Project</h2>
+                            <p>This is a professional website template built with modern web technologies including TypeScript, Vite, and advanced CSS features. It demonstrates best practices for performance, accessibility, and user experience.</p>
+                            <div class="tech-stack">
+                                <div class="tech-item">
+                                    <span class="tech-name">TypeScript</span>
+                                    <span class="tech-version">5.0+</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Vite</span>
+                                    <span class="tech-version">5.0+</span>
+                                </div>
+                                <div class="tech-item">
+                                    <span class="tech-name">Modern CSS</span>
+                                    <span class="tech-version">Latest</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="about-visual">
+                            <div class="code-preview">
+                                <div class="code-header">
+                                    <div class="code-dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <span class="code-title">main.ts</span>
+                                </div>
+                                <div class="code-content">
+                                    <pre><code class="typing-code" data-text="import { Application } from './app'
+
+const app = new Application()
+app.initialize()
+  .then(() => {
+    console.log('App ready!')
+  })"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <div class="nav-logo">
+                            <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+                                <rect width="32" height="32" rx="8" fill="url(#footerGradient)"/>
+                                <path d="M8 12L16 8L24 12L16 16L8 12Z" fill="white" opacity="0.9"/>
+                                <path d="M8 20L16 16L24 20L16 24L8 20Z" fill="white" opacity="0.7"/>
+                                <defs>
+                                    <linearGradient id="footerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea"/>
+                                        <stop offset="100%" style="stop-color:#764ba2"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <span>ProSite</span>
+                    </div>
+                    <div class="footer-links">
+                        <a href="#privacy">Privacy</a>
+                        <a href="#terms">Terms</a>
+                        <a href="#support">Support</a>
+                        <a href="#docs">Docs</a>
+                    </div>
+                    <div class="footer-social">
+                        <a href="#" class="social-link">GitHub</a>
+                        <a href="#" class="social-link">Twitter</a>
+                        <a href="#" class="social-link">LinkedIn</a>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 ProSite. Built with TypeScript + Vite.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
