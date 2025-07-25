@@ -45,9 +45,126 @@ body {
     left: 0;
     right: 0;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(17, 17, 17, 0.8) 50%,
+        rgba(0, 0, 0, 0.9) 100%);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    z-index: -1;
+    border-radius: 0;
+}
+
+.header.scrolled {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.header.scrolled::before {
+    background: linear-gradient(135deg,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(17, 17, 17, 0.9) 50%,
+        rgba(0, 0, 0, 0.95) 100%);
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not (backdrop-filter: blur(20px)) {
+    .header {
+        background: rgba(0, 0, 0, 0.95);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+    }
+
+    .header::before {
+        background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.98) 0%,
+            rgba(17, 17, 17, 0.95) 50%,
+            rgba(0, 0, 0, 0.98) 100%);
+    }
+
+    .header.scrolled {
+        background: rgba(0, 0, 0, 0.98);
+    }
+
+    .header.scrolled::before {
+        background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.99) 0%,
+            rgba(17, 17, 17, 0.98) 50%,
+            rgba(0, 0, 0, 0.99) 100%);
+    }
+
+    .nav-links {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-links:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Enhanced blur for supported browsers */
+@supports (backdrop-filter: blur(20px)) {
+    .header {
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .header.scrolled {
+        background: rgba(0, 0, 0, 0.8);
+    }
+}
+
+/* Additional visual enhancements for the sticky header */
+.header {
+    will-change: transform, background-color;
+}
+
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(99, 102, 241, 0.5) 50%,
+        transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.header.scrolled::after {
+    opacity: 1;
+}
+
+/* Ensure content doesn't overlap with sticky header */
+.main {
+    flex: 1;
+    padding-top: 80px;
+}
+
+/* Smooth scroll behavior for better UX */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
 }
 
 .nav {
@@ -57,50 +174,84 @@ body {
     padding: 1rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
+    z-index: 10;
 }
 
 .nav-brand {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
+    text-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+    transition: all 0.3s ease;
+}
+
+.nav-brand:hover {
+    text-shadow: 0 2px 15px rgba(99, 102, 241, 0.5);
+    transform: scale(1.05);
 }
 
 .nav-links {
     display: flex;
     list-style: none;
     gap: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.nav-links:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(99, 102, 241, 0.3);
 }
 
 .nav-link {
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .nav-link:hover {
     color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.1);
+    text-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    transform: translateY(-1px);
 }
 
 .nav-link::after {
     content: '';
     position: absolute;
-    bottom: -5px;
-    left: 0;
+    bottom: 0;
+    left: 50%;
     width: 0;
     height: 2px;
     background: var(--gradient-primary);
-    transition: width 0.3s ease;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 1px;
 }
 
 .nav-link:hover::after {
-    width: 100%;
+    width: 80%;
 }
 
-.main {
-    flex: 1;
-    padding-top: 80px;
+.nav-link.active {
+    color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.15);
+    text-shadow: 0 2px 10px rgba(99, 102, 241, 0.5);
+}
+
+.nav-link.active::after {
+    width: 80%;
 }
 
 .hero {
@@ -415,14 +566,6 @@ body {
 
 .social-link-footer:hover {
     color: var(--primary-color);
-}
-
-.nav-link.active {
-    color: var(--primary-color);
-}
-
-.nav-link.active::after {
-    width: 100%;
 }
 
 .page-hero {

@@ -125,24 +125,43 @@ function initializeParallaxEffect() {
 function initializeNavbarBehavior() {
     const header = document.querySelector('.header');
     let lastScrollTop = 0;
-    
-    window.addEventListener('scroll', () => {
+    let ticking = false;
+
+    function updateHeader() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
+
+        // Add scrolled class for enhanced blur effect
+        if (scrollTop > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+
+        // Optional: Hide/show header on scroll (disabled for sticky effect)
+        // Uncomment below if you want auto-hide behavior
+        /*
         if (scrollTop > lastScrollTop && scrollTop > 100) {
             header.style.transform = 'translateY(-100%)';
         } else {
             header.style.transform = 'translateY(0)';
         }
-        
-        if (scrollTop > 50) {
-            header.style.background = 'rgba(0, 0, 0, 0.98)';
-        } else {
-            header.style.background = 'rgba(0, 0, 0, 0.95)';
-        }
-        
+        */
+
         lastScrollTop = scrollTop;
-    });
+        ticking = false;
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(updateHeader);
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', requestTick, { passive: true });
+
+    // Initialize on load
+    updateHeader();
 }
 
 function createParticleEffect(x, y) {
