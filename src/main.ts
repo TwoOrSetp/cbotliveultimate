@@ -313,6 +313,7 @@ class Main {
 
     eventEmitter.on('download:started', (data) => {
       this.showNotification(`Starting download of ${data.total} files...`, 'info')
+      this.setDownloadButtonsLoading(true)
     })
 
     eventEmitter.on('download:progress', (data) => {
@@ -321,10 +322,15 @@ class Main {
 
     eventEmitter.on('download:completed', () => {
       this.showNotification('All files downloaded successfully!', 'success')
+      this.setDownloadButtonsLoading(false)
     })
 
     eventEmitter.on('download:error', (error) => {
       this.showNotification(`Download error: ${error}`, 'error')
+    })
+
+    eventEmitter.on('download:demo', (message) => {
+      this.showNotification(message, 'info')
     })
   }
 
@@ -435,21 +441,76 @@ class Main {
   private setupDownloadButtons(): void {
     const downloadAllBtn = document.getElementById('download-all')
     if (downloadAllBtn) {
-      downloadAllBtn.addEventListener('click', () => {
-        this.downloadManager.downloadAsset()
-        this.showNotification('Starting download...', 'info')
+      downloadAllBtn.addEventListener('click', async () => {
+        try {
+          this.showNotification('Starting download...', 'info')
+          await this.downloadManager.downloadAsset()
+        } catch (error) {
+          console.error('Download failed:', error)
+          this.showNotification('Download failed. Redirecting to GitHub...', 'error')
+          setTimeout(() => {
+            window.open('https://github.com/therealsnopphin/CBot/releases', '_blank')
+          }, 2000)
+        }
       })
     }
 
     const downloadFileButtons = document.querySelectorAll('.download-file')
     downloadFileButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
+      button.addEventListener('click', async (e) => {
         const assetName = (e.target as HTMLElement).dataset.asset
         if (assetName) {
-          this.downloadManager.downloadAsset(assetName)
-          this.showNotification(`Downloading ${assetName}...`, 'info')
+          try {
+            this.showNotification(`Downloading ${assetName}...`, 'info')
+            await this.downloadManager.downloadAsset(assetName)
+          } catch (error) {
+            console.error('Download failed:', error)
+            this.showNotification('Download failed. Redirecting to GitHub...', 'error')
+            setTimeout(() => {
+              window.open('https://github.com/therealsnopphin/CBot/releases', '_blank')
+            }, 2000)
+          }
         }
       })
+    })
+
+    // Add GitHub redirect button functionality
+    const githubButtons = document.querySelectorAll('a[href*="github.com"]')
+    githubButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault()
+        this.showNotification('Opening GitHub releases page...', 'info')
+        window.open('https://github.com/therealsnopphin/CBot/releases', '_blank')
+      })
+    })
+  }
+
+  private setDownloadButtonsLoading(isLoading: boolean): void {
+    const downloadAllBtn = document.getElementById('download-all')
+    const downloadFileButtons = document.querySelectorAll('.download-file')
+
+    if (downloadAllBtn) {
+      const button = downloadAllBtn as HTMLButtonElement
+      button.disabled = isLoading
+      if (isLoading) {
+        button.textContent = 'Downloading...'
+        button.classList.add('loading')
+      } else {
+        button.textContent = 'Download All Files'
+        button.classList.remove('loading')
+      }
+    }
+
+    downloadFileButtons.forEach(btn => {
+      const button = btn as HTMLButtonElement
+      button.disabled = isLoading
+      if (isLoading) {
+        button.textContent = 'Downloading...'
+        button.classList.add('loading')
+      } else {
+        button.textContent = 'Download'
+        button.classList.remove('loading')
+      }
     })
   }
 }

@@ -1,16 +1,15 @@
-# Cbot - Advanced Geometry Dash Automation Mod
+# Cbot - Geometry Dash Mod Download Portal
 
-A professional website for Cbot, the ultimate Geometry Dash automation mod featuring intelligent click patterns, precision control, and advanced stealth capabilities.
+A professional website for downloading Cbot, the Geometry Dash mod, featuring automatic GitHub release integration and seamless download experience.
 
-## 🤖 Cbot Features
+## 📦 Download Features
 
-- **Smart Automation**: Intelligent click patterns with adaptive timing
-- **Precision Control**: Customizable click delays and randomization
-- **Anti-Detection**: Advanced stealth features to avoid detection
-- **Performance Analytics**: Real-time metrics and optimization
-- **Human-like Behavior**: Natural click patterns and timing variations
-- **Safe Mode**: Built-in safety features for responsible usage
-- **Level Completion**: Automatic level completion with obstacle detection
+- **GitHub Integration**: Automatic fetching of latest releases from GitHub API
+- **Release Information**: Complete release details including version, date, and description
+- **File Management**: Download all files or individual assets
+- **Real-time Updates**: Live status updates and download progress
+- **Error Handling**: Robust error handling with user-friendly messages
+- **Professional UI**: Clean, modern interface for easy navigation
 
 ## 🚀 Website Features
 
