@@ -1,0 +1,50 @@
+{
+  "name": "professional-portfolio-website",
+  "version": "1.0.0",
+  "description": "A modern, responsive portfolio website with typing animations and direct download functionality",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx serve . -p 3000 --live",
+    "build": "echo 'Static site - no build required'",
+    "preview": "npx serve . -p 4173",
+    "lint:css": "npx stylelint 'css/**/*.css'",
+    "lint:js": "npx eslint 'js/**/*.js'",
+    "format": "npx prettier --write '**/*.{html,css,js,md}'",
+    "validate": "npx html-validate index.html",
+    "test": "echo 'No tests specified'",
+    "deploy": "echo 'Deployment handled by GitHub Actions'"
+  },
+  "keywords": [
+    "portfolio",
+    "website",
+    "responsive",
+    "vanilla-js",
+    "css3",
+    "html5",
+    "github-pages",
+    "typing-animation",
+    "modern-design"
+  ],
+  "author": "Professional Developer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/username/repository.git"
+  },
+  "bugs": {
+    "url": "https://github.com/username/repository/issues"
+  },
+  "homepage": "https://username.github.io/repository",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
