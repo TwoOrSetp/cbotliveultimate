@@ -16,7 +16,7 @@ export default defineConfig({
     assetsDir: 'assets',
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html')
+        main: resolve(process.cwd(), 'index.html')
       }
     },
     sourcemap: true,
@@ -30,11 +30,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      '@/app': resolve(__dirname, 'src/app'),
-      '@/utils': resolve(__dirname, 'src/utils'),
-      '@/styles': resolve(__dirname, 'src/styles'),
-      '@/types': resolve(__dirname, 'src/types')
+      '@': resolve(process.cwd(), 'src'),
+      '@/app': resolve(process.cwd(), 'src/app'),
+      '@/utils': resolve(process.cwd(), 'src/utils'),
+      '@/styles': resolve(process.cwd(), 'src/styles')
     }
   },
   server: {
@@ -51,6 +50,6 @@ export default defineConfig({
   base: './',
   assetsInclude: ['**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.eot', '**/*.png', '**/*.jpg', '**/*.svg', '**/*.ico'],
   optimizeDeps: {
-    include: ['src/**/*.ts']
+    include: ['src/**/*.js']
   }
 })
