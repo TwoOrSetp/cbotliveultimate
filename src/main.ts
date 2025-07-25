@@ -6,6 +6,9 @@ import { TypingAnimation } from './utils/TypingAnimation'
 import { NotificationManager } from './utils/NotificationManager'
 import { AdvancedFontSystem } from './utils/AdvancedFontSystem'
 import { PageManager } from './utils/PageManager'
+import { PageTransitionManager } from './utils/PageTransitionManager'
+import { AnimeAuraBackground } from './utils/AnimeAuraBackground'
+import { AnimeThemeDemo } from './utils/AnimeThemeDemo'
 
 class Main {
   private app: Application
@@ -15,6 +18,9 @@ class Main {
   private notificationManager: NotificationManager
   private fontSystem: AdvancedFontSystem
   private pageManager: PageManager
+  private pageTransitionManager: PageTransitionManager
+  private animeBackground: AnimeAuraBackground
+  private animeDemo: AnimeThemeDemo
 
   constructor() {
     this.loadingManager = new LoadingManager()
@@ -22,8 +28,14 @@ class Main {
     this.notificationManager = new NotificationManager()
     this.fontSystem = new AdvancedFontSystem()
     this.pageManager = new PageManager()
+    this.pageTransitionManager = new PageTransitionManager()
+    this.animeBackground = new AnimeAuraBackground()
+    this.animeDemo = new AnimeThemeDemo()
     this.app = new Application()
     this.downloadManager = new DownloadManager(this.app.getEventEmitter())
+
+    // Apply modern styling by default
+    this.loadingManager.applyModernStyling()
   }
 
 
@@ -57,6 +69,7 @@ class Main {
       this.setupEventListeners()
       this.setupDownloadEventListeners()
       this.setupPageTransitions()
+    this.setupKeyboardShortcuts()
 
       // Force update download section after a short delay
       setTimeout(() => {
@@ -115,6 +128,7 @@ class Main {
         app.style.display = 'block'
         app.style.opacity = '0'
         app.style.transition = 'opacity 0.5s ease-in'
+        app.classList.add('loaded')
 
         setTimeout(() => {
           app.style.opacity = '1'
@@ -294,27 +308,19 @@ class Main {
     }
 
     this.setupNavigation()
-    this.setupScrollEffects()
+    // Scroll effects disabled for multi-page architecture
+    // this.setupScrollEffects()
     this.setupStatsAnimation()
     this.setupThemeToggle()
   }
 
   private setupNavigation(): void {
-    const navLinks = document.querySelectorAll('.nav-link')
-    
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault()
-        const href = (link as HTMLAnchorElement).getAttribute('href')
-        if (href && href.startsWith('#')) {
-          this.scrollToSection(href.substring(1))
-        }
-      })
-    })
+    // Navigation is now handled by PageTransitionManager for multi-page architecture
+    // Legacy scroll navigation disabled to prevent conflicts
 
     const navToggle = document.querySelector('.nav-toggle')
     const navMenu = document.querySelector('.nav-menu')
-    
+
     if (navToggle && navMenu) {
       navToggle.addEventListener('click', () => {
         navMenu.classList.toggle('active')
@@ -324,21 +330,9 @@ class Main {
   }
 
   private setupScrollEffects(): void {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in')
-        }
-      })
-    }, observerOptions)
-
-    const animatedElements = document.querySelectorAll('.feature-card, .about-content, .tech-item')
-    animatedElements.forEach(el => observer.observe(el))
+    // Scroll effects disabled for multi-page architecture
+    // This prevents conflicts with page transitions
+    console.log('Scroll effects disabled for multi-page architecture')
   }
 
   private setupStatsAnimation(): void {
@@ -383,68 +377,24 @@ class Main {
   }
 
   private scrollToSection(sectionId: string): void {
-    const section = document.getElementById(sectionId)
-    if (section) {
-      const headerHeight = 80
-      const targetPosition = section.offsetTop - headerHeight
-
-      console.log(`📍 Scrolling to section: ${sectionId} at position: ${targetPosition}`)
-
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      })
-
-      // Highlight the section briefly
-      section.style.boxShadow = '0 0 20px var(--color-primary)'
-      setTimeout(() => {
-        section.style.boxShadow = ''
-      }, 2000)
-    } else {
-      console.warn(`⚠️ Section '${sectionId}' not found`)
-      this.showNotification(`Section '${sectionId}' not found`, 'error')
-    }
+    // Scroll navigation disabled for multi-page architecture
+    // Pages are now separate HTML files with their own URLs
+    console.log(`Legacy scroll to section '${sectionId}' disabled for multi-page architecture`)
   }
 
   private handleGetStarted(): void {
-    this.scrollToSection('features')
-    this.showNotification('Explore Cbot features below!', 'info')
+    // Navigate to features page instead of scrolling
+    window.location.href = '/features.html'
   }
 
   private handleLearnMore(): void {
-    this.scrollToSection('about')
-    this.showNotification('Learn more about Cbot', 'info')
+    // Navigate to about page instead of scrolling
+    window.location.href = '/about.html'
   }
 
   private handleDownloadRedirect(): void {
-    // Check if download section exists, if not create it first
-    const downloadSection = document.getElementById('download')
-    if (!downloadSection) {
-      // Force create download section with latest release data
-      const release = this.downloadManager.getLatestRelease()
-      if (release) {
-        this.addDownloadSectionToHTML(release)
-      } else {
-        this.showNotification('Loading download information...', 'info')
-        // Wait for release data and then scroll
-        setTimeout(() => {
-          const updatedRelease = this.downloadManager.getLatestRelease()
-          if (updatedRelease) {
-            this.addDownloadSectionToHTML(updatedRelease)
-            setTimeout(() => this.scrollToSection('download'), 100)
-          } else {
-            this.showNotification('Download information not available. Please try again.', 'error')
-          }
-        }, 1000)
-        return
-      }
-    }
-
-    // Scroll to download section
-    setTimeout(() => {
-      this.scrollToSection('download')
-      this.showNotification('Download section loaded!', 'success')
-    }, 100)
+    // Navigate to download page instead of scrolling
+    window.location.href = '/download.html'
   }
 
   private showNotification(message: string, type: 'success' | 'error' | 'info' | 'warning' | 'loading' = 'info', options?: any): string {
@@ -862,7 +812,7 @@ class Main {
       // Set initial theme to Halo
       const savedTheme = themeManager.getThemePreference()
       const initialTheme = savedTheme === 'auto' ? 'halo' : savedTheme
-      themeManager.setTheme(initialTheme as any)
+      themeManager.setTheme(initialTheme)
       this.updateThemeToggleState(initialTheme)
 
       // Add click handlers for each theme option
@@ -874,7 +824,8 @@ class Main {
           if (selectedTheme) {
             themeManager.setTheme(selectedTheme as any)
             this.updateThemeToggleState(selectedTheme)
-            this.showNotification(`Switched to ${selectedTheme} theme!`, 'success')
+            const themeName = selectedTheme === 'anime-aura' ? 'Anime Aura ⚡' : selectedTheme
+            this.showNotification(`Switched to ${themeName} theme!`, 'success')
 
             // Add click effect
             option.classList.add('clicked')
@@ -909,6 +860,13 @@ class Main {
     // Add theme transition effect
     body.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
 
+    // Handle anime-aura theme
+    if (theme === 'anime-aura') {
+      this.enableAnimeTheme()
+    } else {
+      this.disableAnimeTheme()
+    }
+
     // Update gradient orbs based on theme
     const orbs = document.querySelectorAll('.gradient-orb')
     orbs.forEach((orb, index) => {
@@ -916,6 +874,9 @@ class Main {
       if (theme === 'light') {
         htmlOrb.style.opacity = '0.2'
         htmlOrb.style.filter = 'blur(40px)'
+      } else if (theme === 'anime-aura') {
+        htmlOrb.style.opacity = '0.1'
+        htmlOrb.style.filter = 'blur(80px)'
       } else {
         htmlOrb.style.opacity = '0.3'
         htmlOrb.style.filter = 'blur(60px)'
@@ -960,7 +921,7 @@ class Main {
     const heroTitle = document.querySelector('.hero-title .gradient-text') as HTMLElement
     if (heroTitle && !this.typingAnimation.isAnimating(heroTitle)) {
       const currentTheme = document.documentElement.getAttribute('data-theme')
-      const effect = currentTheme === 'light' ? 'fade' : 'glitch'
+      const effect = currentTheme === 'light' ? 'fade' : currentTheme === 'anime-aura' ? 'matrix' : 'glitch'
 
       this.typingAnimation.animate(heroTitle, heroTitle.dataset.text || 'Cbot MRBEAST', {
         speed: 60,
@@ -969,6 +930,86 @@ class Main {
         highlightWords: ['Geometry Dash', 'Automation']
       })
     }
+  }
+
+  private enableAnimeTheme(): void {
+    console.log('🌟 Enabling anime-aura theme')
+
+    // Initialize anime background
+    if (!this.animeBackground.isInitialized()) {
+      this.animeBackground.initialize()
+    }
+
+    // Enhance loading screen if it exists
+    this.loadingManager.enhanceForAnimeTheme()
+
+    // Show notification
+    this.showNotification('Anime Aura theme activated! ⚡', 'success', {
+      title: 'Theme Changed',
+      duration: 3000,
+      animation: 'bounce'
+    })
+  }
+
+  private disableAnimeTheme(): void {
+    console.log('🌟 Disabling anime-aura theme')
+
+    // Destroy anime background
+    if (this.animeBackground.isInitialized()) {
+      this.animeBackground.destroy()
+    }
+
+    // Remove loading screen enhancements and reapply modern styling
+    this.loadingManager.removeAnimeEnhancement()
+    this.loadingManager.applyModernStyling()
+  }
+
+  private setupKeyboardShortcuts(): void {
+    document.addEventListener('keydown', (event) => {
+      // Ctrl + Shift + A to show anime theme demo
+      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+        event.preventDefault()
+        if (!this.animeDemo.isActive()) {
+          this.animeDemo.startDemo()
+          this.showNotification('Anime Theme Demo activated! Press Ctrl+Shift+A again to close.', 'info', {
+            title: 'Demo Mode',
+            duration: 4000
+          })
+        } else {
+          this.animeDemo.stopDemo()
+        }
+      }
+
+      // Ctrl + Shift + T to quickly toggle to anime theme
+      if (event.ctrlKey && event.shiftKey && event.key === 'T') {
+        event.preventDefault()
+        const themeManager = this.app.getThemeManager()
+        const currentTheme = document.documentElement.getAttribute('data-theme')
+
+        if (currentTheme === 'anime-aura') {
+          themeManager.setTheme('halo')
+          this.showNotification('Switched back to Halo theme', 'info')
+        } else {
+          themeManager.setTheme('anime-aura')
+          this.showNotification('Anime Aura theme activated! ⚡', 'success')
+        }
+      }
+
+      // Escape key to skip loading screen (for testing)
+      if (event.key === 'Escape') {
+        const loadingScreen = document.getElementById('loading-screen')
+        if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+          event.preventDefault()
+          this.loadingManager.hideLoading()
+          this.showNotification('Loading screen skipped', 'info')
+        }
+      }
+    })
+
+    console.log('⌨️ Keyboard shortcuts initialized:')
+    console.log('   Ctrl+Shift+A - Toggle Anime Theme Demo')
+    console.log('   Ctrl+Shift+T - Quick toggle Anime Theme')
+    console.log('   Escape - Skip loading screen (for testing)')
   }
 }
 

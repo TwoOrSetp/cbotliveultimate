@@ -1,4 +1,4 @@
-export type Theme = 'light' | 'dark' | 'auto'
+export type Theme = 'light' | 'dark' | 'halo' | 'anime-aura' | 'auto'
 
 export interface ThemeColors {
   primary: string
@@ -339,8 +339,90 @@ export class ThemeManager {
     }
 
     this.themes.set('halo', haloTheme)
+    // Anime Aura Theme - Dramatic anime-inspired theme
+    const animeAuraTheme: ThemeConfig = {
+      name: 'anime-aura',
+      colors: {
+        primary: '#00ffff',
+        secondary: '#ff00ff',
+        accent: '#ffff00',
+        background: '#000000',
+        surface: 'rgba(255, 255, 255, 0.03)',
+        surfaceElevated: 'rgba(255, 255, 255, 0.06)',
+        surfaceGlass: 'rgba(255, 255, 255, 0.08)',
+        text: '#ffffff',
+        textSecondary: '#f0f0f0',
+        textMuted: '#cccccc',
+        textInverse: '#000000',
+        border: 'rgba(0, 255, 255, 0.2)',
+        borderHover: 'rgba(0, 255, 255, 0.4)',
+        borderGlow: 'rgba(0, 255, 255, 1)',
+        success: '#00ff80',
+        warning: '#ffff00',
+        error: '#ff0080',
+        info: '#00ffff',
+        shadow: 'rgba(0, 255, 255, 0.3)',
+        shadowElevated: 'rgba(0, 255, 255, 0.5)',
+        glow: 'rgba(0, 255, 255, 0.8)',
+        glowIntense: 'rgba(0, 255, 255, 1)',
+        particle: '#ffffff',
+        aurora: 'linear-gradient(135deg, #00ffff, #ff00ff, #ffff00)'
+      },
+      fonts: {
+        primary: 'Rajdhani, Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        secondary: 'Orbitron, sans-serif',
+        mono: 'JetBrains Mono, Consolas, monospace'
+      },
+      spacing: {
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem'
+      },
+      borderRadius: {
+        sm: '0.5rem',
+        md: '0.75rem',
+        lg: '1rem'
+      },
+      shadows: {
+        sm: '0 0 10px rgba(0, 255, 255, 0.3)',
+        md: '0 0 20px rgba(0, 255, 255, 0.5)',
+        lg: '0 0 30px rgba(0, 255, 255, 0.7)',
+        xl: '0 0 40px rgba(0, 255, 255, 0.9)',
+        glow: '0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4)',
+        neon: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor'
+      },
+      gradients: {
+        primary: 'linear-gradient(135deg, #00ffff 0%, #ff00ff 50%, #ffff00 100%)',
+        secondary: 'linear-gradient(45deg, #ff0080 0%, #00ff80 50%, #8000ff 100%)',
+        accent: 'linear-gradient(90deg, #ffff00 0%, #ff0080 100%)',
+        aurora: 'radial-gradient(circle, rgba(0,255,255,0.8) 0%, rgba(255,0,255,0.4) 50%, transparent 100%)',
+        cosmic: 'conic-gradient(from 0deg, #00ffff, #ff00ff, #ffff00, #ff0080, #00ff80, #8000ff, #00ffff)',
+        neon: 'linear-gradient(90deg, #00ffff, #ff00ff, #ffff00)',
+        glass: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
+      },
+      effects: {
+        blur: 'blur(10px)',
+        brightness: 'brightness(1.2)',
+        contrast: 'contrast(1.3)',
+        hue: 'hue-rotate(0deg)',
+        saturation: 'saturate(1.5)',
+        backdropBlur: 'blur(20px)',
+        glassEffect: 'backdrop-filter: blur(20px); background: rgba(0,0,0,0.8);'
+      },
+      animations: {
+        duration: '0.3s',
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        elastic: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+      }
+    }
+
+    this.themes.set('halo', haloTheme)
     this.themes.set('light', lightTheme)
     this.themes.set('dark', darkTheme)
+    this.themes.set('anime-aura', animeAuraTheme)
   }
 
   private setupMediaQuery(): void {
@@ -356,9 +438,9 @@ export class ThemeManager {
 
   async setTheme(theme: Theme): Promise<void> {
     this.currentTheme = theme
-    
-    let actualTheme: 'light' | 'dark'
-    
+
+    let actualTheme: 'light' | 'dark' | 'halo' | 'anime-aura'
+
     if (theme === 'auto') {
       actualTheme = this.getSystemTheme()
     } else {
@@ -375,7 +457,7 @@ export class ThemeManager {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   }
 
-  private async applyTheme(themeName: 'light' | 'dark'): Promise<void> {
+  private async applyTheme(themeName: 'light' | 'dark' | 'halo' | 'anime-aura'): Promise<void> {
     const theme = this.themes.get(themeName)
     if (!theme) {
       console.error(`Theme '${themeName}' not found`)

@@ -26,15 +26,20 @@ export class LoadingManager {
   private totalAssetsElement: HTMLElement | null = null
   private loadTimeElement: HTMLElement | null = null
   private cbotLogo: HTMLElement | null = null
+  private animeEnhancement: HTMLElement | null = null
 
   private assets: LoadingAsset[] = []
   private loadedCount = 0
   private startTime = 0
+  private maxLoadingTimeout: NodeJS.Timeout | null = null
 
   constructor() {
     this.startTime = Date.now()
     this.initializeElements()
     this.initializeAssets()
+
+    // Add loading class to body to prevent scrolling
+    document.body.classList.add('loading')
   }
 
   private initializeElements(): void {
@@ -90,7 +95,13 @@ export class LoadingManager {
 
   public async startLoading(): Promise<void> {
     console.log('🚀 Starting advanced loading process...')
-    
+
+    // Set maximum loading time (8 seconds)
+    this.maxLoadingTimeout = setTimeout(() => {
+      console.warn('⚠️ Loading taking too long, forcing completion...')
+      this.hideLoading()
+    }, 8000)
+
     // Show Cbot logo with animation
     if (this.cbotLogo) {
       this.cbotLogo.style.opacity = '1'
@@ -142,6 +153,17 @@ export class LoadingManager {
     await this.delay(500)
 
     console.log('🎉 Loading complete!')
+
+    // Clear the timeout since we completed normally
+    if (this.maxLoadingTimeout) {
+      clearTimeout(this.maxLoadingTimeout)
+      this.maxLoadingTimeout = null
+    }
+
+    // Auto-hide loading screen after completion
+    setTimeout(() => {
+      this.hideLoading()
+    }, 1000)
   }
 
   private async loadAsset(asset: LoadingAsset): Promise<void> {
@@ -242,6 +264,20 @@ export class LoadingManager {
   public hideLoading(): void {
     if (this.loadingScreen) {
       this.loadingScreen.classList.add('hidden')
+
+      // Remove loading class from body
+      document.body.classList.remove('loading')
+
+      // Ensure main app is visible
+      setTimeout(() => {
+        const app = document.getElementById('app')
+        if (app) {
+          app.style.display = 'block !important'
+          app.style.visibility = 'visible !important'
+          app.style.opacity = '1'
+          app.classList.add('loaded')
+        }
+      }, 800)
     }
   }
 
@@ -256,5 +292,78 @@ export class LoadingManager {
       percentage: Math.round((this.loadedCount / this.assets.length) * 100),
       loadTime: (Date.now() - this.startTime) / 1000
     }
+  }
+
+  public enhanceForAnimeTheme(): void {
+    if (!this.loadingScreen) return
+
+    this.animeEnhancement = document.createElement('div')
+    this.animeEnhancement.className = 'anime-loading-enhancement'
+    this.animeEnhancement.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(0,255,255,0.1) 0%, transparent 70%);
+      animation: aura-pulse 3s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    `
+
+    this.loadingScreen.appendChild(this.animeEnhancement)
+
+    if (this.progressBar) {
+      this.progressBar.style.background = 'linear-gradient(90deg, #00ffff, #ff00ff, #ffff00)'
+      this.progressBar.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4)'
+    }
+
+    if (this.cbotLogo) {
+      this.cbotLogo.style.border = '2px solid rgba(0, 255, 255, 0.8)'
+      this.cbotLogo.style.boxShadow = '0 0 30px rgba(0, 255, 255, 0.8), 0 0 60px rgba(255, 0, 255, 0.6)'
+    }
+
+    console.log('🌟 Loading screen enhanced for anime theme')
+  }
+
+  public removeAnimeEnhancement(): void {
+    if (this.animeEnhancement && this.animeEnhancement.parentNode) {
+      this.animeEnhancement.parentNode.removeChild(this.animeEnhancement)
+      this.animeEnhancement = null
+    }
+
+    if (this.progressBar) {
+      this.progressBar.style.background = ''
+      this.progressBar.style.boxShadow = ''
+    }
+
+    if (this.cbotLogo) {
+      this.cbotLogo.style.border = ''
+      this.cbotLogo.style.boxShadow = ''
+    }
+  }
+
+  public applyModernStyling(): void {
+    // Apply clean modern black styling
+    if (this.loadingScreen) {
+      this.loadingScreen.style.background = '#000000'
+    }
+
+    if (this.progressBar) {
+      this.progressBar.style.background = '#ffffff'
+      this.progressBar.style.boxShadow = 'none'
+    }
+
+    if (this.cbotLogo) {
+      this.cbotLogo.style.border = 'none'
+      this.cbotLogo.style.boxShadow = '0 4px 20px rgba(255, 255, 255, 0.1)'
+      this.cbotLogo.style.animation = 'none'
+    }
+
+    if (this.progressGlow) {
+      this.progressGlow.style.display = 'none'
+    }
+
+    console.log('🎨 Modern black styling applied to loading screen')
   }
 }

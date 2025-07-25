@@ -92,22 +92,8 @@ export class PageManager {
       }
     })
 
-    // Mouse wheel navigation (optional)
-    let wheelTimeout: number
-    document.addEventListener('wheel', (e) => {
-      if (this.isTransitioning) return
-
-      clearTimeout(wheelTimeout)
-      wheelTimeout = window.setTimeout(() => {
-        if (Math.abs(e.deltaY) > 50) {
-          if (e.deltaY > 0) {
-            this.navigateNext()
-          } else {
-            this.navigatePrevious()
-          }
-        }
-      }, 150)
-    }, { passive: true })
+    // Mouse wheel navigation disabled to prevent accidental page changes
+    // Users can still use keyboard navigation or click navigation
   }
 
   public navigateToPage(pageId: string, updateHistory = true): void {
