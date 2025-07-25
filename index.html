@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Website - TypeScript + Vite</title>
-    <meta name="description" content="Modern professional website built with TypeScript and Vite">
+    <title>Cbot - Advanced Geometry Dash Mod</title>
+    <meta name="description" content="Cbot - The ultimate Geometry Dash automation mod with advanced features, precise controls, and professional-grade performance">
+    <meta name="keywords" content="geometry dash, mod, cbot, automation, gaming, click bot, auto play">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="loading-screen" class="loading-screen">
@@ -16,7 +17,7 @@
             <div class="loading-logo">
                 <div class="logo-spinner"></div>
                 <div class="loading-text">
-                    <span class="typing-text" data-text="Loading..."></span>
+                    <span class="typing-text" data-text="Cbot Loading..."></span>
                 </div>
             </div>
             <div class="loading-progress">
@@ -35,27 +36,29 @@
                     <div class="nav-logo">
                         <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                             <rect width="32" height="32" rx="8" fill="url(#gradient)"/>
-                            <path d="M8 12L16 8L24 12L16 16L8 12Z" fill="white" opacity="0.9"/>
-                            <path d="M8 20L16 16L24 20L16 24L8 20Z" fill="white" opacity="0.7"/>
+                            <circle cx="16" cy="12" r="3" fill="white" opacity="0.9"/>
+                            <rect x="10" y="18" width="12" height="6" rx="2" fill="white" opacity="0.8"/>
+                            <path d="M13 21h6M15 19h2" stroke="url(#gradient)" stroke-width="1.5" stroke-linecap="round"/>
                             <defs>
                                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#667eea"/>
-                                    <stop offset="100%" style="stop-color:#764ba2"/>
+                                    <stop offset="0%" style="stop-color:#00ff88"/>
+                                    <stop offset="100%" style="stop-color:#0066ff"/>
                                 </linearGradient>
                             </defs>
                         </svg>
                     </div>
-                    <span class="brand-text">ProSite</span>
+                    <span class="brand-text">Cbot</span>
                 </div>
                 <div class="nav-menu">
                     <a href="#home" class="nav-link">Home</a>
                     <a href="#features" class="nav-link">Features</a>
+                    <a href="#download" class="nav-link">Download</a>
+                    <a href="#settings" class="nav-link">Settings</a>
                     <a href="#about" class="nav-link">About</a>
-                    <a href="#contact" class="nav-link">Contact</a>
                 </div>
                 <div class="nav-actions">
-                    <button class="btn btn-outline">Sign In</button>
-                    <button class="btn btn-primary">Get Started</button>
+                    <button class="btn btn-outline" id="mod-status">Status: Ready</button>
+                    <button class="btn btn-primary" id="download-mod">Download Cbot</button>
                 </div>
                 <div class="nav-toggle">
                     <span></span>
@@ -74,82 +77,92 @@
                 </div>
                 <div class="hero-content">
                     <h1 class="hero-title">
-                        <span class="typing-text" data-text="Build Amazing"></span>
+                        <span class="typing-text" data-text="Cbot"></span>
                         <br>
-                        <span class="typing-text gradient-text" data-text="Web Experiences" data-delay="1500"></span>
+                        <span class="typing-text gradient-text" data-text="Geometry Dash Automation" data-delay="1500"></span>
                     </h1>
                     <p class="hero-subtitle">
-                        Professional website built with modern TypeScript and Vite for blazing fast performance
+                        Advanced Geometry Dash mod with precision automation, intelligent click patterns, and professional-grade performance optimization
                     </p>
                     <div class="hero-buttons">
-                        <button class="btn btn-primary btn-large" id="get-started">
-                            Get Started
+                        <button class="btn btn-primary btn-large" id="start-bot">
+                            Start Bot
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+                                <path d="M8 5v10l7-5-7-5z"/>
                             </svg>
                         </button>
-                        <button class="btn btn-outline btn-large" id="learn-more">
-                            Learn More
+                        <button class="btn btn-outline btn-large" id="open-settings">
+                            Configure Settings
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                <path d="M10 1l3 3h4v4l3 3-3 3v4h-4l-3 3-3-3H3v-4L0 10l3-3V3h4l3-3z"/>
+                            </svg>
                         </button>
                     </div>
                 </div>
                 <div class="hero-stats">
                     <div class="stat-item">
-                        <span class="stat-number" data-target="99.9">0</span>
-                        <span class="stat-label">Uptime %</span>
+                        <span class="stat-number" data-target="99.8">0</span>
+                        <span class="stat-label">Accuracy %</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number" data-target="150">0</span>
-                        <span class="stat-label">ms Response</span>
+                        <span class="stat-number" data-target="60">0</span>
+                        <span class="stat-label">Max CPS</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number" data-target="10000">0</span>
-                        <span class="stat-label">Active Users</span>
+                        <span class="stat-number" data-target="50000">0</span>
+                        <span class="stat-label">Total Users</span>
                     </div>
                 </div>
             </section>
 
             <section id="features" class="features-section">
                 <div class="container">
-                    <h2 class="section-title">Powerful Features</h2>
+                    <h2 class="section-title">Advanced Mod Features</h2>
                     <div class="features-grid">
                         <div class="feature-card">
                             <div class="feature-icon">
                                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
                                     <rect width="48" height="48" rx="12" fill="url(#featureGradient1)"/>
-                                    <path d="M24 12L32 20L24 28L16 20L24 12Z" fill="white" opacity="0.9"/>
+                                    <circle cx="24" cy="18" r="4" fill="white" opacity="0.9"/>
+                                    <path d="M16 28h16v8H16z" fill="white" opacity="0.8"/>
+                                    <path d="M20 32h8M22 30h4" stroke="url(#featureGradient1)" stroke-width="1.5"/>
                                     <defs>
                                         <linearGradient id="featureGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#667eea"/>
-                                            <stop offset="100%" style="stop-color:#764ba2"/>
+                                            <stop offset="0%" style="stop-color:#00ff88"/>
+                                            <stop offset="100%" style="stop-color:#0066ff"/>
                                         </linearGradient>
                                     </defs>
                                 </svg>
                             </div>
-                            <h3>Lightning Fast</h3>
-                            <p>Built with Vite for instant hot module replacement and optimized production builds</p>
+                            <h3>Smart Automation</h3>
+                            <p>Intelligent click patterns with adaptive timing and precision control for optimal performance</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon">
                                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
                                     <rect width="48" height="48" rx="12" fill="url(#featureGradient2)"/>
-                                    <path d="M16 16H32V32H16V16ZM20 20V28H28V20H20Z" fill="white" opacity="0.9"/>
+                                    <path d="M24 8L36 24L24 40L12 24L24 8Z" fill="white" opacity="0.9"/>
+                                    <circle cx="24" cy="24" r="6" fill="url(#featureGradient2)"/>
                                     <defs>
                                         <linearGradient id="featureGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#f093fb"/>
-                                            <stop offset="100%" style="stop-color:#f5576c"/>
+                                            <stop offset="0%" style="stop-color:#ff6600"/>
+                                            <stop offset="100%" style="stop-color:#ff0066"/>
                                         </linearGradient>
                                     </defs>
                                 </svg>
                             </div>
-                            <h3>Type Safe</h3>
-                            <p>Full TypeScript support with strict type checking for robust development</p>
+                            <h3>Geometry Dash Integration</h3>
+                            <p>Seamless integration with Geometry Dash for smooth gameplay and level completion</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon">
                                 <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
                                     <rect width="48" height="48" rx="12" fill="url(#featureGradient3)"/>
-                                    <circle cx="24" cy="24" r="8" fill="white" opacity="0.9"/>
+                                    <path d="M12 20h24v16H12z" fill="white" opacity="0.8"/>
+                                    <circle cx="18" cy="28" r="2" fill="url(#featureGradient3)"/>
+                                    <circle cx="30" cy="28" r="2" fill="url(#featureGradient3)"/>
+                                    <path d="M12 12h24v8H12z" fill="white" opacity="0.9"/>
                                     <defs>
                                         <linearGradient id="featureGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
                                             <stop offset="0%" style="stop-color:#4facfe"/>
@@ -158,8 +171,118 @@
                                     </defs>
                                 </svg>
                             </div>
-                            <h3>Modern Design</h3>
-                            <p>Beautiful, responsive design with smooth animations and modern UI patterns</p>
+                            <h3>Performance Analytics</h3>
+                            <p>Real-time performance monitoring with detailed statistics and optimization suggestions</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <rect width="48" height="48" rx="12" fill="url(#featureGradient4)"/>
+                                    <path d="M16 16h16v4H16zM16 24h12v4H16zM16 32h8v4H16z" fill="white" opacity="0.9"/>
+                                    <circle cx="36" cy="18" r="3" fill="white"/>
+                                    <circle cx="34" cy="26" r="2" fill="white"/>
+                                    <defs>
+                                        <linearGradient id="featureGradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#a8edea"/>
+                                            <stop offset="100%" style="stop-color:#fed6e3"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h3>Customizable Settings</h3>
+                            <p>Extensive configuration options for click timing, patterns, and behavior customization</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <rect width="48" height="48" rx="12" fill="url(#featureGradient5)"/>
+                                    <path d="M24 12v24M12 24h24" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                                    <circle cx="24" cy="24" r="8" stroke="white" stroke-width="2" fill="none"/>
+                                    <defs>
+                                        <linearGradient id="featureGradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#667eea"/>
+                                            <stop offset="100%" style="stop-color:#764ba2"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h3>Anti-Detection</h3>
+                            <p>Advanced stealth features and human-like behavior patterns to avoid detection systems</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                                    <rect width="48" height="48" rx="12" fill="url(#featureGradient6)"/>
+                                    <path d="M24 8L32 16L24 24L16 16L24 8Z" fill="white" opacity="0.9"/>
+                                    <path d="M24 24L32 32L24 40L16 32L24 24Z" fill="white" opacity="0.7"/>
+                                    <defs>
+                                        <linearGradient id="featureGradient6" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ffecd2"/>
+                                            <stop offset="100%" style="stop-color:#fcb69f"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <h3>Level Completion</h3>
+                            <p>Automatic level completion with intelligent obstacle detection and precise timing</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="settings-section">
+                <div class="container">
+                    <h2 class="section-title">Bot Configuration</h2>
+                    <div class="settings-panel">
+                        <div class="settings-group">
+                            <h3>Click Settings</h3>
+                            <div class="setting-item">
+                                <label for="click-delay">Click Delay (ms)</label>
+                                <input type="range" id="click-delay" min="1" max="100" value="10">
+                                <span class="setting-value">10ms</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="randomization">Randomization</label>
+                                <input type="range" id="randomization" min="0" max="50" value="15">
+                                <span class="setting-value">15%</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="hold-duration">Hold Duration (ms)</label>
+                                <input type="range" id="hold-duration" min="1" max="200" value="50">
+                                <span class="setting-value">50ms</span>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Performance</h3>
+                            <div class="setting-item">
+                                <label for="max-cps">Max CPS</label>
+                                <input type="range" id="max-cps" min="1" max="60" value="20">
+                                <span class="setting-value">20</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="accuracy">Target Accuracy (%)</label>
+                                <input type="range" id="accuracy" min="80" max="100" value="95">
+                                <span class="setting-value">95%</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="adaptive-timing">Adaptive Timing</label>
+                                <input type="checkbox" id="adaptive-timing" checked>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Safety Features</h3>
+                            <div class="setting-item">
+                                <label for="anti-detection">Anti-Detection</label>
+                                <input type="checkbox" id="anti-detection" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="human-behavior">Human-like Behavior</label>
+                                <input type="checkbox" id="human-behavior" checked>
+                            </div>
+                            <div class="setting-item">
+                                <label for="safe-mode">Safe Mode</label>
+                                <input type="checkbox" id="safe-mode" checked>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -169,20 +292,20 @@
                 <div class="container">
                     <div class="about-content">
                         <div class="about-text">
-                            <h2 class="section-title">About This Project</h2>
-                            <p>This is a professional website template built with modern web technologies including TypeScript, Vite, and advanced CSS features. It demonstrates best practices for performance, accessibility, and user experience.</p>
+                            <h2 class="section-title">About Cbot</h2>
+                            <p>Cbot is an advanced Geometry Dash automation mod designed for precision, performance, and stealth. Built with cutting-edge technology and intelligent algorithms, it provides the ultimate gaming enhancement experience.</p>
                             <div class="tech-stack">
                                 <div class="tech-item">
-                                    <span class="tech-name">TypeScript</span>
-                                    <span class="tech-version">5.0+</span>
+                                    <span class="tech-name">Advanced AI</span>
+                                    <span class="tech-version">Neural</span>
                                 </div>
                                 <div class="tech-item">
-                                    <span class="tech-name">Vite</span>
-                                    <span class="tech-version">5.0+</span>
+                                    <span class="tech-name">Anti-Detection</span>
+                                    <span class="tech-version">Stealth</span>
                                 </div>
                                 <div class="tech-item">
-                                    <span class="tech-name">Modern CSS</span>
-                                    <span class="tech-version">Latest</span>
+                                    <span class="tech-name">Performance</span>
+                                    <span class="tech-version">Optimized</span>
                                 </div>
                             </div>
                         </div>
@@ -194,16 +317,22 @@
                                         <span></span>
                                         <span></span>
                                     </div>
-                                    <span class="code-title">main.ts</span>
+                                    <span class="code-title">cbot.cpp</span>
                                 </div>
                                 <div class="code-content">
-                                    <pre><code class="typing-code" data-text="import { Application } from './app'
+                                    <pre><code class="typing-code" data-text="class CBot {
+  void initialize() {
+    setupHooks();
+    loadConfig();
+    startAutomation();
+  }
 
-const app = new Application()
-app.initialize()
-  .then(() => {
-    console.log('App ready!')
-  })"></code></pre>
+  void click() {
+    if (shouldClick()) {
+      performClick();
+    }
+  }
+}"></code></pre>
                                 </div>
                             </div>
                         </div>
@@ -219,32 +348,33 @@ app.initialize()
                         <div class="nav-logo">
                             <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
                                 <rect width="32" height="32" rx="8" fill="url(#footerGradient)"/>
-                                <path d="M8 12L16 8L24 12L16 16L8 12Z" fill="white" opacity="0.9"/>
-                                <path d="M8 20L16 16L24 20L16 24L8 20Z" fill="white" opacity="0.7"/>
+                                <circle cx="16" cy="12" r="3" fill="white" opacity="0.9"/>
+                                <rect x="10" y="18" width="12" height="6" rx="2" fill="white" opacity="0.8"/>
+                                <path d="M13 21h6M15 19h2" stroke="url(#footerGradient)" stroke-width="1.5" stroke-linecap="round"/>
                                 <defs>
                                     <linearGradient id="footerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#667eea"/>
-                                        <stop offset="100%" style="stop-color:#764ba2"/>
+                                        <stop offset="0%" style="stop-color:#00ff88"/>
+                                        <stop offset="100%" style="stop-color:#0066ff"/>
                                     </linearGradient>
                                 </defs>
                             </svg>
                         </div>
-                        <span>ProSite</span>
+                        <span>Cbot</span>
                     </div>
                     <div class="footer-links">
-                        <a href="#privacy">Privacy</a>
-                        <a href="#terms">Terms</a>
+                        <a href="#download">Download</a>
+                        <a href="#settings">Settings</a>
                         <a href="#support">Support</a>
-                        <a href="#docs">Docs</a>
+                        <a href="#docs">Documentation</a>
                     </div>
                     <div class="footer-social">
+                        <a href="#" class="social-link">Discord</a>
                         <a href="#" class="social-link">GitHub</a>
-                        <a href="#" class="social-link">Twitter</a>
-                        <a href="#" class="social-link">LinkedIn</a>
+                        <a href="#" class="social-link">YouTube</a>
                     </div>
                 </div>
                 <div class="footer-bottom">
-                    <p>&copy; 2025 ProSite. Built with TypeScript + Vite.</p>
+                    <p>&copy; 2025 Cbot. Advanced Geometry Dash Automation Mod.</p>
                 </div>
             </div>
         </footer>

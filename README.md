@@ -1,12 +1,22 @@
-# Professional Website - TypeScript + Vite
+# Cbot - Advanced Geometry Dash Automation Mod
 
-A modern, professional website built with TypeScript and Vite, featuring advanced animations, responsive design, and optimized performance.
+A professional website for Cbot, the ultimate Geometry Dash automation mod featuring intelligent click patterns, precision control, and advanced stealth capabilities.
 
-## 🚀 Features
+## 🤖 Cbot Features
+
+- **Smart Automation**: Intelligent click patterns with adaptive timing
+- **Precision Control**: Customizable click delays and randomization
+- **Anti-Detection**: Advanced stealth features to avoid detection
+- **Performance Analytics**: Real-time metrics and optimization
+- **Human-like Behavior**: Natural click patterns and timing variations
+- **Safe Mode**: Built-in safety features for responsible usage
+- **Level Completion**: Automatic level completion with obstacle detection
+
+## 🚀 Website Features
 
 - **TypeScript**: Full type safety and modern JavaScript features
 - **Vite**: Lightning-fast development and optimized production builds
-- **Modern CSS**: Advanced styling with CSS custom properties and animations
+- **Modern CSS**: Advanced styling with Geometry Dash-inspired design
 - **Responsive Design**: Mobile-first approach with beautiful layouts
 - **Performance Optimized**: Lazy loading, code splitting, and optimized assets
 - **Accessibility**: WCAG compliant with proper ARIA labels and keyboard navigation
@@ -19,6 +29,8 @@ A modern, professional website built with TypeScript and Vite, featuring advance
 - **Package Manager**: npm
 - **Deployment**: GitHub Pages
 - **CI/CD**: GitHub Actions
+- **Fonts**: Orbitron, Rajdhani, JetBrains Mono
+- **Theme**: Geometry Dash inspired dark theme
 
 ## 📦 Project Structure
 
@@ -27,7 +39,8 @@ A modern, professional website built with TypeScript and Vite, featuring advance
 │   └── favicon.svg        # Site favicon
 ├── src/                   # Source code
 │   ├── app/              # Application core
-│   │   └── Application.ts # Main application class
+│   │   ├── Application.ts # Main application class
+│   │   └── CbotManager.ts # Cbot automation manager
 │   ├── utils/            # Utility classes
 │   │   ├── EventEmitter.ts
 │   │   ├── LoadingManager.ts

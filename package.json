@@ -1,7 +1,7 @@
 {
-  "name": "geodash-website",
+  "name": "cbot-website",
   "version": "1.0.0",
-  "description": "GeoDash Pro Website",
+  "description": "Cbot - Advanced Geometry Dash Mod Website",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -13,11 +13,15 @@
     "test": "echo \"No tests specified\" && exit 0"
   },
   "keywords": [
-    "website",
-    "vite",
-    "javascript"
+    "geometry-dash",
+    "mod",
+    "cbot",
+    "gaming",
+    "automation",
+    "typescript",
+    "vite"
   ],
-  "author": "",
+  "author": "Cbot Development Team",
   "license": "MIT",
   "devDependencies": {
     "vite": "^5.0.0",

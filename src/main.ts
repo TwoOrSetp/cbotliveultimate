@@ -1,10 +1,12 @@
 import './styles/main.css'
 import { Application } from './app/Application'
+import { CbotManager } from './app/CbotManager'
 import { LoadingManager } from './utils/LoadingManager'
 import { TypingAnimation } from './utils/TypingAnimation'
 
 class Main {
   private app: Application
+  private cbotManager: CbotManager
   private loadingManager: LoadingManager
   private typingAnimation: TypingAnimation
 
@@ -12,17 +14,20 @@ class Main {
     this.loadingManager = new LoadingManager()
     this.typingAnimation = new TypingAnimation()
     this.app = new Application()
+    this.cbotManager = new CbotManager(this.app.getEventEmitter())
   }
 
   async initialize(): Promise<void> {
     try {
       await this.showLoadingScreen()
       await this.app.initialize()
+      await this.cbotManager.initialize()
       await this.hideLoadingScreen()
       this.startTypingAnimations()
       this.setupEventListeners()
-      
-      console.log('🚀 Application initialized successfully!')
+      this.setupCbotEventListeners()
+
+      console.log('🚀 Cbot Application initialized successfully!')
     } catch (error) {
       console.error('❌ Failed to initialize application:', error)
       this.showErrorMessage('Failed to load application. Please refresh the page.')
@@ -112,24 +117,32 @@ class Main {
   }
 
   private setupEventListeners(): void {
-    const getStartedBtn = document.getElementById('get-started')
-    const learnMoreBtn = document.getElementById('learn-more')
+    const startBotBtn = document.getElementById('start-bot')
+    const openSettingsBtn = document.getElementById('open-settings')
+    const downloadModBtn = document.getElementById('download-mod')
 
-    if (getStartedBtn) {
-      getStartedBtn.addEventListener('click', () => {
-        this.handleGetStarted()
+    if (startBotBtn) {
+      startBotBtn.addEventListener('click', () => {
+        this.handleStartBot()
       })
     }
 
-    if (learnMoreBtn) {
-      learnMoreBtn.addEventListener('click', () => {
-        this.handleLearnMore()
+    if (openSettingsBtn) {
+      openSettingsBtn.addEventListener('click', () => {
+        this.handleOpenSettings()
+      })
+    }
+
+    if (downloadModBtn) {
+      downloadModBtn.addEventListener('click', () => {
+        this.handleDownloadMod()
       })
     }
 
     this.setupNavigation()
     this.setupScrollEffects()
     this.setupStatsAnimation()
+    this.setupSettingsControls()
   }
 
   private setupNavigation(): void {
@@ -228,14 +241,26 @@ class Main {
     }
   }
 
-  private handleGetStarted(): void {
-    console.log('Get Started clicked!')
-    this.showNotification('Welcome! Getting started...', 'success')
+  private handleStartBot(): void {
+    const status = this.cbotManager.getStatus()
+
+    if (status.isRunning) {
+      this.cbotManager.stop()
+      this.showNotification('Cbot stopped', 'info')
+    } else {
+      this.cbotManager.start()
+      this.showNotification('Cbot started successfully!', 'success')
+    }
   }
 
-  private handleLearnMore(): void {
-    console.log('Learn More clicked!')
-    this.scrollToSection('features')
+  private handleOpenSettings(): void {
+    this.scrollToSection('settings')
+    this.showNotification('Configure your bot settings below', 'info')
+  }
+
+  private handleDownloadMod(): void {
+    this.showNotification('Download feature coming soon!', 'info')
+    console.log('Download mod clicked!')
   }
 
   private showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
@@ -279,6 +304,101 @@ class Main {
         statusElement.textContent = message
         statusElement.style.color = '#ef4444'
       }
+    }
+  }
+
+  private setupCbotEventListeners(): void {
+    const eventEmitter = this.app.getEventEmitter()
+
+    eventEmitter.on('cbot:started', () => {
+      this.updateBotButton('Stop Bot', true)
+      this.updateModStatus('Running')
+    })
+
+    eventEmitter.on('cbot:stopped', () => {
+      this.updateBotButton('Start Bot', false)
+      this.updateModStatus('Ready')
+    })
+
+    eventEmitter.on('cbot:metrics-updated', (metrics) => {
+      this.updateStatsDisplay(metrics)
+    })
+  }
+
+  private setupSettingsControls(): void {
+    const controls = [
+      'click-delay', 'randomization', 'hold-duration',
+      'max-cps', 'accuracy', 'adaptive-timing',
+      'anti-detection', 'human-behavior', 'safe-mode'
+    ]
+
+    controls.forEach(controlId => {
+      const element = document.getElementById(controlId)
+      if (element) {
+        element.addEventListener('change', () => {
+          this.handleSettingChange(controlId, element)
+        })
+      }
+    })
+  }
+
+  private handleSettingChange(settingId: string, element: HTMLElement): void {
+    const input = element as HTMLInputElement
+    let value: any = input.value
+
+    if (input.type === 'checkbox') {
+      value = input.checked
+    } else if (input.type === 'range') {
+      value = parseInt(value)
+      this.updateSettingDisplay(settingId, value)
+    }
+
+    const configUpdate: any = {}
+    configUpdate[this.camelCase(settingId)] = value
+
+    this.cbotManager.updateConfig(configUpdate)
+  }
+
+  private camelCase(str: string): string {
+    return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase())
+  }
+
+  private updateSettingDisplay(settingId: string, value: number): void {
+    const valueElement = document.querySelector(`#${settingId} + .setting-value`)
+    if (valueElement) {
+      let displayValue = value.toString()
+
+      if (settingId.includes('delay') || settingId.includes('duration')) {
+        displayValue += 'ms'
+      } else if (settingId.includes('randomization') || settingId.includes('accuracy')) {
+        displayValue += '%'
+      }
+
+      valueElement.textContent = displayValue
+    }
+  }
+
+  private updateBotButton(text: string, isActive: boolean): void {
+    const startButton = document.getElementById('start-bot')
+    if (startButton) {
+      startButton.textContent = text
+      startButton.classList.toggle('active', isActive)
+    }
+  }
+
+  private updateModStatus(status: string): void {
+    const statusButton = document.getElementById('mod-status')
+    if (statusButton) {
+      statusButton.textContent = `Status: ${status}`
+    }
+  }
+
+  private updateStatsDisplay(metrics: any): void {
+    const statNumbers = document.querySelectorAll('.stat-number')
+    if (statNumbers.length >= 3) {
+      (statNumbers[0] as HTMLElement).textContent = metrics.accuracy.toFixed(1)
+      (statNumbers[1] as HTMLElement).textContent = Math.round(metrics.clicksPerSecond).toString()
+      (statNumbers[2] as HTMLElement).textContent = metrics.totalClicks.toString()
     }
   }
 }
