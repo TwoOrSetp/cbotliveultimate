@@ -35,9 +35,11 @@ class ImageUtils {
 
     observeLazyImages() {
         const lazyImages = document.querySelectorAll('img[data-src], img[loading="lazy"]');
-        lazyImages.forEach(img => {
-            this.lazyImageObserver.observe(img);
-        });
+        if (lazyImages.length > 0 && this.lazyImageObserver) {
+            lazyImages.forEach(img => {
+                this.lazyImageObserver.observe(img);
+            });
+        }
     }
 
     loadImage(img) {
@@ -305,12 +307,20 @@ class ImageUtils {
 const imageUtils = new ImageUtils();
 
 document.addEventListener('DOMContentLoaded', () => {
-    imageUtils.optimizeImageDisplay();
-    
-    setTimeout(() => {
-        const stats = imageUtils.getImageStats();
-        console.log('Image loading stats:', stats);
-    }, 2000);
+    try {
+        imageUtils.optimizeImageDisplay();
+
+        setTimeout(() => {
+            try {
+                const stats = imageUtils.getImageStats();
+                console.log('Image loading stats:', stats);
+            } catch (error) {
+                console.warn('Error getting image stats:', error);
+            }
+        }, 2000);
+    } catch (error) {
+        console.error('Error initializing image utils:', error);
+    }
 });
 
 window.imageUtils = imageUtils;

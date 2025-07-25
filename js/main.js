@@ -1,22 +1,37 @@
 document.addEventListener('DOMContentLoaded', function() {
-    initializeTypingAnimations();
-    initializeSmoothScrolling();
-    initializeIntersectionObserver();
-    initializeParallaxEffect();
-    initializeNavbarBehavior();
-    initializeNavigation();
+    try {
+        initializeTypingAnimations();
+        initializeSmoothScrolling();
+        initializeIntersectionObserver();
+        initializeParallaxEffect();
+        initializeNavbarBehavior();
+        initializeNavigation();
+    } catch (error) {
+        console.error('Error initializing page:', error);
+        // Fallback: Show content immediately if animations fail
+        const typingElements = document.querySelectorAll('.typing-text');
+        typingElements.forEach(element => {
+            const text = element.getAttribute('data-text');
+            if (text) {
+                element.textContent = text;
+                element.classList.add('completed');
+            }
+        });
+    }
 });
 
 function initializeTypingAnimations() {
     const typingElements = document.querySelectorAll('.typing-text');
-    
+
     typingElements.forEach((element, index) => {
         const text = element.getAttribute('data-text');
+        if (!text) return; // Skip if no text
+
         const delay = parseInt(element.getAttribute('data-delay')) || index * 1000;
-        
+
         element.textContent = '';
         element.classList.add('typing');
-        
+
         setTimeout(() => {
             typeText(element, text, 50);
         }, delay);
@@ -24,20 +39,24 @@ function initializeTypingAnimations() {
 }
 
 function typeText(element, text, speed) {
+    if (!element || !text) return; // Safety check
+
     let i = 0;
     element.textContent = '';
-    
+
     function type() {
-        if (i < text.length) {
+        if (i < text.length && element) {
             element.textContent += text.charAt(i);
             i++;
             setTimeout(type, speed);
         } else {
-            element.classList.remove('typing');
-            element.classList.add('completed');
+            if (element) {
+                element.classList.remove('typing');
+                element.classList.add('completed');
+            }
         }
     }
-    
+
     type();
 }
 
@@ -81,16 +100,21 @@ function initializeNavigation() {
 }
 
 function initializeIntersectionObserver() {
+    // Only initialize if IntersectionObserver is supported
+    if (!('IntersectionObserver' in window)) {
+        return;
+    }
+
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                
+
                 if (entry.target.classList.contains('download-card')) {
                     const delay = Array.from(entry.target.parentNode.children).indexOf(entry.target) * 200;
                     setTimeout(() => {
@@ -100,30 +124,49 @@ function initializeIntersectionObserver() {
             }
         });
     }, observerOptions);
-    
-    const elementsToObserve = document.querySelectorAll('.download-card, .social-link, .section-header');
-    elementsToObserve.forEach(el => {
-        el.classList.add('smooth-appear');
-        observer.observe(el);
-    });
+
+    // Only observe elements that actually exist
+    const elementsToObserve = document.querySelectorAll('.download-card, .social-link, .section-header, .feature-card');
+    if (elementsToObserve.length > 0) {
+        elementsToObserve.forEach(el => {
+            el.classList.add('smooth-appear');
+            observer.observe(el);
+        });
+    }
 }
 
 function initializeParallaxEffect() {
     const floatingElements = document.querySelectorAll('.floating-element');
-    
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const rate = scrolled * -0.5;
-        
-        floatingElements.forEach((element, index) => {
-            const speed = (index + 1) * 0.3;
-            element.style.transform = `translateY(${rate * speed}px) rotate(${scrolled * 0.1}deg)`;
-        });
-    });
+
+    // Only add scroll listener if there are floating elements
+    if (floatingElements.length > 0) {
+        let ticking = false;
+
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+
+            floatingElements.forEach((element, index) => {
+                const speed = (index + 1) * 0.3;
+                element.style.transform = `translateY(${rate * speed}px) rotate(${scrolled * 0.1}deg)`;
+            });
+
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }, { passive: true });
+    }
 }
 
 function initializeNavbarBehavior() {
     const header = document.querySelector('.header');
+    if (!header) return; // Safety check
+
     let lastScrollTop = 0;
     let ticking = false;
 
@@ -136,16 +179,6 @@ function initializeNavbarBehavior() {
         } else {
             header.classList.remove('scrolled');
         }
-
-        // Optional: Hide/show header on scroll (disabled for sticky effect)
-        // Uncomment below if you want auto-hide behavior
-        /*
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-            header.style.transform = 'translateY(-100%)';
-        } else {
-            header.style.transform = 'translateY(0)';
-        }
-        */
 
         lastScrollTop = scrollTop;
         ticking = false;

@@ -195,15 +195,28 @@ html {
 }
 
 .nav-logo {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.4));
     transition: all 0.3s ease;
+    animation: logoSpinSlow 15s linear infinite;
+    margin-right: 0.5rem;
 }
 
 .nav-brand:hover .nav-logo {
-    filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.6));
-    transform: rotate(5deg);
+    filter: drop-shadow(0 6px 20px rgba(99, 102, 241, 0.8));
+    transform: scale(1.15);
+    animation-duration: 3s;
+}
+
+@keyframes logoSpinSlow {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .nav-links {
@@ -300,11 +313,102 @@ html {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
+    overflow: hidden;
+}
+
+/* Hero Background with Floating Elements */
+.hero-background {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Floating Logos */
+.floating-logo {
+    position: absolute;
+    opacity: 0.08;
+    transition: opacity 0.3s ease;
+}
+
+.floating-logo img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    filter: blur(2px);
+}
+
+.rotating-logo {
+    animation: logoRotate 25s linear infinite;
+}
+
+.floating-logo-1 {
+    top: 20%;
+    left: 15%;
+    animation: float1 30s ease-in-out infinite;
+}
+
+.floating-logo-2 {
+    top: 60%;
+    right: 20%;
+    animation: float2 35s ease-in-out infinite;
+}
+
+.floating-logo-3 {
+    bottom: 25%;
+    left: 10%;
+    animation: float3 40s ease-in-out infinite;
+}
+
+/* Particles */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    opacity: 0.4;
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.particle-1 {
+    top: 25%;
+    left: 30%;
+    animation: particleFloat1 20s ease-in-out infinite;
+}
+
+.particle-2 {
+    top: 45%;
+    right: 35%;
+    animation: particleFloat2 25s ease-in-out infinite;
+}
+
+.particle-3 {
+    bottom: 35%;
+    left: 25%;
+    animation: particleFloat3 30s ease-in-out infinite;
+}
+
+.particle-4 {
+    top: 75%;
+    right: 20%;
+    animation: particleFloat4 22s ease-in-out infinite;
+}
+
+.particle-5 {
+    top: 15%;
+    right: 50%;
+    animation: particleFloat5 18s ease-in-out infinite;
 }
 
 .hero-content {
     flex: 1;
     max-width: 600px;
+    position: relative;
+    z-index: 2;
 }
 
 .hero-title {
@@ -390,6 +494,36 @@ html {
     justify-content: center;
     align-items: center;
     position: relative;
+    z-index: 2;
+}
+
+/* Central Logo */
+.central-logo {
+    position: relative;
+    z-index: 3;
+    margin-bottom: 2rem;
+}
+
+.main-rotating-logo {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    animation: logoRotateMain 12s linear infinite;
+    box-shadow:
+        0 0 30px rgba(99, 102, 241, 0.4),
+        0 0 60px rgba(99, 102, 241, 0.2),
+        0 0 90px rgba(99, 102, 241, 0.1);
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 8px 32px rgba(99, 102, 241, 0.3));
+}
+
+.main-rotating-logo:hover {
+    transform: scale(1.1);
+    animation-duration: 3s;
+    box-shadow:
+        0 0 40px rgba(99, 102, 241, 0.6),
+        0 0 80px rgba(99, 102, 241, 0.4),
+        0 0 120px rgba(99, 102, 241, 0.2);
 }
 
 .floating-elements {
@@ -1026,6 +1160,455 @@ html {
     background: #10b981 !important;
 }
 
+/* Real Download Progress Styles */
+.download-progress {
+    margin-top: 1rem;
+    padding: 0.5rem 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Enhanced Download Button States */
+.download-btn.downloading {
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.download-btn.downloading svg {
+    animation: spin 1s linear infinite;
+}
+
+.download-btn.completed {
+    background: #10b981;
+    color: white;
+}
+
+.download-btn.completed:hover {
+    background: #059669;
+}
+
+/* File Description Styling */
+.file-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0.5rem 0;
+    line-height: 1.4;
+}
+
+.file-platform {
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Enhanced File Cards */
+.file-card {
+    position: relative;
+    overflow: visible;
+}
+
+.file-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-primary);
+    opacity: 0;
+    border-radius: inherit;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.file-card:hover::before {
+    opacity: 0.1;
+}
+
+/* Download Statistics */
+.download-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-item svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+}
+
+/* Notification Enhancements */
+.notification {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.notification-success {
+    background: rgba(16, 185, 129, 0.9);
+    border-left-color: #10b981;
+    color: white;
+}
+
+.notification-error {
+    background: rgba(239, 68, 68, 0.9);
+    border-left-color: #ef4444;
+    color: white;
+}
+
+.notification-info {
+    background: rgba(99, 102, 241, 0.9);
+    border-left-color: var(--primary-color);
+    color: white;
+}
+
+/* Download Queue Indicator */
+.download-queue {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    min-width: 300px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 9999;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.download-queue.show {
+    transform: translateY(0);
+}
+
+.queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.queue-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.queue-item:last-child {
+    border-bottom: none;
+}
+
+.queue-item-name {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+.queue-item-status {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* Download Source Toggle */
+.download-source-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    background: var(--background-secondary);
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    width: fit-content;
+}
+
+.source-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.source-btn.active {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.source-btn:hover:not(.active) {
+    background: var(--background-card);
+    color: var(--text-primary);
+}
+
+/* GitHub Download Indicators */
+.download-card.github-download::after {
+    content: 'Official Release';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.github-download-btn {
+    background: var(--gradient-primary);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.github-download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* File Size and Meta Information */
+.file-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.file-checksum {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--background-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    word-break: break-all;
+}
+
+.file-requirements {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.file-requirements strong {
+    color: var(--text-primary);
+}
+
+/* GitHub API specific styles */
+.download-count {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.upload-date {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.no-files {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--background-card);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.no-files p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 1.125rem;
+}
+
+.no-files-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+}
+
+/* Notification System */
+.notification {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-message {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.notification-close:hover {
+    background: var(--background-secondary);
+    color: var(--text-primary);
+}
+
+.notification-success {
+    border-left: 4px solid #10b981;
+}
+
+.notification-error {
+    border-left: 4px solid #ef4444;
+}
+
+.notification-info {
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Global Statistics Display */
+.global-stats {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--background-card);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.stat-item {
+    padding: 1rem;
+    background: var(--background-secondary);
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Real Download Count Styling */
+.real-download-count {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    animation: downloadCountPulse 3s ease-in-out infinite;
+}
+
+@keyframes downloadCountPulse {
+    0%, 100% {
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5);
+    }
+}
+
 .no-files {
     text-align: center;
     padding: 3rem;
@@ -1131,6 +1714,185 @@ html {
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* Logo Rotation Animations */
+@keyframes logoRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes logoRotateMain {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Floating Animations */
+@keyframes float1 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(30px, -20px) rotate(90deg);
+    }
+    50% {
+        transform: translate(-20px, -40px) rotate(180deg);
+    }
+    75% {
+        transform: translate(-40px, 20px) rotate(270deg);
+    }
+}
+
+@keyframes float2 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+        transform: translate(-25px, 30px) rotate(120deg);
+    }
+    66% {
+        transform: translate(40px, -15px) rotate(240deg);
+    }
+}
+
+@keyframes float3 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    20% {
+        transform: translate(20px, -30px) rotate(72deg);
+    }
+    40% {
+        transform: translate(-30px, -20px) rotate(144deg);
+    }
+    60% {
+        transform: translate(-25px, 25px) rotate(216deg);
+    }
+    80% {
+        transform: translate(35px, 15px) rotate(288deg);
+    }
+}
+
+/* Particle Animations */
+@keyframes particleFloat1 {
+    0%, 100% {
+        transform: translate(0, 0);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translate(50px, -80px);
+        opacity: 0.8;
+    }
+}
+
+@keyframes particleFloat2 {
+    0%, 100% {
+        transform: translate(0, 0);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translate(-60px, 70px);
+        opacity: 0.7;
+    }
+}
+
+@keyframes particleFloat3 {
+    0%, 100% {
+        transform: translate(0, 0);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(40px, -60px);
+        opacity: 0.9;
+    }
+}
+
+@keyframes particleFloat4 {
+    0%, 100% {
+        transform: translate(0, 0);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translate(-45px, -50px);
+        opacity: 0.8;
+    }
+}
+
+@keyframes particleFloat5 {
+    0%, 100% {
+        transform: translate(0, 0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(30px, 40px);
+        opacity: 0.9;
+    }
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .hero-visual {
+        margin-top: 2rem;
+    }
+
+    /* Mobile floating elements */
+    .main-rotating-logo {
+        width: 120px;
+        height: 120px;
+    }
+
+    .floating-logo img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .particle {
+        width: 3px;
+        height: 3px;
+    }
+
+    /* Reduce animation intensity on mobile */
+    .floating-logo {
+        opacity: 0.04;
+    }
+
+    .particle {
+        opacity: 0.2;
+    }
+
+    /* Navigation logo on mobile */
+    .nav-logo {
+        width: 28px;
+        height: 28px;
+    }
 }
 
 /* Image and Asset Utilities */

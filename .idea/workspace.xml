@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01596ce7-2c37-4e88-9512-c1c3ad83d488" name="Changes" comment="j" />
+    <list default="true" id="01596ce7-2c37-4e88-9512-c1c3ad83d488" name="Changes" comment="j">
+      <change beforePath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GITHUB-API-DOWNLOADS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/REAL-DOWNLOADS-SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/ASSET-MANAGEMENT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/downloads/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icon/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/download.html" beforeDir="false" afterPath="$PROJECT_DIR$/download.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,7 +53,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/PC/Downloads/cc/cbot",
+    "last_opened_file_path": "C:/Users/PC/Downloads/cbot",
     "settings.editor.selected.configurable": "settings.sync"
   }
 }]]></component>
