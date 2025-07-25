@@ -43,16 +43,28 @@ export class DownloadManager {
 
     try {
       this.setupEventListeners()
-      await this.fetchLatestRelease()
-      this.isInitialized = true
 
+      // Try to fetch latest release, but don't fail initialization if it fails
+      try {
+        await this.fetchLatestRelease()
+      } catch (fetchError) {
+        console.warn('⚠️ Could not fetch latest release, using mock data:', fetchError)
+        this.createMockRelease()
+      }
+
+      this.isInitialized = true
       console.log('📦 Download Manager initialized')
       this.eventEmitter.emit('download:initialized', { release: this.latestRelease })
+
     } catch (error) {
       console.error('❌ Failed to initialize Download Manager:', error)
       this.status.hasError = true
-      this.status.errorMessage = 'Failed to fetch latest release'
-      throw error
+      this.status.errorMessage = 'Failed to initialize download system'
+
+      // Still initialize with mock data to prevent app from hanging
+      this.createMockRelease()
+      this.isInitialized = true
+      this.eventEmitter.emit('download:initialized', { release: this.latestRelease })
     }
   }
 
@@ -71,12 +83,19 @@ export class DownloadManager {
     try {
       console.log('🔄 Fetching latest release from GitHub...')
 
+      // Add timeout to prevent hanging
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
       const response = await fetch(this.GITHUB_API_URL, {
+        signal: controller.signal,
         headers: {
           'Accept': 'application/vnd.github.v3+json',
           'User-Agent': 'Cbot-Website'
         }
       })
+
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -92,9 +111,15 @@ export class DownloadManager {
       this.eventEmitter.emit('download:release-fetched', this.latestRelease)
 
     } catch (error) {
-      console.error('❌ Failed to fetch latest release:', error)
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.error('❌ GitHub API request timed out')
+        this.status.errorMessage = 'GitHub API request timed out'
+      } else {
+        console.error('❌ Failed to fetch latest release:', error)
+        this.status.errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      }
+
       this.status.hasError = true
-      this.status.errorMessage = error instanceof Error ? error.message : 'Unknown error'
       this.eventEmitter.emit('download:error', this.status.errorMessage)
 
       // Create mock data for testing if API fails

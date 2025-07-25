@@ -20,8 +20,22 @@ class Main {
   async initialize(): Promise<void> {
     try {
       await this.showLoadingScreen()
+
+      // Initialize app first (this should always succeed)
       await this.app.initialize()
-      await this.downloadManager.initialize()
+
+      // Initialize download manager with timeout protection
+      const downloadInitPromise = this.downloadManager.initialize()
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Download manager initialization timeout')), 15000)
+      )
+
+      try {
+        await Promise.race([downloadInitPromise, timeoutPromise])
+      } catch (downloadError) {
+        console.warn('⚠️ Download manager initialization failed, continuing anyway:', downloadError)
+      }
+
       await this.hideLoadingScreen()
       this.startTypingAnimations()
       this.setupEventListeners()
@@ -30,7 +44,10 @@ class Main {
       console.log('🚀 Cbot Website initialized successfully!')
     } catch (error) {
       console.error('❌ Failed to initialize application:', error)
-      this.showErrorMessage('Failed to load application. Please refresh the page.')
+
+      // Force hide loading screen even on error
+      await this.hideLoadingScreen()
+      this.showErrorMessage('Some features may not work properly. Please refresh the page.')
     }
   }
 
@@ -517,7 +534,40 @@ class Main {
 
 document.addEventListener('DOMContentLoaded', () => {
   const main = new Main()
-  main.initialize()
+
+  // Add a maximum timeout for the entire initialization
+  const initTimeout = setTimeout(() => {
+    console.error('❌ Application initialization timed out')
+    const loadingScreen = document.getElementById('loading-screen')
+    const app = document.getElementById('app')
+
+    if (loadingScreen) {
+      loadingScreen.style.display = 'none'
+    }
+    if (app) {
+      app.style.display = 'block'
+      app.style.opacity = '1'
+    }
+
+    // Show error message
+    const errorDiv = document.createElement('div')
+    errorDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #ff4444;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      z-index: 10000;
+    `
+    errorDiv.textContent = 'Loading timed out. Some features may not work. Please refresh the page.'
+    document.body.appendChild(errorDiv)
+  }, 20000) // 20 second maximum timeout
+
+  main.initialize().finally(() => {
+    clearTimeout(initTimeout)
+  })
 })
 
 if (import.meta.hot) {
