@@ -1,255 +1,260 @@
-export interface LoadingState {
-  progress: number
-  status: string
-  isComplete: boolean
+export interface LoadingAsset {
+  name: string
+  url: string
+  type: 'image' | 'font' | 'script' | 'style' | 'data'
+  size?: number
+  loaded: boolean
   error?: string
 }
 
-export interface LoadingStep {
-  progress: number
-  status: string
-  delay: number
+export interface LoadingProgress {
+  current: number
+  total: number
+  percentage: number
+  currentAsset?: string
+  loadTime: number
 }
 
 export class LoadingManager {
-  private state: LoadingState = {
-    progress: 0,
-    status: 'Initializing...',
-    isComplete: false
-  }
+  private loadingScreen: HTMLElement | null = null
+  private progressBar: HTMLElement | null = null
+  private progressGlow: HTMLElement | null = null
+  private progressPercentage: HTMLElement | null = null
+  private loadingStatus: HTMLElement | null = null
+  private assetsListElement: HTMLElement | null = null
+  private loadedAssetsElement: HTMLElement | null = null
+  private totalAssetsElement: HTMLElement | null = null
+  private loadTimeElement: HTMLElement | null = null
+  private cbotLogo: HTMLElement | null = null
 
-  private callbacks: Set<(state: LoadingState) => void> = new Set()
+  private assets: LoadingAsset[] = []
+  private loadedCount = 0
+  private startTime = 0
 
   constructor() {
-    this.init()
+    this.startTime = Date.now()
+    this.initializeElements()
+    this.initializeAssets()
   }
 
-  private init(): void {
-    console.log('LoadingManager initialized')
+  private initializeElements(): void {
+    this.loadingScreen = document.getElementById('loading-screen')
+    this.progressBar = document.getElementById('progress-fill')
+    this.progressGlow = this.loadingScreen?.querySelector('.progress-glow') || null
+    this.progressPercentage = document.getElementById('progress-percentage')
+    this.loadingStatus = document.getElementById('loading-status')
+    this.assetsListElement = document.getElementById('assets-list')
+    this.loadedAssetsElement = document.getElementById('loaded-assets')
+    this.totalAssetsElement = document.getElementById('total-assets')
+    this.loadTimeElement = document.getElementById('load-time')
+    this.cbotLogo = document.getElementById('cbot-logo')
   }
 
-  updateProgress(progress: number, status?: string): void {
-    this.state.progress = Math.max(0, Math.min(100, progress))
-    if (status) {
-      this.state.status = status
+  private initializeAssets(): void {
+    this.assets = [
+      // Images
+      { name: 'Cbot Logo', url: '/cbot.png', type: 'image', loaded: false },
+      { name: 'Favicon', url: '/favicon.png', type: 'image', loaded: false },
+      
+      // Fonts
+      { name: 'Rajdhani Font', url: 'fonts/rajdhani', type: 'font', loaded: false },
+      { name: 'Orbitron Font', url: 'fonts/orbitron', type: 'font', loaded: false },
+      { name: 'JetBrains Mono', url: 'fonts/jetbrains', type: 'font', loaded: false },
+      
+      // Core Systems
+      { name: 'Application Core', url: 'core/application', type: 'script', loaded: false },
+      { name: 'Download Manager', url: 'core/downloads', type: 'script', loaded: false },
+      { name: 'Notification System', url: 'core/notifications', type: 'script', loaded: false },
+      { name: 'Typography Engine', url: 'core/typography', type: 'script', loaded: false },
+      { name: 'Theme System', url: 'core/themes', type: 'script', loaded: false },
+      
+      // UI Components
+      { name: 'Button Components', url: 'ui/buttons', type: 'style', loaded: false },
+      { name: 'Navigation System', url: 'ui/navigation', type: 'style', loaded: false },
+      { name: 'Hero Section', url: 'ui/hero', type: 'style', loaded: false },
+      { name: 'Feature Cards', url: 'ui/features', type: 'style', loaded: false },
+      
+      // Data & APIs
+      { name: 'GitHub Integration', url: 'api/github', type: 'data', loaded: false },
+      { name: 'Release Data', url: 'api/releases', type: 'data', loaded: false }
+    ]
+
+    // Update total assets display
+    if (this.totalAssetsElement) {
+      this.totalAssetsElement.textContent = this.assets.length.toString()
+    }
+
+    // Initialize assets list
+    this.updateAssetsList()
+  }
+
+  public async startLoading(): Promise<void> {
+    console.log('🚀 Starting advanced loading process...')
+    
+    // Show Cbot logo with animation
+    if (this.cbotLogo) {
+      this.cbotLogo.style.opacity = '1'
+    }
+
+    // Update initial progress
+    this.updateProgress()
+
+    // Load assets with realistic timing
+    for (let i = 0; i < this.assets.length; i++) {
+      const asset = this.assets[i]
+      
+      // Update current asset
+      this.updateProgress(asset.name)
+      this.updateAssetStatus(asset, 'loading')
+      
+      // Simulate loading time based on asset type
+      const loadTime = this.getLoadTime(asset.type)
+      
+      try {
+        await this.loadAsset(asset)
+        await this.delay(loadTime)
+        
+        asset.loaded = true
+        this.loadedCount++
+        this.updateAssetStatus(asset, 'loaded')
+        
+        console.log(`✅ Loaded: ${asset.name}`)
+        
+      } catch (error) {
+        asset.error = error instanceof Error ? error.message : 'Failed to load'
+        asset.loaded = false
+        this.updateAssetStatus(asset, 'error')
+        console.warn(`❌ Failed to load: ${asset.name}`, error)
+        
+        // Still count as "processed" for progress
+        this.loadedCount++
+      }
+      
+      // Update progress
+      this.updateProgress()
+      
+      // Add small delay between assets for visual effect
+      await this.delay(100 + Math.random() * 200)
+    }
+
+    // Final status
+    this.updateProgress('Complete! Launching Cbot...')
+    await this.delay(500)
+
+    console.log('🎉 Loading complete!')
+  }
+
+  private async loadAsset(asset: LoadingAsset): Promise<void> {
+    switch (asset.type) {
+      case 'image':
+        return this.loadImage(asset.url)
+      case 'font':
+      case 'script':
+      case 'style':
+      case 'data':
+        // Simulate loading for demo
+        return Promise.resolve()
+      default:
+        return Promise.resolve()
+    }
+  }
+
+  private loadImage(url: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => resolve()
+      img.onerror = () => reject(new Error(`Failed to load image: ${url}`))
+      img.src = url
+    })
+  }
+
+  private getLoadTime(type: string): number {
+    const baseTimes = {
+      image: 200,
+      font: 300,
+      script: 400,
+      style: 250,
+      data: 500
     }
     
-    if (this.state.progress >= 100) {
-      this.state.isComplete = true
+    const baseTime = baseTimes[type as keyof typeof baseTimes] || 200
+    return baseTime + Math.random() * 200
+  }
+
+  private updateProgress(currentAsset?: string): void {
+    const percentage = Math.round((this.loadedCount / this.assets.length) * 100)
+    const loadTime = (Date.now() - this.startTime) / 1000
+
+    // Update progress bar
+    if (this.progressBar) {
+      this.progressBar.style.width = `${percentage}%`
     }
 
-    this.notifyCallbacks()
-  }
-
-  setError(error: string): void {
-    this.state.error = error
-    this.notifyCallbacks()
-  }
-
-  getState(): LoadingState {
-    return { ...this.state }
-  }
-
-  onStateChange(callback: (state: LoadingState) => void): void {
-    this.callbacks.add(callback)
-  }
-
-  offStateChange(callback: (state: LoadingState) => void): void {
-    this.callbacks.delete(callback)
-  }
-
-  private notifyCallbacks(): void {
-    this.callbacks.forEach(callback => {
-      try {
-        callback(this.getState())
-      } catch (error) {
-        console.error('Error in loading state callback:', error)
-      }
-    })
-  }
-
-  reset(): void {
-    this.state = {
-      progress: 0,
-      status: 'Initializing...',
-      isComplete: false
+    // Update progress glow
+    if (this.progressGlow) {
+      this.progressGlow.style.width = `${percentage}%`
     }
-    this.notifyCallbacks()
-  }
 
-  async simulateLoading(steps: LoadingStep[]): Promise<void> {
-    for (const step of steps) {
-      await new Promise(resolve => setTimeout(resolve, step.delay))
-      this.updateProgress(step.progress, step.status)
+    // Update percentage
+    if (this.progressPercentage) {
+      this.progressPercentage.textContent = `${percentage}%`
+    }
+
+    // Update status
+    if (this.loadingStatus && currentAsset) {
+      this.loadingStatus.textContent = `Loading ${currentAsset}...`
+    }
+
+    // Update stats
+    if (this.loadedAssetsElement) {
+      this.loadedAssetsElement.textContent = this.loadedCount.toString()
+    }
+
+    if (this.loadTimeElement) {
+      this.loadTimeElement.textContent = `${loadTime.toFixed(1)}s`
     }
   }
 
-  async loadResource(url: string, onProgress?: (progress: number) => void): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest()
-      
-      xhr.addEventListener('progress', (event) => {
-        if (event.lengthComputable && onProgress) {
-          const progress = (event.loaded / event.total) * 100
-          onProgress(progress)
-        }
-      })
+  private updateAssetsList(): void {
+    if (!this.assetsListElement) return
 
-      xhr.addEventListener('load', () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(xhr.response)
-        } else {
-          reject(new Error(`Failed to load resource: ${xhr.status}`))
-        }
-      })
-
-      xhr.addEventListener('error', () => {
-        reject(new Error('Network error'))
-      })
-
-      xhr.open('GET', url)
-      xhr.send()
-    })
-  }
-
-  async loadMultipleResources(
-    resources: Array<{ url: string; weight?: number }>,
-    onProgress?: (progress: number) => void
-  ): Promise<any[]> {
-    const totalWeight = resources.reduce((sum, resource) => sum + (resource.weight || 1), 0)
-    let loadedWeight = 0
-    const results: any[] = []
-
-    for (const resource of resources) {
-      const weight = resource.weight || 1
-      
-      try {
-        const result = await this.loadResource(resource.url, (resourceProgress) => {
-          const currentProgress = (loadedWeight + (resourceProgress / 100) * weight) / totalWeight * 100
-          if (onProgress) {
-            onProgress(currentProgress)
-          }
-        })
-        
-        results.push(result)
-        loadedWeight += weight
-        
-        if (onProgress) {
-          onProgress((loadedWeight / totalWeight) * 100)
-        }
-      } catch (error) {
-        console.error(`Failed to load resource ${resource.url}:`, error)
-        results.push(null)
-        loadedWeight += weight
-      }
-    }
-
-    return results
-  }
-
-  createProgressBar(container: HTMLElement): HTMLElement {
-    const progressBar = document.createElement('div')
-    progressBar.className = 'loading-progress-bar'
-    progressBar.innerHTML = `
-      <div class="progress-track">
-        <div class="progress-fill"></div>
+    this.assetsListElement.innerHTML = this.assets.map(asset => `
+      <div class="asset-item" data-asset="${asset.name}">
+        <span class="asset-name">${asset.name}</span>
+        <span class="asset-status loading">Waiting</span>
       </div>
-      <div class="progress-text">0%</div>
-    `
-
-    const progressFill = progressBar.querySelector('.progress-fill') as HTMLElement
-    const progressText = progressBar.querySelector('.progress-text') as HTMLElement
-
-    this.onStateChange((state) => {
-      if (progressFill) {
-        progressFill.style.width = `${state.progress}%`
-      }
-      if (progressText) {
-        progressText.textContent = `${Math.round(state.progress)}%`
-      }
-    })
-
-    container.appendChild(progressBar)
-    return progressBar
+    `).join('')
   }
 
-  async preloadImages(imageUrls: string[]): Promise<HTMLImageElement[]> {
-    const images: HTMLImageElement[] = []
-    let loadedCount = 0
-
-    const loadPromises = imageUrls.map((url, index) => {
-      return new Promise<HTMLImageElement>((resolve, reject) => {
-        const img = new Image()
-        
-        img.onload = () => {
-          loadedCount++
-          const progress = (loadedCount / imageUrls.length) * 100
-          this.updateProgress(progress, `Loading images... ${loadedCount}/${imageUrls.length}`)
-          resolve(img)
-        }
-        
-        img.onerror = () => {
-          console.error(`Failed to load image: ${url}`)
-          loadedCount++
-          const progress = (loadedCount / imageUrls.length) * 100
-          this.updateProgress(progress, `Loading images... ${loadedCount}/${imageUrls.length}`)
-          reject(new Error(`Failed to load image: ${url}`))
-        }
-        
-        img.src = url
-      })
-    })
-
-    try {
-      const loadedImages = await Promise.allSettled(loadPromises)
-      loadedImages.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          images[index] = result.value
-        } else {
-          console.error(`Image ${index} failed to load:`, result.reason)
-        }
-      })
-    } catch (error) {
-      console.error('Error preloading images:', error)
-    }
-
-    return images
-  }
-
-  async waitForFonts(): Promise<void> {
-    if (!('fonts' in document)) {
-      return Promise.resolve()
-    }
-
-    try {
-      await document.fonts.ready
-      this.updateProgress(100, 'Fonts loaded')
-    } catch (error) {
-      console.error('Error loading fonts:', error)
+  private updateAssetStatus(asset: LoadingAsset, status: 'loading' | 'loaded' | 'error'): void {
+    const assetElement = this.assetsListElement?.querySelector(`[data-asset="${asset.name}"] .asset-status`)
+    if (assetElement) {
+      assetElement.className = `asset-status ${status}`
+      assetElement.textContent = status === 'loading' ? 'Loading...' : 
+                                 status === 'loaded' ? 'Loaded' : 'Error'
     }
   }
 
-  async waitForDOMContentLoaded(): Promise<void> {
-    return new Promise((resolve) => {
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => resolve())
-      } else {
-        resolve()
-      }
-    })
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
-  async waitForWindowLoad(): Promise<void> {
-    return new Promise((resolve) => {
-      if (document.readyState === 'complete') {
-        resolve()
-      } else {
-        window.addEventListener('load', () => resolve())
-      }
-    })
+  public hideLoading(): void {
+    if (this.loadingScreen) {
+      this.loadingScreen.classList.add('hidden')
+    }
   }
 
-  destroy(): void {
-    this.callbacks.clear()
+  public getAssets(): LoadingAsset[] {
+    return [...this.assets]
+  }
+
+  public getProgress(): LoadingProgress {
+    return {
+      current: this.loadedCount,
+      total: this.assets.length,
+      percentage: Math.round((this.loadedCount / this.assets.length) * 100),
+      loadTime: (Date.now() - this.startTime) / 1000
+    }
   }
 }

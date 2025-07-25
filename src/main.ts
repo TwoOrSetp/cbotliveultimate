@@ -3,23 +3,39 @@ import { Application } from './app/Application'
 import { DownloadManager } from './app/CbotManager'
 import { LoadingManager } from './utils/LoadingManager'
 import { TypingAnimation } from './utils/TypingAnimation'
+import { NotificationManager } from './utils/NotificationManager'
+import { AdvancedFontSystem } from './utils/AdvancedFontSystem'
+import { PageManager } from './utils/PageManager'
 
 class Main {
   private app: Application
   private downloadManager: DownloadManager
   private loadingManager: LoadingManager
   private typingAnimation: TypingAnimation
+  private notificationManager: NotificationManager
+  private fontSystem: AdvancedFontSystem
+  private pageManager: PageManager
 
   constructor() {
     this.loadingManager = new LoadingManager()
     this.typingAnimation = new TypingAnimation()
+    this.notificationManager = new NotificationManager()
+    this.fontSystem = new AdvancedFontSystem()
+    this.pageManager = new PageManager()
     this.app = new Application()
     this.downloadManager = new DownloadManager(this.app.getEventEmitter())
   }
 
+
+
+
+
   async initialize(): Promise<void> {
     try {
-      await this.showLoadingScreen()
+      console.log('🚀 Initializing Cbot Website...')
+
+      // Start advanced loading process
+      await this.loadingManager.startLoading()
 
       // Initialize app first (this should always succeed)
       await this.app.initialize()
@@ -40,6 +56,15 @@ class Main {
       this.startTypingAnimations()
       this.setupEventListeners()
       this.setupDownloadEventListeners()
+      this.setupPageTransitions()
+
+      // Force update download section after a short delay
+      setTimeout(() => {
+        const release = this.downloadManager.getLatestRelease()
+        if (release) {
+          this.updateDownloadSection(release)
+        }
+      }, 1000)
 
       console.log('🚀 Cbot Website initialized successfully!')
     } catch (error) {
@@ -82,30 +107,29 @@ class Main {
   }
 
   private async hideLoadingScreen(): Promise<void> {
-    const loadingScreen = document.getElementById('loading-screen')
-    const app = document.getElementById('app')
+    return new Promise((resolve) => {
+      this.loadingManager.hideLoading()
 
-    if (loadingScreen) {
-      loadingScreen.style.opacity = '0'
-      loadingScreen.style.transition = 'opacity 0.5s ease-out'
-      
-      setTimeout(() => {
-        loadingScreen.style.display = 'none'
-      }, 500)
-    }
+      const app = document.getElementById('app')
+      if (app) {
+        app.style.display = 'block'
+        app.style.opacity = '0'
+        app.style.transition = 'opacity 0.5s ease-in'
 
-    if (app) {
-      app.style.display = 'block'
-      app.style.opacity = '0'
-      app.style.transition = 'opacity 0.5s ease-in'
-      
-      setTimeout(() => {
-        app.style.opacity = '1'
-      }, 100)
-    }
+        setTimeout(() => {
+          app.style.opacity = '1'
+          resolve()
+        }, 100)
+      } else {
+        setTimeout(resolve, 800) // Wait for CSS transition
+      }
+    })
   }
 
   private startTypingAnimations(): void {
+    // Apply advanced font effects first
+    this.setupAdvancedFonts()
+
     const typingElements = document.querySelectorAll('.typing-text')
 
     typingElements.forEach((element, index) => {
@@ -113,6 +137,17 @@ class Main {
       const text = htmlElement.dataset.text || ''
       const delay = parseInt(htmlElement.dataset.delay || '0') + (index * 800)
       const effect = htmlElement.dataset.effect || 'typewriter'
+
+      // Apply font effects based on element
+      if (htmlElement.classList.contains('gradient-text')) {
+        this.fontSystem.applyEffect(htmlElement, {
+          name: 'gradient',
+          type: 'gradient',
+          properties: {
+            gradient: 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #f59e0b 100%)'
+          }
+        })
+      }
 
       setTimeout(() => {
         this.typingAnimation.animate(htmlElement, text, {
@@ -126,6 +161,8 @@ class Main {
         })
       }, delay)
     })
+
+    this.setupAdvancedFonts()
 
     const codeElement = document.querySelector('.typing-code') as HTMLElement
     if (codeElement) {
@@ -141,6 +178,77 @@ class Main {
     }
 
     this.startContinuousAnimations()
+  }
+
+  private setupAdvancedFonts(): void {
+    // Load custom fonts
+    this.fontSystem.loadFont('Rajdhani', { weight: '300 700' })
+    this.fontSystem.loadFont('Orbitron', { weight: '400 900' })
+    this.fontSystem.loadFont('JetBrains Mono', { weight: '400 600' })
+
+    // Apply responsive font configurations
+    this.fontSystem.setResponsiveFont('.hero-title', {
+      breakpoints: {
+        '320': {
+          family: 'Rajdhani',
+          weight: 700,
+          style: 'normal',
+          size: 'clamp(2rem, 8vw, 4rem)',
+          lineHeight: '1.1',
+          letterSpacing: '-0.02em',
+          textTransform: 'none',
+          fallbacks: ['sans-serif'],
+          loadTimeout: 3000
+        },
+        '768': {
+          family: 'Rajdhani',
+          weight: 700,
+          style: 'normal',
+          size: 'clamp(3rem, 6vw, 5rem)',
+          lineHeight: '1.1',
+          letterSpacing: '-0.02em',
+          textTransform: 'none',
+          fallbacks: ['sans-serif'],
+          loadTimeout: 3000
+        },
+        '1024': {
+          family: 'Rajdhani',
+          weight: 700,
+          style: 'normal',
+          size: 'clamp(4rem, 5vw, 6rem)',
+          lineHeight: '1.1',
+          letterSpacing: '-0.02em',
+          textTransform: 'none',
+          fallbacks: ['sans-serif'],
+          loadTimeout: 3000
+        }
+      },
+      scaleFactor: 1.2,
+      minSize: '2rem',
+      maxSize: '6rem'
+    })
+
+    // Apply effects to key elements
+    const heroTitle = document.querySelector('.hero-title .gradient-text') as HTMLElement
+    if (heroTitle) {
+      this.fontSystem.applyEffect(heroTitle, {
+        name: 'neon',
+        type: 'glow',
+        properties: { intensity: 1.5 }
+      })
+    }
+
+    const brandText = document.querySelector('.brand-text') as HTMLElement
+    if (brandText) {
+      this.fontSystem.applyEffect(brandText, {
+        name: 'glow',
+        type: 'glow',
+        properties: { intensity: 1 }
+      })
+    }
+
+    // Optimize performance for animations
+    this.fontSystem.optimizeForPerformance()
   }
 
   private startContinuousAnimations(): void {
@@ -339,37 +447,18 @@ class Main {
     }, 100)
   }
 
-  private showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
-    const notification = document.createElement('div')
-    notification.className = `notification ${type}`
-    notification.textContent = message
-    
-    notification.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      color: white;
-      font-weight: 500;
-      z-index: 10000;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-    `
-    
-    document.body.appendChild(notification)
-    
-    setTimeout(() => {
-      notification.style.transform = 'translateX(0)'
-    }, 100)
-    
-    setTimeout(() => {
-      notification.style.transform = 'translateX(100%)'
-      setTimeout(() => {
-        document.body.removeChild(notification)
-      }, 300)
-    }, 3000)
+  private showNotification(message: string, type: 'success' | 'error' | 'info' | 'warning' | 'loading' = 'info', options?: any): string {
+    return this.notificationManager.show({
+      message,
+      type,
+      title: options?.title,
+      duration: options?.duration || 5000,
+      position: options?.position || 'top-right',
+      animation: options?.animation || 'slide',
+      sound: options?.sound !== false,
+      actions: options?.actions,
+      ...options
+    })
   }
 
   private showErrorMessage(message: string): void {
@@ -387,32 +476,134 @@ class Main {
     const eventEmitter = this.app.getEventEmitter()
 
     eventEmitter.on('download:initialized', (data) => {
+      console.log('📦 Download section initialized with release data')
       this.updateDownloadSection(data.release)
       this.updateModStatus('Ready')
-      console.log('📦 Download section initialized with release data')
+
+      // Force update the download section immediately
+      setTimeout(() => {
+        this.updateDownloadSection(data.release)
+      }, 100)
     })
 
     eventEmitter.on('download:release-fetched', (release) => {
-      this.updateDownloadSection(release)
       console.log('📦 Download section updated with new release data')
+      this.updateDownloadSection(release)
     })
 
     eventEmitter.on('download:started', (data) => {
-      this.showNotification(`Starting download of ${data.total} files...`, 'info')
+      this.showNotification(`Starting download of ${data.total} files...`, 'loading', {
+        title: 'Download Started',
+        persistent: true,
+        id: 'download-progress'
+      })
       this.setDownloadButtonsLoading(true)
     })
 
     eventEmitter.on('download:progress', (data) => {
-      this.showNotification(`Downloaded ${data.current}/${data.total}: ${data.fileName}`, 'info')
+      const progress = Math.round((data.current / data.total) * 100)
+      this.notificationManager.updateProgress('download-progress', progress)
+
+      if (data.current === data.total) {
+        this.showNotification('All files downloaded successfully!', 'success', {
+          title: 'Download Complete',
+          animation: 'bounce'
+        })
+      }
     })
 
     eventEmitter.on('download:completed', () => {
-      this.showNotification('All files downloaded successfully!', 'success')
+      this.notificationManager.hide('download-progress')
+      this.showNotification('All files downloaded successfully!', 'success', {
+        title: 'Download Complete',
+        animation: 'bounce',
+        actions: [
+          {
+            id: 'open-folder',
+            label: 'Open Folder',
+            type: 'primary' as const,
+            callback: () => this.showNotification('Files saved to Downloads folder', 'info')
+          }
+        ]
+      })
       this.setDownloadButtonsLoading(false)
     })
 
-    eventEmitter.on('download:error', (error) => {
-      this.showNotification(`Download error: ${error}`, 'error')
+    eventEmitter.on('download:error', (errorData) => {
+      this.notificationManager.hide('download-progress')
+
+      const message = typeof errorData === 'string' ? errorData : errorData.message
+      const hasAction = typeof errorData === 'object' && errorData.action === 'redirect'
+
+      this.showNotification(message, 'error', {
+        title: 'Download Failed',
+        duration: hasAction ? 3000 : 0,
+        actions: [
+          {
+            id: 'retry',
+            label: 'Retry Download',
+            type: 'primary' as const,
+            callback: () => this.downloadManager.downloadAsset()
+          },
+          {
+            id: 'github',
+            label: 'Open GitHub Releases',
+            type: 'secondary' as const,
+            callback: () => window.open('https://github.com/therealsnopphin/CBot/releases', '_blank')
+          }
+        ]
+      })
+    })
+
+    eventEmitter.on('download:demo', (demoData) => {
+      const message = typeof demoData === 'string' ? demoData : demoData.message
+      const fileName = typeof demoData === 'object' ? demoData.fileName : 'files'
+
+      this.showNotification(
+        `Demo Mode: ${fileName} will be available on GitHub releases page`,
+        'info',
+        {
+          title: 'Demo Download',
+          duration: 4000,
+          actions: [
+            {
+              id: 'github',
+              label: 'View on GitHub',
+              type: 'primary' as const,
+              callback: () => window.open('https://github.com/therealsnopphin/CBot/releases', '_blank')
+            }
+          ]
+        }
+      )
+    })
+
+    eventEmitter.on('download:fallback', (fallbackData) => {
+      this.showNotification(
+        `Download initiated for ${fallbackData.fileName}. If download doesn't start, use the GitHub link.`,
+        'warning',
+        {
+          title: 'Download Started',
+          duration: 6000,
+          actions: [
+            {
+              id: 'github-fallback',
+              label: 'Open GitHub Releases',
+              type: 'primary' as const,
+              callback: () => window.open(fallbackData.fallbackUrl, '_blank')
+            },
+            {
+              id: 'retry-download',
+              label: 'Retry Download',
+              type: 'secondary' as const,
+              callback: () => {
+                if (fallbackData.url) {
+                  window.open(fallbackData.url, '_blank')
+                }
+              }
+            }
+          ]
+        }
+      )
     })
 
     eventEmitter.on('download:demo', (message) => {
@@ -452,9 +643,12 @@ class Main {
     const releaseDate = this.downloadManager.formatReleaseDate(release.published_at)
     const totalSize = this.downloadManager.getTotalDownloadSize()
 
-    // Update title
+    // Update title - remove loading state
     const titleElement = section.querySelector('.download-title')
-    if (titleElement) titleElement.textContent = release.name
+    if (titleElement) {
+      titleElement.textContent = release.name
+      titleElement.classList.remove('loading')
+    }
 
     // Update tag
     const tagElement = section.querySelector('.download-tag')
@@ -474,14 +668,15 @@ class Main {
     const descElement = section.querySelector('.download-description p')
     if (descElement) descElement.textContent = this.formatReleaseBody(release.body)
 
-    // Update download all button
+    // Update download all button - remove loading state
     const downloadAllBtn = section.querySelector('#download-all') as HTMLButtonElement
     if (downloadAllBtn) {
       downloadAllBtn.textContent = 'Download All Files'
       downloadAllBtn.disabled = false
+      downloadAllBtn.classList.remove('loading')
     }
 
-    // Update files list
+    // Update files list - replace loading content
     const filesListElement = section.querySelector('.files-list')
     if (filesListElement) {
       filesListElement.innerHTML = release.assets.map((asset: any) => `
@@ -497,10 +692,26 @@ class Main {
 
     // Update files header
     const filesHeaderElement = section.querySelector('.download-files h4')
-    if (filesHeaderElement) filesHeaderElement.textContent = 'Individual Files:'
+    if (filesHeaderElement) {
+      filesHeaderElement.textContent = 'Individual Files:'
+    }
+
+    // Remove any loading indicators
+    const loadingElements = section.querySelectorAll('.loading, [class*="loading"]')
+    loadingElements.forEach(el => {
+      if (el.classList.contains('loading')) {
+        el.classList.remove('loading')
+      }
+    })
 
     this.setupDownloadButtons()
     console.log('✅ Download section updated successfully')
+
+    // Show success notification
+    this.showNotification('Download section loaded successfully!', 'success', {
+      title: 'Ready to Download',
+      duration: 3000
+    })
   }
 
   private generateDownloadHTML(release: any): string {
@@ -648,26 +859,48 @@ class Main {
     const themeManager = this.app.getThemeManager()
 
     if (themeToggle && themeManager) {
-      // Set initial theme
+      // Set initial theme to Halo
       const savedTheme = themeManager.getThemePreference()
-      themeManager.setTheme(savedTheme)
+      const initialTheme = savedTheme === 'auto' ? 'halo' : savedTheme
+      themeManager.setTheme(initialTheme as any)
+      this.updateThemeToggleState(initialTheme)
 
-      themeToggle.addEventListener('click', () => {
-        themeManager.toggleTheme()
-        this.showNotification('Theme switched!', 'info')
+      // Add click handlers for each theme option
+      const themeOptions = themeToggle.querySelectorAll('.theme-option')
+      themeOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+          e.stopPropagation()
+          const selectedTheme = (option as HTMLElement).dataset.theme
+          if (selectedTheme) {
+            themeManager.setTheme(selectedTheme as any)
+            this.updateThemeToggleState(selectedTheme)
+            this.showNotification(`Switched to ${selectedTheme} theme!`, 'success')
 
-        // Add click effect
-        themeToggle.style.transform = 'scale(0.95)'
-        setTimeout(() => {
-          themeToggle.style.transform = 'scale(1)'
-        }, 150)
+            // Add click effect
+            option.classList.add('clicked')
+            setTimeout(() => option.classList.remove('clicked'), 200)
+          }
+        })
       })
 
       // Listen for theme changes
       themeManager.onThemeChange((theme) => {
         this.updateThemeEffects(theme)
+        this.updateThemeToggleState(theme)
       })
     }
+  }
+
+  private updateThemeToggleState(theme: string): void {
+    const themeOptions = document.querySelectorAll('.theme-option')
+    themeOptions.forEach(option => {
+      const optionTheme = (option as HTMLElement).dataset.theme
+      if (optionTheme === theme) {
+        option.classList.add('active')
+      } else {
+        option.classList.remove('active')
+      }
+    })
   }
 
   private updateThemeEffects(theme: string): void {
@@ -695,13 +928,41 @@ class Main {
     }, 300)
   }
 
+  private setupPageTransitions(): void {
+    // Add page transition effects
+    this.pageManager.onTransition((transition) => {
+      console.log(`🔄 Page transition: ${transition.from} → ${transition.to} (${transition.direction})`)
+
+      // Show notification for page changes (optional)
+      if (transition.to !== 'home') {
+        this.showNotification(`Navigated to ${transition.to.charAt(0).toUpperCase() + transition.to.slice(1)}`, 'info', {
+          title: 'Page Navigation',
+          duration: 2000
+        })
+      }
+
+      // Restart typing animations on new page
+      setTimeout(() => {
+        this.startTypingAnimations()
+      }, 300)
+    })
+
+    // Handle initial page load from URL
+    const currentHash = window.location.hash.slice(1)
+    if (currentHash && currentHash !== 'home') {
+      setTimeout(() => {
+        this.pageManager.navigateToPage(currentHash, false)
+      }, 1000)
+    }
+  }
+
   private restartTypingAnimations(): void {
     const heroTitle = document.querySelector('.hero-title .gradient-text') as HTMLElement
     if (heroTitle && !this.typingAnimation.isAnimating(heroTitle)) {
       const currentTheme = document.documentElement.getAttribute('data-theme')
       const effect = currentTheme === 'light' ? 'fade' : 'glitch'
 
-      this.typingAnimation.animate(heroTitle, heroTitle.dataset.text || 'Geometry Dash Automation', {
+      this.typingAnimation.animate(heroTitle, heroTitle.dataset.text || 'Cbot MRBEAST', {
         speed: 60,
         cursor: false,
         effect: effect as any,

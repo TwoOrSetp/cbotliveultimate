@@ -7,17 +7,24 @@ export interface ThemeColors {
   background: string
   surface: string
   surfaceElevated: string
+  surfaceGlass: string
   text: string
   textSecondary: string
   textMuted: string
+  textInverse: string
   border: string
   borderHover: string
+  borderGlow: string
   success: string
   warning: string
   error: string
   info: string
   shadow: string
+  shadowElevated: string
   glow: string
+  glowIntense: string
+  particle: string
+  aurora: string
 }
 
 export interface ThemeConfig {
@@ -44,6 +51,33 @@ export interface ThemeConfig {
     sm: string
     md: string
     lg: string
+    xl: string
+    glow: string
+    neon: string
+  }
+  gradients: {
+    primary: string
+    secondary: string
+    accent: string
+    aurora: string
+    cosmic: string
+    neon: string
+    glass: string
+  }
+  effects: {
+    blur: string
+    brightness: string
+    contrast: string
+    hue: string
+    saturation: string
+    backdropBlur: string
+    glassEffect: string
+  }
+  animations: {
+    duration: string
+    easing: string
+    bounce: string
+    elastic: string
   }
 }
 
@@ -64,30 +98,38 @@ export class ThemeManager {
   }
 
   private initializeDefaultThemes(): void {
-    const lightTheme: ThemeConfig = {
-      name: 'light',
+    // Halo Theme - Signature exclusive theme
+    const haloTheme: ThemeConfig = {
+      name: 'halo',
       colors: {
-        primary: '#00ff88',
-        secondary: '#0066ff',
-        accent: '#ff6600',
-        background: '#ffffff',
-        surface: '#f8fafc',
-        surfaceElevated: '#ffffff',
-        text: '#1a202c',
-        textSecondary: '#4a5568',
-        textMuted: '#718096',
-        border: '#e2e8f0',
-        borderHover: '#cbd5e0',
-        success: '#48bb78',
-        warning: '#ed8936',
-        error: '#f56565',
-        info: '#4299e1',
-        shadow: 'rgba(0, 0, 0, 0.1)',
-        glow: 'rgba(0, 255, 136, 0.3)'
+        primary: '#00d4ff',
+        secondary: '#7c3aed',
+        accent: '#f59e0b',
+        background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
+        surface: 'rgba(255, 255, 255, 0.05)',
+        surfaceElevated: 'rgba(255, 255, 255, 0.1)',
+        surfaceGlass: 'rgba(255, 255, 255, 0.08)',
+        text: '#ffffff',
+        textSecondary: '#e2e8f0',
+        textMuted: '#94a3b8',
+        textInverse: '#0f172a',
+        border: 'rgba(0, 212, 255, 0.2)',
+        borderHover: 'rgba(0, 212, 255, 0.4)',
+        borderGlow: 'rgba(0, 212, 255, 0.6)',
+        success: '#10b981',
+        warning: '#f59e0b',
+        error: '#ef4444',
+        info: '#3b82f6',
+        shadow: 'rgba(0, 0, 0, 0.3)',
+        shadowElevated: 'rgba(0, 0, 0, 0.5)',
+        glow: 'rgba(0, 212, 255, 0.4)',
+        glowIntense: 'rgba(0, 212, 255, 0.8)',
+        particle: '#00d4ff',
+        aurora: 'linear-gradient(45deg, #00d4ff, #7c3aed, #f59e0b)'
       },
       fonts: {
         primary: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-        secondary: 'Inter, sans-serif',
+        secondary: 'Orbitron, sans-serif',
         mono: 'JetBrains Mono, Consolas, monospace'
       },
       spacing: {
@@ -98,41 +140,156 @@ export class ThemeManager {
         xl: '2rem'
       },
       borderRadius: {
-        sm: '0.25rem',
-        md: '0.5rem',
-        lg: '0.75rem'
+        sm: '0.5rem',
+        md: '0.75rem',
+        lg: '1rem'
       },
       shadows: {
-        sm: '0 1px 3px rgba(0, 0, 0, 0.1)',
-        md: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        lg: '0 10px 15px rgba(0, 0, 0, 0.1)'
+        sm: '0 2px 8px rgba(0, 212, 255, 0.1)',
+        md: '0 8px 25px rgba(0, 212, 255, 0.15)',
+        lg: '0 25px 50px rgba(0, 212, 255, 0.25)',
+        xl: '0 35px 60px rgba(0, 212, 255, 0.4)',
+        glow: '0 0 20px rgba(0, 212, 255, 0.5)',
+        neon: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor'
+      },
+      gradients: {
+        primary: 'linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%)',
+        secondary: 'linear-gradient(135deg, #7c3aed 0%, #f59e0b 100%)',
+        accent: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+        aurora: 'linear-gradient(45deg, #00d4ff 0%, #7c3aed 33%, #f59e0b 66%, #ef4444 100%)',
+        cosmic: 'radial-gradient(ellipse at center, #7c3aed 0%, #1a1a2e 70%)',
+        neon: 'linear-gradient(90deg, #00d4ff, #7c3aed, #f59e0b)',
+        glass: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
+      },
+      effects: {
+        blur: 'blur(10px)',
+        brightness: 'brightness(1.1)',
+        contrast: 'contrast(1.1)',
+        hue: 'hue-rotate(0deg)',
+        saturation: 'saturate(1.2)',
+        backdropBlur: 'blur(20px)',
+        glassEffect: 'backdrop-filter: blur(20px); background: rgba(255,255,255,0.1);'
+      },
+      animations: {
+        duration: '0.4s',
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        elastic: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
       }
     }
 
+    // Light Theme - Clean and modern
+    const lightTheme: ThemeConfig = {
+      name: 'light',
+      colors: {
+        primary: '#6366f1',
+        secondary: '#8b5cf6',
+        accent: '#f59e0b',
+        background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+        surface: 'rgba(255, 255, 255, 0.8)',
+        surfaceElevated: 'rgba(255, 255, 255, 0.95)',
+        surfaceGlass: 'rgba(255, 255, 255, 0.7)',
+        text: '#1e293b',
+        textSecondary: '#475569',
+        textMuted: '#64748b',
+        textInverse: '#ffffff',
+        border: 'rgba(99, 102, 241, 0.2)',
+        borderHover: 'rgba(99, 102, 241, 0.4)',
+        borderGlow: 'rgba(99, 102, 241, 0.6)',
+        success: '#10b981',
+        warning: '#f59e0b',
+        error: '#ef4444',
+        info: '#3b82f6',
+        shadow: 'rgba(0, 0, 0, 0.1)',
+        shadowElevated: 'rgba(0, 0, 0, 0.15)',
+        glow: 'rgba(99, 102, 241, 0.3)',
+        glowIntense: 'rgba(99, 102, 241, 0.6)',
+        particle: '#6366f1',
+        aurora: 'linear-gradient(45deg, #6366f1, #8b5cf6, #f59e0b)'
+      },
+      fonts: {
+        primary: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        secondary: 'Orbitron, sans-serif',
+        mono: 'JetBrains Mono, Consolas, monospace'
+      },
+      spacing: {
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem'
+      },
+      borderRadius: {
+        sm: '0.5rem',
+        md: '0.75rem',
+        lg: '1rem'
+      },
+      shadows: {
+        sm: '0 2px 8px rgba(99, 102, 241, 0.1)',
+        md: '0 8px 25px rgba(99, 102, 241, 0.15)',
+        lg: '0 25px 50px rgba(99, 102, 241, 0.25)',
+        xl: '0 35px 60px rgba(99, 102, 241, 0.4)',
+        glow: '0 0 20px rgba(99, 102, 241, 0.4)',
+        neon: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor'
+      },
+      gradients: {
+        primary: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+        secondary: 'linear-gradient(135deg, #8b5cf6 0%, #f59e0b 100%)',
+        accent: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+        aurora: 'linear-gradient(45deg, #6366f1 0%, #8b5cf6 33%, #f59e0b 66%, #ef4444 100%)',
+        cosmic: 'radial-gradient(ellipse at center, #8b5cf6 0%, #f8fafc 70%)',
+        neon: 'linear-gradient(90deg, #6366f1, #8b5cf6, #f59e0b)',
+        glass: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 100%)'
+      },
+      effects: {
+        blur: 'blur(10px)',
+        brightness: 'brightness(1.05)',
+        contrast: 'contrast(1.05)',
+        hue: 'hue-rotate(0deg)',
+        saturation: 'saturate(1.1)',
+        backdropBlur: 'blur(20px)',
+        glassEffect: 'backdrop-filter: blur(20px); background: rgba(255,255,255,0.8);'
+      },
+      animations: {
+        duration: '0.3s',
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        elastic: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+      }
+    }
+
+    // Dark Theme - Sleek and professional
     const darkTheme: ThemeConfig = {
       name: 'dark',
       colors: {
         primary: '#00ff88',
         secondary: '#0066ff',
         accent: '#ff6600',
-        background: '#0a0a0a',
-        surface: '#1a1a1a',
-        surfaceElevated: '#2d2d2d',
-        text: '#ffffff',
-        textSecondary: '#cccccc',
-        textMuted: '#a0aec0',
-        border: '#333333',
-        borderHover: '#4a5568',
-        success: '#68d391',
-        warning: '#fbb040',
-        error: '#fc8181',
-        info: '#63b3ed',
-        shadow: 'rgba(0, 0, 0, 0.5)',
-        glow: 'rgba(0, 255, 136, 0.4)'
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+        surface: 'rgba(255, 255, 255, 0.05)',
+        surfaceElevated: 'rgba(255, 255, 255, 0.1)',
+        surfaceGlass: 'rgba(255, 255, 255, 0.08)',
+        text: '#f1f5f9',
+        textSecondary: '#cbd5e1',
+        textMuted: '#94a3b8',
+        textInverse: '#0f172a',
+        border: 'rgba(0, 255, 136, 0.2)',
+        borderHover: 'rgba(0, 255, 136, 0.4)',
+        borderGlow: 'rgba(0, 255, 136, 0.6)',
+        success: '#10b981',
+        warning: '#f59e0b',
+        error: '#ef4444',
+        info: '#3b82f6',
+        shadow: 'rgba(0, 0, 0, 0.3)',
+        shadowElevated: 'rgba(0, 0, 0, 0.5)',
+        glow: 'rgba(0, 255, 136, 0.4)',
+        glowIntense: 'rgba(0, 255, 136, 0.8)',
+        particle: '#00ff88',
+        aurora: 'linear-gradient(45deg, #00ff88, #0066ff, #ff6600)'
       },
       fonts: {
         primary: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-        secondary: 'Inter, sans-serif',
+        secondary: 'Orbitron, sans-serif',
         mono: 'JetBrains Mono, Consolas, monospace'
       },
       spacing: {
@@ -143,17 +300,45 @@ export class ThemeManager {
         xl: '2rem'
       },
       borderRadius: {
-        sm: '0.25rem',
-        md: '0.5rem',
-        lg: '0.75rem'
+        sm: '0.5rem',
+        md: '0.75rem',
+        lg: '1rem'
       },
       shadows: {
-        sm: '0 1px 3px rgba(0, 0, 0, 0.3)',
-        md: '0 4px 6px rgba(0, 0, 0, 0.3)',
-        lg: '0 10px 15px rgba(0, 0, 0, 0.3)'
+        sm: '0 2px 8px rgba(0, 255, 136, 0.1)',
+        md: '0 8px 25px rgba(0, 255, 136, 0.15)',
+        lg: '0 25px 50px rgba(0, 255, 136, 0.25)',
+        xl: '0 35px 60px rgba(0, 255, 136, 0.4)',
+        glow: '0 0 20px rgba(0, 255, 136, 0.5)',
+        neon: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor'
+      },
+      gradients: {
+        primary: 'linear-gradient(135deg, #00ff88 0%, #0066ff 100%)',
+        secondary: 'linear-gradient(135deg, #0066ff 0%, #ff6600 100%)',
+        accent: 'linear-gradient(135deg, #ff6600 0%, #ef4444 100%)',
+        aurora: 'linear-gradient(45deg, #00ff88 0%, #0066ff 33%, #ff6600 66%, #ef4444 100%)',
+        cosmic: 'radial-gradient(ellipse at center, #0066ff 0%, #1e293b 70%)',
+        neon: 'linear-gradient(90deg, #00ff88, #0066ff, #ff6600)',
+        glass: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
+      },
+      effects: {
+        blur: 'blur(10px)',
+        brightness: 'brightness(1.1)',
+        contrast: 'contrast(1.1)',
+        hue: 'hue-rotate(0deg)',
+        saturation: 'saturate(1.2)',
+        backdropBlur: 'blur(20px)',
+        glassEffect: 'backdrop-filter: blur(20px); background: rgba(255,255,255,0.1);'
+      },
+      animations: {
+        duration: '0.4s',
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+        bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        elastic: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
       }
     }
 
+    this.themes.set('halo', haloTheme)
     this.themes.set('light', lightTheme)
     this.themes.set('dark', darkTheme)
   }
