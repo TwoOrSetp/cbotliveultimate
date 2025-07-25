@@ -1,12 +1,12 @@
 import './styles/main.css'
 import { Application } from './app/Application'
-import { CbotManager } from './app/CbotManager'
+import { DownloadManager } from './app/CbotManager'
 import { LoadingManager } from './utils/LoadingManager'
 import { TypingAnimation } from './utils/TypingAnimation'
 
 class Main {
   private app: Application
-  private cbotManager: CbotManager
+  private downloadManager: DownloadManager
   private loadingManager: LoadingManager
   private typingAnimation: TypingAnimation
 
@@ -14,20 +14,20 @@ class Main {
     this.loadingManager = new LoadingManager()
     this.typingAnimation = new TypingAnimation()
     this.app = new Application()
-    this.cbotManager = new CbotManager(this.app.getEventEmitter())
+    this.downloadManager = new DownloadManager(this.app.getEventEmitter())
   }
 
   async initialize(): Promise<void> {
     try {
       await this.showLoadingScreen()
       await this.app.initialize()
-      await this.cbotManager.initialize()
+      await this.downloadManager.initialize()
       await this.hideLoadingScreen()
       this.startTypingAnimations()
       this.setupEventListeners()
-      this.setupCbotEventListeners()
+      this.setupDownloadEventListeners()
 
-      console.log('🚀 Cbot Application initialized successfully!')
+      console.log('🚀 Cbot Website initialized successfully!')
     } catch (error) {
       console.error('❌ Failed to initialize application:', error)
       this.showErrorMessage('Failed to load application. Please refresh the page.')
@@ -117,32 +117,31 @@ class Main {
   }
 
   private setupEventListeners(): void {
-    const startBotBtn = document.getElementById('start-bot')
-    const openSettingsBtn = document.getElementById('open-settings')
+    const getStartedBtn = document.getElementById('start-bot')
+    const learnMoreBtn = document.getElementById('open-settings')
     const downloadModBtn = document.getElementById('download-mod')
 
-    if (startBotBtn) {
-      startBotBtn.addEventListener('click', () => {
-        this.handleStartBot()
+    if (getStartedBtn) {
+      getStartedBtn.addEventListener('click', () => {
+        this.handleGetStarted()
       })
     }
 
-    if (openSettingsBtn) {
-      openSettingsBtn.addEventListener('click', () => {
-        this.handleOpenSettings()
+    if (learnMoreBtn) {
+      learnMoreBtn.addEventListener('click', () => {
+        this.handleLearnMore()
       })
     }
 
     if (downloadModBtn) {
       downloadModBtn.addEventListener('click', () => {
-        this.handleDownloadMod()
+        this.handleDownloadRedirect()
       })
     }
 
     this.setupNavigation()
     this.setupScrollEffects()
     this.setupStatsAnimation()
-    this.setupSettingsControls()
   }
 
   private setupNavigation(): void {
@@ -241,26 +240,19 @@ class Main {
     }
   }
 
-  private handleStartBot(): void {
-    const status = this.cbotManager.getStatus()
-
-    if (status.isRunning) {
-      this.cbotManager.stop()
-      this.showNotification('Cbot stopped', 'info')
-    } else {
-      this.cbotManager.start()
-      this.showNotification('Cbot started successfully!', 'success')
-    }
+  private handleGetStarted(): void {
+    this.scrollToSection('features')
+    this.showNotification('Explore Cbot features below!', 'info')
   }
 
-  private handleOpenSettings(): void {
-    this.scrollToSection('settings')
-    this.showNotification('Configure your bot settings below', 'info')
+  private handleLearnMore(): void {
+    this.scrollToSection('about')
+    this.showNotification('Learn more about Cbot', 'info')
   }
 
-  private handleDownloadMod(): void {
-    this.showNotification('Download feature coming soon!', 'info')
-    console.log('Download mod clicked!')
+  private handleDownloadRedirect(): void {
+    this.scrollToSection('download')
+    this.showNotification('Redirecting to download section...', 'info')
   }
 
   private showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
@@ -307,82 +299,47 @@ class Main {
     }
   }
 
-  private setupCbotEventListeners(): void {
+  private setupDownloadEventListeners(): void {
     const eventEmitter = this.app.getEventEmitter()
 
-    eventEmitter.on('cbot:started', () => {
-      this.updateBotButton('Stop Bot', true)
-      this.updateModStatus('Running')
-    })
-
-    eventEmitter.on('cbot:stopped', () => {
-      this.updateBotButton('Start Bot', false)
+    eventEmitter.on('download:initialized', (data) => {
+      this.updateDownloadSection(data.release)
       this.updateModStatus('Ready')
     })
 
-    eventEmitter.on('cbot:metrics-updated', (metrics) => {
-      this.updateStatsDisplay(metrics)
+    eventEmitter.on('download:release-fetched', (release) => {
+      this.updateDownloadSection(release)
+    })
+
+    eventEmitter.on('download:started', (data) => {
+      this.showNotification(`Starting download of ${data.total} files...`, 'info')
+    })
+
+    eventEmitter.on('download:progress', (data) => {
+      this.showNotification(`Downloaded ${data.current}/${data.total}: ${data.fileName}`, 'info')
+    })
+
+    eventEmitter.on('download:completed', () => {
+      this.showNotification('All files downloaded successfully!', 'success')
+    })
+
+    eventEmitter.on('download:error', (error) => {
+      this.showNotification(`Download error: ${error}`, 'error')
     })
   }
 
-  private setupSettingsControls(): void {
-    const controls = [
-      'click-delay', 'randomization', 'hold-duration',
-      'max-cps', 'accuracy', 'adaptive-timing',
-      'anti-detection', 'human-behavior', 'safe-mode'
-    ]
+  private updateDownloadSection(release: any): void {
+    if (!release) return
 
-    controls.forEach(controlId => {
-      const element = document.getElementById(controlId)
-      if (element) {
-        element.addEventListener('change', () => {
-          this.handleSettingChange(controlId, element)
-        })
-      }
-    })
+    this.createDownloadSection(release)
   }
 
-  private handleSettingChange(settingId: string, element: HTMLElement): void {
-    const input = element as HTMLInputElement
-    let value: any = input.value
-
-    if (input.type === 'checkbox') {
-      value = input.checked
-    } else if (input.type === 'range') {
-      value = parseInt(value)
-      this.updateSettingDisplay(settingId, value)
-    }
-
-    const configUpdate: any = {}
-    configUpdate[this.camelCase(settingId)] = value
-
-    this.cbotManager.updateConfig(configUpdate)
-  }
-
-  private camelCase(str: string): string {
-    return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase())
-  }
-
-  private updateSettingDisplay(settingId: string, value: number): void {
-    const valueElement = document.querySelector(`#${settingId} + .setting-value`)
-    if (valueElement) {
-      let displayValue = value.toString()
-
-      if (settingId.includes('delay') || settingId.includes('duration')) {
-        displayValue += 'ms'
-      } else if (settingId.includes('randomization') || settingId.includes('accuracy')) {
-        displayValue += '%'
-      }
-
-      valueElement.textContent = displayValue
-    }
-  }
-
-  private updateBotButton(text: string, isActive: boolean): void {
-    const startButton = document.getElementById('start-bot')
-    if (startButton) {
-      startButton.textContent = text
-      startButton.classList.toggle('active', isActive)
+  private createDownloadSection(release: any): void {
+    const downloadSection = document.getElementById('download')
+    if (!downloadSection) {
+      this.addDownloadSectionToHTML(release)
+    } else {
+      this.updateExistingDownloadSection(release, downloadSection)
     }
   }
 
@@ -393,13 +350,107 @@ class Main {
     }
   }
 
-  private updateStatsDisplay(metrics: any): void {
-    const statNumbers = document.querySelectorAll('.stat-number')
-    if (statNumbers.length >= 3) {
-      (statNumbers[0] as HTMLElement).textContent = metrics.accuracy.toFixed(1)
-      (statNumbers[1] as HTMLElement).textContent = Math.round(metrics.clicksPerSecond).toString()
-      (statNumbers[2] as HTMLElement).textContent = metrics.totalClicks.toString()
+  private addDownloadSectionToHTML(release: any): void {
+    const aboutSection = document.getElementById('about')
+    if (!aboutSection) return
+
+    const downloadHTML = this.generateDownloadHTML(release)
+    aboutSection.insertAdjacentHTML('beforebegin', downloadHTML)
+
+    this.setupDownloadButtons()
+  }
+
+  private updateExistingDownloadSection(release: any, section: HTMLElement): void {
+    const container = section.querySelector('.container')
+    if (container) {
+      container.innerHTML = this.generateDownloadContent(release)
+      this.setupDownloadButtons()
     }
+  }
+
+  private generateDownloadHTML(release: any): string {
+    return `
+      <section id="download" class="download-section">
+        <div class="container">
+          ${this.generateDownloadContent(release)}
+        </div>
+      </section>
+    `
+  }
+
+  private generateDownloadContent(release: any): string {
+    const releaseDate = this.downloadManager.formatReleaseDate(release.published_at)
+    const totalSize = this.downloadManager.getTotalDownloadSize()
+
+    return `
+      <h2 class="section-title">Download Cbot</h2>
+      <div class="download-card">
+        <div class="download-header">
+          <h3 class="download-title">${release.name}</h3>
+          <span class="download-tag">${release.tag_name}</span>
+        </div>
+        <div class="download-info">
+          <p class="download-date">Released: ${releaseDate}</p>
+          <p class="download-size">Total Size: ${totalSize}</p>
+          <p class="download-assets">${release.assets.length} files available</p>
+        </div>
+        <div class="download-description">
+          <p>${this.formatReleaseBody(release.body)}</p>
+        </div>
+        <div class="download-actions">
+          <button class="btn btn-primary btn-large" id="download-all">
+            Download All Files
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"/>
+            </svg>
+          </button>
+          <a href="${release.html_url}" target="_blank" class="btn btn-outline btn-large">
+            View on GitHub
+          </a>
+        </div>
+        <div class="download-files">
+          <h4>Individual Files:</h4>
+          <div class="files-list">
+            ${release.assets.map((asset: any) => `
+              <div class="file-item">
+                <span class="file-name">${asset.name}</span>
+                <span class="file-size">${this.downloadManager.formatFileSize(asset.size)}</span>
+                <button class="btn btn-outline btn-small download-file" data-asset="${asset.name}">
+                  Download
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `
+  }
+
+  private formatReleaseBody(body: string): string {
+    if (!body) return 'Latest release of Cbot with improvements and bug fixes.'
+
+    return body.split('\n')[0] || body.substring(0, 200) + (body.length > 200 ? '...' : '')
+  }
+
+  private setupDownloadButtons(): void {
+    const downloadAllBtn = document.getElementById('download-all')
+    if (downloadAllBtn) {
+      downloadAllBtn.addEventListener('click', () => {
+        this.downloadManager.downloadAsset()
+        this.showNotification('Starting download...', 'info')
+      })
+    }
+
+    const downloadFileButtons = document.querySelectorAll('.download-file')
+    downloadFileButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        const assetName = (e.target as HTMLElement).dataset.asset
+        if (assetName) {
+          this.downloadManager.downloadAsset(assetName)
+          this.showNotification(`Downloading ${assetName}...`, 'info')
+        }
+      })
+    })
   }
 }
 

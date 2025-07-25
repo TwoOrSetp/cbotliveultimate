@@ -1,47 +1,40 @@
 import { EventEmitter } from '../utils/EventEmitter'
 
-export interface CbotConfig {
-  clickDelay: number
-  randomization: number
-  holdDuration: number
-  maxCPS: number
-  accuracy: number
-  adaptiveTiming: boolean
-  antiDetection: boolean
-  humanBehavior: boolean
-  safeMode: boolean
+export interface GitHubRelease {
+  tag_name: string
+  name: string
+  body: string
+  published_at: string
+  assets: GitHubAsset[]
+  html_url: string
+  prerelease: boolean
+  draft: boolean
 }
 
-export interface CbotMetrics {
-  totalClicks: number
-  accuracy: number
-  clicksPerSecond: number
-  averageDelay: number
-  uptime: number
-  levelsCompleted: number
+export interface GitHubAsset {
+  name: string
+  download_url: string
+  size: number
+  content_type: string
+  browser_download_url: string
 }
 
-export interface CbotStatus {
-  isRunning: boolean
-  isPaused: boolean
-  currentLevel: string
-  performance: 'excellent' | 'good' | 'average' | 'poor'
-  lastError?: string
+export interface DownloadStatus {
+  isLoading: boolean
+  hasError: boolean
+  errorMessage?: string
+  lastUpdated?: string
 }
 
-export class CbotManager {
+export class DownloadManager {
   private eventEmitter: EventEmitter
-  private config: CbotConfig
-  private metrics: CbotMetrics
-  private status: CbotStatus
+  private latestRelease: GitHubRelease | null = null
+  private status: DownloadStatus
   private isInitialized: boolean = false
-  private clickInterval: number | null = null
-  private startTime: number = 0
+  private readonly GITHUB_API_URL = 'https://api.github.com/repos/therealsnopphin/CBot/releases/latest'
 
   constructor(eventEmitter: EventEmitter) {
     this.eventEmitter = eventEmitter
-    this.config = this.getDefaultConfig()
-    this.metrics = this.getDefaultMetrics()
     this.status = this.getDefaultStatus()
   }
 
@@ -49,303 +42,178 @@ export class CbotManager {
     if (this.isInitialized) return
 
     try {
-      await this.loadConfig()
       this.setupEventListeners()
+      await this.fetchLatestRelease()
       this.isInitialized = true
-      
-      console.log('🤖 Cbot Manager initialized')
-      this.eventEmitter.emit('cbot:initialized', { config: this.config })
+
+      console.log('📦 Download Manager initialized')
+      this.eventEmitter.emit('download:initialized', { release: this.latestRelease })
     } catch (error) {
-      console.error('❌ Failed to initialize Cbot Manager:', error)
+      console.error('❌ Failed to initialize Download Manager:', error)
+      this.status.hasError = true
+      this.status.errorMessage = 'Failed to fetch latest release'
       throw error
     }
   }
 
-  private getDefaultConfig(): CbotConfig {
+  private getDefaultStatus(): DownloadStatus {
     return {
-      clickDelay: 10,
-      randomization: 15,
-      holdDuration: 50,
-      maxCPS: 20,
-      accuracy: 95,
-      adaptiveTiming: true,
-      antiDetection: true,
-      humanBehavior: true,
-      safeMode: true
+      isLoading: false,
+      hasError: false,
+      lastUpdated: undefined
     }
   }
 
-  private getDefaultMetrics(): CbotMetrics {
-    return {
-      totalClicks: 0,
-      accuracy: 0,
-      clicksPerSecond: 0,
-      averageDelay: 0,
-      uptime: 0,
-      levelsCompleted: 0
-    }
-  }
+  private async fetchLatestRelease(): Promise<void> {
+    this.status.isLoading = true
+    this.status.hasError = false
 
-  private getDefaultStatus(): CbotStatus {
-    return {
-      isRunning: false,
-      isPaused: false,
-      currentLevel: 'None',
-      performance: 'excellent'
-    }
-  }
-
-  private async loadConfig(): Promise<void> {
     try {
-      const savedConfig = localStorage.getItem('cbot-config')
-      if (savedConfig) {
-        this.config = { ...this.config, ...JSON.parse(savedConfig) }
+      console.log('🔄 Fetching latest release from GitHub...')
+      const response = await fetch(this.GITHUB_API_URL)
+
+      if (!response.ok) {
+        throw new Error(`GitHub API error: ${response.status} ${response.statusText}`)
       }
-    } catch (error) {
-      console.warn('Failed to load saved config:', error)
-    }
-  }
 
-  private saveConfig(): void {
-    try {
-      localStorage.setItem('cbot-config', JSON.stringify(this.config))
+      this.latestRelease = await response.json()
+      this.status.lastUpdated = new Date().toISOString()
+
+      console.log('✅ Latest release fetched:', this.latestRelease?.tag_name)
+      this.eventEmitter.emit('download:release-fetched', this.latestRelease)
+
     } catch (error) {
-      console.warn('Failed to save config:', error)
+      console.error('❌ Failed to fetch latest release:', error)
+      this.status.hasError = true
+      this.status.errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      this.eventEmitter.emit('download:error', this.status.errorMessage)
+    } finally {
+      this.status.isLoading = false
     }
   }
 
   private setupEventListeners(): void {
-    this.eventEmitter.on('cbot:start', () => this.start())
-    this.eventEmitter.on('cbot:stop', () => this.stop())
-    this.eventEmitter.on('cbot:pause', () => this.pause())
-    this.eventEmitter.on('cbot:resume', () => this.resume())
-    this.eventEmitter.on('cbot:config-update', (newConfig) => this.updateConfig(newConfig))
+    this.eventEmitter.on('download:refresh', () => this.fetchLatestRelease())
+    this.eventEmitter.on('download:start', (assetName?: string) => this.downloadAsset(assetName))
   }
 
-  start(): void {
-    if (this.status.isRunning) return
-
-    this.status.isRunning = true
-    this.status.isPaused = false
-    this.startTime = Date.now()
-    
-    this.startClickLoop()
-    this.startMetricsUpdate()
-    
-    console.log('🚀 Cbot started')
-    this.eventEmitter.emit('cbot:started', this.status)
-  }
-
-  stop(): void {
-    if (!this.status.isRunning) return
-
-    this.status.isRunning = false
-    this.status.isPaused = false
-    
-    this.stopClickLoop()
-    
-    console.log('⏹️ Cbot stopped')
-    this.eventEmitter.emit('cbot:stopped', this.status)
-  }
-
-  pause(): void {
-    if (!this.status.isRunning || this.status.isPaused) return
-
-    this.status.isPaused = true
-    this.stopClickLoop()
-    
-    console.log('⏸️ Cbot paused')
-    this.eventEmitter.emit('cbot:paused', this.status)
-  }
-
-  resume(): void {
-    if (!this.status.isRunning || !this.status.isPaused) return
-
-    this.status.isPaused = false
-    this.startClickLoop()
-    
-    console.log('▶️ Cbot resumed')
-    this.eventEmitter.emit('cbot:resumed', this.status)
-  }
-
-  private startClickLoop(): void {
-    if (this.clickInterval) return
-
-    const baseDelay = this.config.clickDelay
-    const performClick = () => {
-      if (!this.status.isRunning || this.status.isPaused) return
-
-      this.executeClick()
-      
-      const randomFactor = this.config.humanBehavior ? 
-        (Math.random() - 0.5) * (this.config.randomization / 100) : 0
-      const delay = baseDelay * (1 + randomFactor)
-      
-      setTimeout(performClick, Math.max(1, delay))
+  async downloadAsset(assetName?: string): Promise<void> {
+    if (!this.latestRelease) {
+      console.warn('⚠️ No release data available')
+      this.eventEmitter.emit('download:error', 'No release data available')
+      return
     }
 
-    performClick()
-  }
-
-  private stopClickLoop(): void {
-    if (this.clickInterval) {
-      clearInterval(this.clickInterval)
-      this.clickInterval = null
-    }
-  }
-
-  private executeClick(): void {
-    if (!this.shouldClick()) return
-
-    this.simulateClick()
-    this.metrics.totalClicks++
-    
-    this.eventEmitter.emit('cbot:click', {
-      timestamp: Date.now(),
-      delay: this.config.clickDelay,
-      position: this.getClickPosition()
-    })
-  }
-
-  private shouldClick(): boolean {
-    if (this.config.safeMode && !this.isGeometryDashActive()) {
-      return false
-    }
-
-    const currentCPS = this.metrics.clicksPerSecond
-    if (currentCPS >= this.config.maxCPS) {
-      return false
-    }
-
-    if (this.config.adaptiveTiming) {
-      return this.adaptiveClickDecision()
-    }
-
-    return true
-  }
-
-  private isGeometryDashActive(): boolean {
-    return document.hasFocus() && document.title.includes('Geometry Dash')
-  }
-
-  private adaptiveClickDecision(): boolean {
-    const accuracy = this.metrics.accuracy
-    const targetAccuracy = this.config.accuracy
-
-    if (accuracy < targetAccuracy - 5) {
-      return Math.random() < 0.7
-    } else if (accuracy > targetAccuracy + 5) {
-      return Math.random() < 0.95
-    }
-
-    return Math.random() < 0.85
-  }
-
-  private simulateClick(): void {
-    const clickEvent = new MouseEvent('click', {
-      bubbles: true,
-      cancelable: true,
-      view: window
-    })
-
-    const target = this.getClickTarget()
-    if (target) {
-      target.dispatchEvent(clickEvent)
-    }
-  }
-
-  private getClickTarget(): Element | null {
-    return document.elementFromPoint(
-      window.innerWidth / 2,
-      window.innerHeight / 2
-    )
-  }
-
-  private getClickPosition(): { x: number; y: number } {
-    const baseX = window.innerWidth / 2
-    const baseY = window.innerHeight / 2
-    
-    if (this.config.humanBehavior) {
-      const variance = 10
-      return {
-        x: baseX + (Math.random() - 0.5) * variance,
-        y: baseY + (Math.random() - 0.5) * variance
+    try {
+      if (assetName) {
+        const asset = this.latestRelease.assets.find(a => a.name === assetName)
+        if (asset) {
+          await this.downloadFile(asset.browser_download_url, asset.name)
+        } else {
+          throw new Error(`Asset '${assetName}' not found`)
+        }
+      } else {
+        await this.downloadAllAssets()
       }
+    } catch (error) {
+      console.error('❌ Download failed:', error)
+      this.eventEmitter.emit('download:error', error instanceof Error ? error.message : 'Download failed')
     }
-
-    return { x: baseX, y: baseY }
   }
 
-  private startMetricsUpdate(): void {
-    setInterval(() => {
-      if (this.status.isRunning) {
-        this.updateMetrics()
+  private async downloadAllAssets(): Promise<void> {
+    if (!this.latestRelease?.assets.length) {
+      throw new Error('No assets available for download')
+    }
+
+    console.log('📦 Starting download of all assets...')
+    this.eventEmitter.emit('download:started', { total: this.latestRelease.assets.length })
+
+    for (let i = 0; i < this.latestRelease.assets.length; i++) {
+      const asset = this.latestRelease.assets[i]
+      await this.downloadFile(asset.browser_download_url, asset.name)
+
+      this.eventEmitter.emit('download:progress', {
+        current: i + 1,
+        total: this.latestRelease.assets.length,
+        fileName: asset.name
+      })
+    }
+
+    console.log('✅ All assets downloaded successfully')
+    this.eventEmitter.emit('download:completed')
+  }
+
+  private async downloadFile(url: string, fileName: string): Promise<void> {
+    try {
+      console.log(`📥 Downloading ${fileName}...`)
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`Failed to download ${fileName}: ${response.status} ${response.statusText}`)
       }
-    }, 1000)
-  }
 
-  private updateMetrics(): void {
-    const now = Date.now()
-    const uptime = (now - this.startTime) / 1000
-    
-    this.metrics.uptime = uptime
-    this.metrics.clicksPerSecond = this.metrics.totalClicks / Math.max(uptime, 1)
-    this.metrics.accuracy = this.calculateAccuracy()
-    this.metrics.averageDelay = this.config.clickDelay
-    
-    this.updatePerformanceStatus()
-    this.eventEmitter.emit('cbot:metrics-updated', this.metrics)
-  }
+      const blob = await response.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
 
-  private calculateAccuracy(): number {
-    const baseAccuracy = this.config.accuracy
-    const variance = Math.random() * 2 - 1
-    return Math.max(0, Math.min(100, baseAccuracy + variance))
-  }
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = fileName
+      link.style.display = 'none'
 
-  private updatePerformanceStatus(): void {
-    const accuracy = this.metrics.accuracy
-    
-    if (accuracy >= 95) {
-      this.status.performance = 'excellent'
-    } else if (accuracy >= 85) {
-      this.status.performance = 'good'
-    } else if (accuracy >= 70) {
-      this.status.performance = 'average'
-    } else {
-      this.status.performance = 'poor'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      window.URL.revokeObjectURL(downloadUrl)
+
+      console.log(`✅ Downloaded ${fileName}`)
+
+    } catch (error) {
+      console.error(`❌ Failed to download ${fileName}:`, error)
+      throw error
     }
   }
 
-  updateConfig(newConfig: Partial<CbotConfig>): void {
-    this.config = { ...this.config, ...newConfig }
-    this.saveConfig()
-    
-    console.log('⚙️ Cbot config updated:', newConfig)
-    this.eventEmitter.emit('cbot:config-updated', this.config)
+  getLatestRelease(): GitHubRelease | null {
+    return this.latestRelease
   }
 
-  getConfig(): CbotConfig {
-    return { ...this.config }
-  }
-
-  getMetrics(): CbotMetrics {
-    return { ...this.metrics }
-  }
-
-  getStatus(): CbotStatus {
+  getDownloadStatus(): DownloadStatus {
     return { ...this.status }
   }
 
-  resetMetrics(): void {
-    this.metrics = this.getDefaultMetrics()
-    this.eventEmitter.emit('cbot:metrics-reset')
+  async refreshRelease(): Promise<void> {
+    await this.fetchLatestRelease()
+  }
+
+  formatReleaseDate(dateString: string): string {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
+
+  formatFileSize(bytes: number): string {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    if (bytes === 0) return '0 Bytes'
+
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i]
+  }
+
+  getTotalDownloadSize(): string {
+    if (!this.latestRelease?.assets.length) return '0 Bytes'
+
+    const totalBytes = this.latestRelease.assets.reduce((sum, asset) => sum + asset.size, 0)
+    return this.formatFileSize(totalBytes)
   }
 
   destroy(): void {
-    this.stop()
     this.eventEmitter.removeAllListeners()
     this.isInitialized = false
-    console.log('🤖 Cbot Manager destroyed')
+    console.log('📦 Download Manager destroyed')
   }
 }
