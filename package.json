@@ -1,7 +1,7 @@
 {
-  "name": "professional-portfolio-website",
-  "version": "1.0.0",
-  "description": "A modern, responsive portfolio website with typing animations and direct download functionality",
+  "name": "cbot-website",
+  "version": "2.0.0",
+  "description": "Official website for cbot - Advanced Minecraft client with professional features and GitHub API integration",
   "main": "index.html",
   "scripts": {
     "start": "npx serve . -p 3000",
@@ -16,15 +16,19 @@
     "deploy": "echo 'Deployment handled by GitHub Actions'"
   },
   "keywords": [
-    "portfolio",
+    "cbot",
+    "minecraft",
+    "client",
     "website",
     "responsive",
     "vanilla-js",
     "css3",
     "html5",
     "github-pages",
+    "github-api",
     "typing-animation",
-    "modern-design"
+    "modern-design",
+    "multi-page"
   ],
   "author": "Professional Developer",
   "license": "MIT",

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeIntersectionObserver();
     initializeParallaxEffect();
     initializeNavbarBehavior();
+    initializeNavigation();
 });
 
 function initializeTypingAnimations() {
@@ -42,24 +43,40 @@ function typeText(element, text, speed) {
 
 function initializeSmoothScrolling() {
     const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
-    
+
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            
+
             const targetId = this.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
-            
+
             if (targetElement) {
                 const headerHeight = document.querySelector('.header').offsetHeight;
                 const targetPosition = targetElement.offsetTop - headerHeight - 20;
-                
+
                 window.scrollTo({
                     top: targetPosition,
                     behavior: 'smooth'
                 });
             }
         });
+    });
+}
+
+function initializeNavigation() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const linkHref = link.getAttribute('href');
+
+        if (linkHref === currentPage ||
+            (currentPage === '' && linkHref === 'index.html') ||
+            (currentPage === 'index.html' && linkHref === 'index.html')) {
+            link.classList.add('active');
+        }
     });
 }
 
