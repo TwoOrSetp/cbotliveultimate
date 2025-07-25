@@ -9,6 +9,7 @@ export default defineConfig({
     })
   ],
   root: '.',
+  publicDir: 'public',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
@@ -17,27 +18,39 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html')
       }
+    },
+    sourcemap: true,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: false,
+        drop_debugger: true
+      }
     }
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
-      '@/components': resolve(__dirname, 'src/components'),
-      '@/types': resolve(__dirname, 'src/types'),
+      '@/app': resolve(__dirname, 'src/app'),
       '@/utils': resolve(__dirname, 'src/utils'),
       '@/styles': resolve(__dirname, 'src/styles'),
-      '@/clickbot': resolve(__dirname, 'src/clickbot')
+      '@/types': resolve(__dirname, 'src/types')
     }
   },
   server: {
     port: 3000,
     open: true,
-    host: true
+    host: true,
+    cors: true
   },
   preview: {
     port: 4173,
-    open: true
+    open: true,
+    host: true
   },
   base: './',
-  assetsInclude: ['**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.eot', '**/*.png', '**/*.jpg', '**/*.svg']
+  assetsInclude: ['**/*.woff', '**/*.woff2', '**/*.ttf', '**/*.eot', '**/*.png', '**/*.jpg', '**/*.svg', '**/*.ico'],
+  optimizeDeps: {
+    include: ['src/**/*.ts']
+  }
 })
