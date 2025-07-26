@@ -25,18 +25,24 @@ html {
     scroll-behavior: smooth;
 }
 
+/* --- Modern, Elegant Global Background --- */
 body {
+    background: radial-gradient(ellipse at 50% 40%, #181a20 60%, #0a0a0a 100%) fixed;
+    color: #e5e7eb;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--background-primary);
-    color: var(--text-primary);
     line-height: 1.6;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
     overflow-x: hidden;
 }
 
 .container {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 18px !important;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    position: relative;
 }
 
 .header {
@@ -527,7 +533,7 @@ html {
     align-items: center;
     gap: 0.5rem;
     padding: 0.875rem 2rem;
-    border-radius: 0.5rem;
+    border-radius: 12px !important;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
@@ -594,7 +600,7 @@ html {
 .main-rotating-logo {
     width: 200px;
     height: 200px;
-    border-radius: 50%;
+    border-radius: 16px !important;
     animation: logoRotateMain 12s linear infinite;
     box-shadow:
         0 0 30px rgba(99, 102, 241, 0.4),
@@ -1033,7 +1039,7 @@ html {
     background: var(--gradient-primary);
     color: white;
     text-decoration: none;
-    border-radius: 1rem;
+    border-radius: 18px !important;
     font-weight: 600;
     transition: all 0.3s ease;
     box-shadow:
@@ -1441,7 +1447,7 @@ html {
 .download-card {
     background: var(--background-card);
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
+    border-radius: 18px !important;
     padding: 2rem;
     text-align: center;
     transition: all 0.3s ease;
@@ -1502,7 +1508,7 @@ html {
     color: white;
     border: none;
     padding: 0.75rem 2rem;
-    border-radius: 0.5rem;
+    border-radius: 12px !important;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1646,7 +1652,7 @@ html {
 .feature-card, .benefit-card {
     background: var(--background-card);
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
+    border-radius: 18px !important;
     padding: 2rem;
     text-align: center;
     transition: all 0.3s ease;
@@ -1877,7 +1883,7 @@ html {
 .release-info {
     background: var(--background-card);
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
+    border-radius: 18px !important;
     padding: 3rem;
     margin-bottom: 4rem;
 }
@@ -3398,4 +3404,278 @@ html {
     .action-btn {
         width: 100%;
     }
+}
+
+/* Background Images for Sections */
+.hero {
+    background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.page-hero {
+    background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 100%);
+    z-index: 1;
+}
+
+.page-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.download-section {
+    background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.download-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+    z-index: 1;
+}
+
+.download-section .content-wrapper {
+    position: relative;
+    z-index: 2;
+}
+
+/* Background animation effects */
+@keyframes backgroundFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.hero,
+.page-hero,
+.download-section {
+    animation: backgroundFloat 20s ease-in-out infinite;
+}
+
+/* Enhanced text readability on backgrounds */
+.hero-title,
+.page-title,
+.release-title {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.hero-subtitle,
+.page-subtitle {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Simple Video Section Styles */
+.simple-video-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.simple-video-container iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
+
+.video-info {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-info h3 {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.video-info p {
+    color: #ccc;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Responsive for simple video */
+@media (max-width: 768px) {
+    .simple-video-container iframe {
+        height: 300px;
+    }
+    
+    .video-info {
+        padding: 1.5rem;
+    }
+    
+    .video-info h3 {
+        font-size: 1.2rem;
+    }
+    
+    /* Mobile background adjustments */
+    .hero,
+    .page-hero,
+    .download-section {
+        background-attachment: scroll;
+    }
+    
+    .page-hero {
+        min-height: 40vh;
+    }
+}
+
+/* --- Card and Button Modernization --- */
+.card, .info-card, .release-info, .intro-grid, .showcase-item, .download-card {
+    background: rgba(24, 26, 32, 0.95) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 4px 32px 0 rgba(0,0,0,0.18), 0 1.5px 4px 0 rgba(99,102,241,0.04);
+    border: 1px solid rgba(99,102,241,0.08);
+    backdrop-filter: blur(8px) saturate(120%);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover, .info-card:hover, .release-info:hover, .intro-grid:hover, .showcase-item:hover, .download-card:hover {
+    box-shadow: 0 8px 40px 0 rgba(99,102,241,0.12), 0 2px 8px 0 rgba(0,0,0,0.22);
+    transform: translateY(-2px) scale(1.01);
+}
+
+.btn, .btn-primary, .btn-secondary {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 12px 0 rgba(99,102,241,0.10);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.btn-primary {
+    background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%) !important;
+    color: #fff !important;
+}
+.btn-primary:hover {
+    background: linear-gradient(90deg, #6366f1 0%, #3b82f6 100%) !important;
+    box-shadow: 0 4px 24px 0 rgba(99,102,241,0.18);
+    transform: translateY(-1px) scale(1.03);
+}
+.btn-secondary {
+    background: #23272f !important;
+    color: #e5e7eb !important;
+}
+.btn-secondary:hover {
+    background: #32363f !important;
+}
+
+/* --- Header and Footer Polish --- */
+.header, .footer {
+    background: rgba(10, 10, 10, 0.98) !important;
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.18);
+    backdrop-filter: blur(10px) saturate(120%);
+}
+
+.header::before, .footer::before, .container::before, .matrix-rain, .hero-background::after, .floating-logo, .particle, .floating-elements {
+    display: none !important;
+}
+
+/* --- Typography Polish --- */
+h1, h2, h3, h4, h5, h6 {
+    color: #b3bcf5;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5em;
+}
+.page-title, .hero-title {
+    color: #7aa2fa !important;
+    font-size: 2.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em;
+}
+.page-subtitle, .hero-subtitle {
+    color: #a5b4fc !important;
+    font-size: 1.2rem !important;
+    font-weight: 400 !important;
+    margin-bottom: 1.5em;
+}
+
+/* --- Remove all typing and distracting animations globally --- */
+.typing-text {
+    animation: none !important;
+    border-right: none !important;
+    width: 100% !important;
+    color: inherit !important;
+}
+
+/* --- Section Spacing and Alignment --- */
+.section-header, .page-hero, .about-intro, .download-section, .features {
+    margin: 0 auto 2.5rem auto;
+    padding: 2.5rem 1.5rem 2rem 1.5rem;
+    max-width: 900px;
+    border-radius: 18px;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* --- Miscellaneous Polish --- */
+::-webkit-scrollbar {
+    width: 8px;
+    background: #181a20;
+}
+::-webkit-scrollbar-thumb {
+    background: #23272f;
+    border-radius: 8px;
 }

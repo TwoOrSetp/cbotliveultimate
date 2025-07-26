@@ -11,6 +11,199 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful background override for about page */
+        body {
+            background: #000000 !important;
+            background-image: none !important;
+            animation: none !important;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .matrix-rain {
+            display: none !important;
+        }
+        
+        .hero-background::after {
+            display: none !important;
+        }
+        
+        .floating-logo {
+            display: none !important;
+        }
+        
+        .particle {
+            display: none !important;
+        }
+        
+        .floating-elements {
+            display: none !important;
+        }
+        
+        /* Beautiful gradient background with subtle patterns */
+        .container {
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #000000 50%, #0a0a0a 75%, #000000 100%);
+            background-size: 400% 400%;
+            animation: subtleGradient 20s ease infinite;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(90deg, rgba(99, 102, 241, 0.01) 1px, transparent 1px),
+                linear-gradient(rgba(99, 102, 241, 0.01) 1px, transparent 1px);
+            background-size: 100px 100px;
+            animation: gridMove 30s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Enhanced page hero section */
+        .page-hero {
+            background: linear-gradient(135deg, 
+                rgba(99, 102, 241, 0.08) 0%, 
+                rgba(59, 130, 246, 0.05) 50%,
+                rgba(16, 185, 129, 0.03) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Enhanced about intro section */
+        .about-intro {
+            background: transparent;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Beautiful content cards */
+        .intro-grid {
+            background: linear-gradient(135deg, 
+                rgba(26, 26, 26, 0.9) 0%, 
+                rgba(31, 41, 55, 0.8) 100%);
+            backdrop-filter: blur(15px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(99, 102, 241, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+        }
+        
+        .intro-grid::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            background: linear-gradient(45deg, 
+                transparent 0%, 
+                rgba(99, 102, 241, 0.1) 25%, 
+                rgba(59, 130, 246, 0.1) 50%, 
+                rgba(16, 185, 129, 0.1) 75%, 
+                transparent 100%);
+            border-radius: 16px;
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .showcase-item {
+            background: linear-gradient(135deg, 
+                rgba(31, 41, 55, 0.9) 0%, 
+                rgba(17, 24, 39, 0.8) 100%);
+            backdrop-filter: blur(15px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(99, 102, 241, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+        }
+        
+        .showcase-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(99, 102, 241, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        
+        /* Remove any remaining animations */
+        .typing-text {
+            animation: none !important;
+            border-right: none !important;
+            width: 100% !important;
+        }
+        
+        /* Clean header */
+        .header {
+            background: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+        
+        .header::before {
+            display: none !important;
+        }
+        
+        /* Clean footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+        
+        /* Beautiful animations */
+        @keyframes subtleGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100px, 100px); }
+        }
+    </style>
 </head>
 <body>
     <div class="container">

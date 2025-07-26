@@ -130,159 +130,22 @@
         
             </section>
 
-            <!-- Hero Cbot Section -->
-                    
-                 
-                    <div class="video-preview-section">
-                        <div class="video-container glow-border holographic">
-                            <div class="youtube-embed-wrapper">
-                                <!-- Video Placeholder -->
-                                <div class="youtube-placeholder" id="youtubePlaceholder">
-                                    <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" 
-                                         alt="cbot Demo Video" 
-                                         class="youtube-thumbnail"
-                                         id="youtubeThumbnail"
-                                         onerror="handleThumbnailError(this)">
-                                    
-                                    <div class="youtube-play-button" onclick="loadYouTubeVideo()">
-                                        <svg viewBox="0 0 68 48" fill="currentColor">
-                                            <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"/>
-                                            <path d="M45,24L27,14v20L45,24z" fill="#000"/>
-                                        </svg>
-                                    </div>
-                                    
-                                    <div class="youtube-info">
-                                        <div class="youtube-title" id="youtubeTitle">cbot - Advanced Minecraft Client Demo</div>
-                                        <div class="youtube-channel" id="youtubeChannel">@snopphin</div>
-                                        <div class="youtube-duration" id="youtubeDuration">3:45</div>
-                                    </div>
-                                    
-                                    <!-- Video Controls Overlay -->
-                                    <div class="video-controls-overlay">
-                                        <button class="play-pause-btn" onclick="loadYouTubeVideo()">
-                                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M8 5v14l11-7z"/>
-                                            </svg>
-                                        </button>
-                                        <div class="video-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill"></div>
-                                            </div>
-                                            <div class="time-display">0:00 / 3:45</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- YouTube Iframe Container -->
-                                <div class="youtube-iframe-container" id="youtubeIframeContainer" style="display: none;">
-                                    <iframe 
-                                        id="youtubeIframe"
-                                        width="100%" 
-                                        height="100%" 
-                                        src="" 
-                                        frameborder="0" 
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        allowfullscreen
-                                        onload="handleIframeLoad()"
-                                        onerror="handleIframeError()">
-                                    </iframe>
-                                    
-                                    <!-- Simple Test Video (Always Works) -->
-                                    <div class="test-video-container" id="testVideoContainer" style="display: none;">
-                                        <iframe 
-                                            width="100%" 
-                                            height="100%" 
-                                            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0" 
-                                            frameborder="0" 
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                            allowfullscreen>
-                                        </iframe>
-                                    </div>
-                                    
-                                    <!-- Video Controls -->
-                                    <div class="video-controls">
-                                        <button class="control-btn" onclick="toggleFullscreen()" title="Fullscreen">
-                                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-                                            </svg>
-                                        </button>
-                                        <button class="control-btn" onclick="resetVideo()" title="Reset">
-                                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Error State -->
-                                <div class="video-error-state" id="videoErrorState" style="display: none;">
-                                    <div class="error-content">
-                                        <div class="error-icon">⚠️</div>
-                                        <h3 class="error-title">Video Unavailable</h3>
-                                        <p class="error-message">The video is currently unavailable. This might be due to:</p>
-                                        <ul class="error-list">
-                                            <li>Network connectivity issues</li>
-                                            <li>Browser compatibility problems</li>
-                                            <li>Video privacy settings</li>
-                                            <li>Ad blocker interference</li>
-                                            <li>Hardware acceleration conflicts</li>
-                                        </ul>
-                                        <div class="error-actions">
-                                            <button class="btn btn-primary" onclick="retryVideoLoad()">🔄 Try Again</button>
-                                            <button class="btn btn-secondary" onclick="tryAlternativeVideo()">📺 Try Alternative</button>
-                                            <button class="btn btn-secondary" onclick="loadYouTubeFallback()">🌐 Open in New Tab</button>
-                                            <button class="btn btn-primary" onclick="testSimpleVideo()">🧪 Test Simple Video</button>
-                                            <a href="https://youtube.com/@snopphin?si=V63UTu4bZspr3frz" class="btn btn-secondary" target="_blank">
-                                                📺 Watch on YouTube
-                                            </a>
-                                        </div>
-                                        <div class="troubleshooting-tips">
-                                            <h4>Quick Fixes:</h4>
-                                            <ul>
-                                                <li>Clear browser cache and cookies</li>
-                                                <li>Disable browser extensions</li>
-                                                <li>Try incognito/private mode</li>
-                                                <li>Update your browser</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Loading State -->
-                                <div class="video-loading-state" id="videoLoadingState" style="display: none;">
-                                    <div class="loading-content">
-                                        <div class="loading-spinner">
-                                            <svg viewBox="0 0 50 50" fill="currentColor">
-                                                <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="31.416" stroke-dashoffset="31.416">
-                                                    <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
-                                                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
-                                                </circle>
-                                            </svg>
-                                        </div>
-                                        <p class="loading-text">Loading video...</p>
-                                        <div class="loading-progress">
-                                            <div class="progress-bar">
-                                                <div class="progress-fill" id="loadingProgress"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-
-                            <div class="video-actions">
-                                <button class="action-btn" onclick="shareVideo()">
-                                    <span class="action-icon">📤</span>
-                                    <span>Share</span>
-                                </button>
-                                <a href="download.html" class="action-btn">
-                                    <span class="action-icon">🚀</span>
-                                    <span>Get cbot</span>
-                                </a>
-                            </div>
-                        </div>
+            <!-- Simple Video Section -->
+            <section class="hero-section" id="preview">
+                <div class="container">
+                    <div class="simple-video-container">
+                        <iframe 
+                            width="100%" 
+                            height="500" 
+                            src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            allowfullscreen>
+                        </iframe>
                     </div>
+                    
+                </div>
+            </section>
                 </div>
             </section>
         </main>
@@ -332,143 +195,10 @@
             }
         };
         
-        // Enhanced YouTube video loading with error handling
+        // Simple video functions (removed complex logic)
         function loadYouTubeVideo() {
-            const placeholder = document.getElementById('youtubePlaceholder');
-            const iframeContainer = document.getElementById('youtubeIframeContainer');
-            const loadingState = document.getElementById('videoLoadingState');
-            const errorState = document.getElementById('videoErrorState');
-            const iframe = document.getElementById('youtubeIframe');
-            
-            if (placeholder && iframeContainer && iframe) {
-                // Show loading state
-                placeholder.style.display = 'none';
-                loadingState.style.display = 'flex';
-                errorState.style.display = 'none';
-                
-                // Simulate loading progress
-                simulateLoadingProgress();
-                
-                // Use official YouTube embed format
-                const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0&modestbranding=1&showinfo=1&enablejsapi=1&playsinline=1&origin=${window.location.origin}`;
-                
-                // Set timeout for video loading
-                const loadTimeout = setTimeout(() => {
-                    handleVideoTimeout();
-                }, 15000); // Increased to 15 seconds
-                
-                // Load the iframe with error handling
-                try {
-                    iframe.src = embedUrl;
-                    iframe.onload = handleIframeLoad;
-                    iframe.onerror = handleIframeError;
-                    
-                    // Store timeout reference for cleanup
-                    iframe.dataset.loadTimeout = loadTimeout;
-                    
-                    console.log(`Attempting to load YouTube video: ${currentVideoId}`);
-                } catch (error) {
-                    console.error('Error loading video:', error);
-                    showVideoError('Failed to load video. Please try again.');
-                }
-            }
+            console.log('Simple video player - no complex functions needed');
         }
-        
-        // Handle iframe load success
-        function handleIframeLoad() {
-            const loadingState = document.getElementById('videoLoadingState');
-            const iframeContainer = document.getElementById('youtubeIframeContainer');
-            const iframe = document.getElementById('youtubeIframe');
-            
-            // Clear timeout
-            if (iframe.dataset.loadTimeout) {
-                clearTimeout(parseInt(iframe.dataset.loadTimeout));
-            }
-            
-            // Show iframe, hide loading
-            loadingState.style.display = 'none';
-            iframeContainer.style.display = 'block';
-            
-            console.log('YouTube video loaded successfully');
-        }
-        
-        // Handle iframe error
-        function handleIframeError() {
-            showVideoError('Failed to load video. Please check your internet connection.');
-        }
-        
-        // Handle video timeout
-        function handleVideoTimeout() {
-            showVideoError('Video loading timed out. Please try again.');
-        }
-        
-        // Handle thumbnail error
-        function handleThumbnailError(img) {
-            // Try fallback thumbnail
-            if (img.src.includes('maxresdefault.jpg')) {
-                img.src = 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg';
-            } else if (img.src.includes('hqdefault.jpg')) {
-                img.src = 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg';
-            } else {
-                // Use a default placeholder
-                img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgwIiBoZWlnaHQ9IjM2MCIgdmlld0JveD0iMCAwIDQ4MCAzNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0ODAiIGhlaWdodD0iMzYwIiBmaWxsPSIjMkEyQjJGIi8+CjxwYXRoIGQ9Ik0yNDAgMTgwTDM2MCAyNzBIMTIwTDI0MCAxODBaIiBmaWxsPSIjNjM2NkYxIi8+Cjwvc3ZnPgo=';
-            }
-        }
-        
-        // Show video error state
-        function showVideoError(message) {
-            const loadingState = document.getElementById('videoLoadingState');
-            const errorState = document.getElementById('videoErrorState');
-            const iframeContainer = document.getElementById('youtubeIframeContainer');
-            
-            loadingState.style.display = 'none';
-            iframeContainer.style.display = 'none';
-            errorState.style.display = 'flex';
-            
-            console.error('Video error:', message);
-        }
-        
-        // Retry video loading
-        function retryVideoLoad() {
-            const placeholder = document.getElementById('youtubePlaceholder');
-            const errorState = document.getElementById('videoErrorState');
-            
-            errorState.style.display = 'none';
-            placeholder.style.display = 'block';
-            
-            // Small delay before retry
-            setTimeout(() => {
-                loadYouTubeVideo();
-            }, 500);
-        }
-        
-        // Switch between different videos
-        function switchVideo(videoId, buttonElement) {
-            // Update current video ID
-            currentVideoId = videoId;
-            
-            // Update active tab
-            document.querySelectorAll('.video-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            buttonElement.classList.add('active');
-            
-            // Update video metadata
-            updateVideoMetadata(videoId);
-            
-            // Reset video state
-            resetVideoState();
-            
-            console.log(`Switched to video: ${videoId}`);
-        }
-        
-        // Update video metadata display
-        function updateVideoMetadata(videoId) {
-            const metadata = videoMetadata[videoId];
-            if (metadata) {
-                // Update thumbnail
-                const thumbnail = document.getElementById('youtubeThumbnail');
-                if (thumbnail) {
                     thumbnail.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
                     thumbnail.onerror = function() {
                         this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
