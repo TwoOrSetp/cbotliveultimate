@@ -319,3 +319,15 @@
         transform: scale(1);
     }
 }
+
+@keyframes textGlow {
+    0% { 
+        text-shadow: 0 0 30px rgba(99, 102, 241, 0.5); 
+    }
+    50% { 
+        text-shadow: 0 0 50px rgba(99, 102, 241, 0.8); 
+    }
+    100% { 
+        text-shadow: 0 0 30px rgba(99, 102, 241, 0.5); 
+    }
+}

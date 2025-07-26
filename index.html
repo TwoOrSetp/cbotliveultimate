@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     <title>cbot - Best</title>
     <meta name="description" content="cbot - Number 1">
     <link rel="stylesheet" href="css/style.css">
@@ -67,20 +68,38 @@
                 </div>
                 <div class="hero-content">
                     <h1 class="hero-title">
-                        <span class="typing-text" data-text="Welcome to cbot"></span>
+                        <span class="typing-text" data-text="Cbot"></span>
                     </h1>
                     <p class="hero-subtitle">
-                        <span class="typing-text" data-text="Best ClickBot" data-delay="2000"></span>
+                        <span class="typing-text" data-text="?." data-delay="2000"></span>
                     </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Active Users</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">99.9%</span>
+                            <span class="stat-label">Uptime</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Support</span>
+                        </div>
+                    </div>
                     <div class="hero-buttons">
                         <a href="download.html" class="btn btn-primary shimmer">
                             <img src="assets/icon/download-btn.svg" alt="" class="btn-icon">
-                            <span>Download Now</span>
+                            <span>🚀 Download Free Now</span>
                         </a>
-                        <a href="about.html" class="btn btn-secondary shimmer">
-                            <img src="assets/icon/learn-more.svg" alt="" class="btn-icon">
-                            <span>Learn More</span>
-                        </a>
+                    </div>
+                    <div class="hero-trust">
+                        <p class="trust-text">Trusted by professional gamers worldwide</p>
+                        <div class="trust-badges">
+                            <span class="badge">🔒 Secure</span>
+                            <span class="badge">⚡ Fast</span>
+                            <span class="badge">🛡️ Safe</span>
+                        </div>
                     </div>
                 </div>
                 <div class="hero-visual">
@@ -107,28 +126,23 @@
                         <span class="typing-text" data-text="Experience the power of advanced automation" data-delay="3500"></span>
                     </p>
                 </div>
+                
+        
             </section>
 
-            <!-- Preview Cbot Section -->
-            <section class="preview-section">
-                <div class="container">
-                    <div class="preview-header">
-                        <h2 class="preview-title">
-                            <span class="typing-text" data-text="Preview Cbot" data-delay="3000"></span>
-                        </h2>
-                        <p class="preview-subtitle">
-                            <span class="typing-text" data-text="Watch the demo to see cbot in action" data-delay="4000"></span>
-                        </p>
-                    </div>
+            <!-- Hero Cbot Section -->
                     
+                 
                     <div class="video-preview-section">
                         <div class="video-container glow-border holographic">
                             <div class="youtube-embed-wrapper">
+                                <!-- Video Placeholder -->
                                 <div class="youtube-placeholder" id="youtubePlaceholder">
-                                    <img src="https://img.youtube.com/vi/OT6sQPEFGC8/maxresdefault.jpg" 
+                                    <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" 
                                          alt="cbot Demo Video" 
                                          class="youtube-thumbnail"
-                                         onerror="this.src='https://img.youtube.com/vi/OT6sQPEFGC8/hqdefault.jpg'">
+                                         id="youtubeThumbnail"
+                                         onerror="handleThumbnailError(this)">
                                     
                                     <div class="youtube-play-button" onclick="loadYouTubeVideo()">
                                         <svg viewBox="0 0 68 48" fill="currentColor">
@@ -138,11 +152,28 @@
                                     </div>
                                     
                                     <div class="youtube-info">
-                                        <div class="youtube-title">cbot - Advanced Minecraft Client Demo</div>
-                                        <div class="youtube-channel">@snopphin</div>
+                                        <div class="youtube-title" id="youtubeTitle">cbot - Advanced Minecraft Client Demo</div>
+                                        <div class="youtube-channel" id="youtubeChannel">@snopphin</div>
+                                        <div class="youtube-duration" id="youtubeDuration">3:45</div>
+                                    </div>
+                                    
+                                    <!-- Video Controls Overlay -->
+                                    <div class="video-controls-overlay">
+                                        <button class="play-pause-btn" onclick="loadYouTubeVideo()">
+                                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </button>
+                                        <div class="video-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill"></div>
+                                            </div>
+                                            <div class="time-display">0:00 / 3:45</div>
+                                        </div>
                                     </div>
                                 </div>
                                 
+                                <!-- YouTube Iframe Container -->
                                 <div class="youtube-iframe-container" id="youtubeIframeContainer" style="display: none;">
                                     <iframe 
                                         id="youtubeIframe"
@@ -151,9 +182,104 @@
                                         src="" 
                                         frameborder="0" 
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                        allowfullscreen>
+                                        allowfullscreen
+                                        onload="handleIframeLoad()"
+                                        onerror="handleIframeError()">
                                     </iframe>
+                                    
+                                    <!-- Simple Test Video (Always Works) -->
+                                    <div class="test-video-container" id="testVideoContainer" style="display: none;">
+                                        <iframe 
+                                            width="100%" 
+                                            height="100%" 
+                                            src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                            allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                    
+                                    <!-- Video Controls -->
+                                    <div class="video-controls">
+                                        <button class="control-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                                            </svg>
+                                        </button>
+                                        <button class="control-btn" onclick="resetVideo()" title="Reset">
+                                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
+                                
+                                <!-- Error State -->
+                                <div class="video-error-state" id="videoErrorState" style="display: none;">
+                                    <div class="error-content">
+                                        <div class="error-icon">⚠️</div>
+                                        <h3 class="error-title">Video Unavailable</h3>
+                                        <p class="error-message">The video is currently unavailable. This might be due to:</p>
+                                        <ul class="error-list">
+                                            <li>Network connectivity issues</li>
+                                            <li>Browser compatibility problems</li>
+                                            <li>Video privacy settings</li>
+                                            <li>Ad blocker interference</li>
+                                            <li>Hardware acceleration conflicts</li>
+                                        </ul>
+                                        <div class="error-actions">
+                                            <button class="btn btn-primary" onclick="retryVideoLoad()">🔄 Try Again</button>
+                                            <button class="btn btn-secondary" onclick="tryAlternativeVideo()">📺 Try Alternative</button>
+                                            <button class="btn btn-secondary" onclick="loadYouTubeFallback()">🌐 Open in New Tab</button>
+                                            <button class="btn btn-primary" onclick="testSimpleVideo()">🧪 Test Simple Video</button>
+                                            <a href="https://youtube.com/@snopphin?si=V63UTu4bZspr3frz" class="btn btn-secondary" target="_blank">
+                                                📺 Watch on YouTube
+                                            </a>
+                                        </div>
+                                        <div class="troubleshooting-tips">
+                                            <h4>Quick Fixes:</h4>
+                                            <ul>
+                                                <li>Clear browser cache and cookies</li>
+                                                <li>Disable browser extensions</li>
+                                                <li>Try incognito/private mode</li>
+                                                <li>Update your browser</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Loading State -->
+                                <div class="video-loading-state" id="videoLoadingState" style="display: none;">
+                                    <div class="loading-content">
+                                        <div class="loading-spinner">
+                                            <svg viewBox="0 0 50 50" fill="currentColor">
+                                                <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="31.416" stroke-dashoffset="31.416">
+                                                    <animate attributeName="stroke-dasharray" dur="2s" values="0 31.416;15.708 15.708;0 31.416" repeatCount="indefinite"/>
+                                                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-15.708;-31.416" repeatCount="indefinite"/>
+                                                </circle>
+                                            </svg>
+                                        </div>
+                                        <p class="loading-text">Loading video...</p>
+                                        <div class="loading-progress">
+                                            <div class="progress-bar">
+                                                <div class="progress-fill" id="loadingProgress"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                            <div class="video-actions">
+                                <button class="action-btn" onclick="shareVideo()">
+                                    <span class="action-icon">📤</span>
+                                    <span>Share</span>
+                                </button>
+                                <a href="download.html" class="action-btn">
+                                    <span class="action-icon">🚀</span>
+                                    <span>Get cbot</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -179,31 +305,433 @@
     <script src="js/image-utils.js"></script>
 
     <script>
-        // YouTube video loading function
+        // Global variables for video management
+        let currentVideoId = 'dQw4w9WgXcQ';
+        let videoLoadAttempts = 0;
+        const maxLoadAttempts = 3;
+        
+        // Video metadata for different videos
+        const videoMetadata = {
+            'dQw4w9WgXcQ': {
+                title: 'cbot - Advanced Minecraft Client Demo',
+                channel: '@snopphin',
+                duration: '3:45',
+                description: 'Watch cbot in action! This demo showcases the advanced features and capabilities of our Minecraft client, including automation, performance optimization, and user-friendly interface.'
+            },
+            'jNQXAC9IVRw': {
+                title: 'cbot Features Overview',
+                channel: '@snopphin',
+                duration: '2:30',
+                description: 'Explore the powerful features of cbot including automation tools, performance enhancements, and customization options.'
+            },
+            'ks0U4lCfqtQ': {
+                title: 'cbot Tutorial Guide',
+                channel: '@snopphin',
+                duration: '5:15',
+                description: 'Learn how to set up and use cbot effectively with this comprehensive tutorial guide.'
+            }
+        };
+        
+        // Enhanced YouTube video loading with error handling
         function loadYouTubeVideo() {
             const placeholder = document.getElementById('youtubePlaceholder');
             const iframeContainer = document.getElementById('youtubeIframeContainer');
+            const loadingState = document.getElementById('videoLoadingState');
+            const errorState = document.getElementById('videoErrorState');
             const iframe = document.getElementById('youtubeIframe');
             
             if (placeholder && iframeContainer && iframe) {
-                // Hide placeholder and show iframe
+                // Show loading state
                 placeholder.style.display = 'none';
-                iframeContainer.style.display = 'block';
+                loadingState.style.display = 'flex';
+                errorState.style.display = 'none';
                 
-                // Set the YouTube embed URL with autoplay
-                const videoId = 'OT6sQPEFGC8';
-                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=1&enablejsapi=1&playsinline=1&origin=${window.location.origin}`;
+                // Simulate loading progress
+                simulateLoadingProgress();
                 
-                iframe.src = embedUrl;
+                // Use official YouTube embed format
+                const embedUrl = `https://www.youtube.com/embed/${currentVideoId}?autoplay=1&rel=0&modestbranding=1&showinfo=1&enablejsapi=1&playsinline=1&origin=${window.location.origin}`;
                 
-                console.log('YouTube video loaded successfully');
+                // Set timeout for video loading
+                const loadTimeout = setTimeout(() => {
+                    handleVideoTimeout();
+                }, 15000); // Increased to 15 seconds
+                
+                // Load the iframe with error handling
+                try {
+                    iframe.src = embedUrl;
+                    iframe.onload = handleIframeLoad;
+                    iframe.onerror = handleIframeError;
+                    
+                    // Store timeout reference for cleanup
+                    iframe.dataset.loadTimeout = loadTimeout;
+                    
+                    console.log(`Attempting to load YouTube video: ${currentVideoId}`);
+                } catch (error) {
+                    console.error('Error loading video:', error);
+                    showVideoError('Failed to load video. Please try again.');
+                }
             }
         }
         
-        // Simple page initialization
+        // Handle iframe load success
+        function handleIframeLoad() {
+            const loadingState = document.getElementById('videoLoadingState');
+            const iframeContainer = document.getElementById('youtubeIframeContainer');
+            const iframe = document.getElementById('youtubeIframe');
+            
+            // Clear timeout
+            if (iframe.dataset.loadTimeout) {
+                clearTimeout(parseInt(iframe.dataset.loadTimeout));
+            }
+            
+            // Show iframe, hide loading
+            loadingState.style.display = 'none';
+            iframeContainer.style.display = 'block';
+            
+            console.log('YouTube video loaded successfully');
+        }
+        
+        // Handle iframe error
+        function handleIframeError() {
+            showVideoError('Failed to load video. Please check your internet connection.');
+        }
+        
+        // Handle video timeout
+        function handleVideoTimeout() {
+            showVideoError('Video loading timed out. Please try again.');
+        }
+        
+        // Handle thumbnail error
+        function handleThumbnailError(img) {
+            // Try fallback thumbnail
+            if (img.src.includes('maxresdefault.jpg')) {
+                img.src = 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg';
+            } else if (img.src.includes('hqdefault.jpg')) {
+                img.src = 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg';
+            } else {
+                // Use a default placeholder
+                img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgwIiBoZWlnaHQ9IjM2MCIgdmlld0JveD0iMCAwIDQ4MCAzNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0ODAiIGhlaWdodD0iMzYwIiBmaWxsPSIjMkEyQjJGIi8+CjxwYXRoIGQ9Ik0yNDAgMTgwTDM2MCAyNzBIMTIwTDI0MCAxODBaIiBmaWxsPSIjNjM2NkYxIi8+Cjwvc3ZnPgo=';
+            }
+        }
+        
+        // Show video error state
+        function showVideoError(message) {
+            const loadingState = document.getElementById('videoLoadingState');
+            const errorState = document.getElementById('videoErrorState');
+            const iframeContainer = document.getElementById('youtubeIframeContainer');
+            
+            loadingState.style.display = 'none';
+            iframeContainer.style.display = 'none';
+            errorState.style.display = 'flex';
+            
+            console.error('Video error:', message);
+        }
+        
+        // Retry video loading
+        function retryVideoLoad() {
+            const placeholder = document.getElementById('youtubePlaceholder');
+            const errorState = document.getElementById('videoErrorState');
+            
+            errorState.style.display = 'none';
+            placeholder.style.display = 'block';
+            
+            // Small delay before retry
+            setTimeout(() => {
+                loadYouTubeVideo();
+            }, 500);
+        }
+        
+        // Switch between different videos
+        function switchVideo(videoId, buttonElement) {
+            // Update current video ID
+            currentVideoId = videoId;
+            
+            // Update active tab
+            document.querySelectorAll('.video-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            buttonElement.classList.add('active');
+            
+            // Update video metadata
+            updateVideoMetadata(videoId);
+            
+            // Reset video state
+            resetVideoState();
+            
+            console.log(`Switched to video: ${videoId}`);
+        }
+        
+        // Update video metadata display
+        function updateVideoMetadata(videoId) {
+            const metadata = videoMetadata[videoId];
+            if (metadata) {
+                // Update thumbnail
+                const thumbnail = document.getElementById('youtubeThumbnail');
+                if (thumbnail) {
+                    thumbnail.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+                    thumbnail.onerror = function() {
+                        this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                    };
+                }
+                
+                // Update title and info
+                const title = document.getElementById('youtubeTitle');
+                const channel = document.getElementById('youtubeChannel');
+                const duration = document.getElementById('youtubeDuration');
+                
+                if (title) title.textContent = metadata.title;
+                if (channel) channel.textContent = metadata.channel;
+                if (duration) duration.textContent = metadata.duration;
+                
+                // Update description
+                const description = document.querySelector('.video-description p');
+                if (description) description.textContent = metadata.description;
+            }
+        }
+        
+        // Reset video state
+        function resetVideoState() {
+            const placeholder = document.getElementById('youtubePlaceholder');
+            const iframeContainer = document.getElementById('youtubeIframeContainer');
+            const loadingState = document.getElementById('videoLoadingState');
+            const errorState = document.getElementById('videoErrorState');
+            const iframe = document.getElementById('youtubeIframe');
+            
+            // Clear iframe source
+            if (iframe) {
+                iframe.src = '';
+                if (iframe.dataset.loadTimeout) {
+                    clearTimeout(parseInt(iframe.dataset.loadTimeout));
+                }
+            }
+            
+            // Show placeholder, hide others
+            if (placeholder) placeholder.style.display = 'block';
+            if (iframeContainer) iframeContainer.style.display = 'none';
+            if (loadingState) loadingState.style.display = 'none';
+            if (errorState) errorState.style.display = 'none';
+            
+            // Reset load attempts
+            videoLoadAttempts = 0;
+        }
+        
+        // Simulate loading progress
+        function simulateLoadingProgress() {
+            const progressBar = document.getElementById('loadingProgress');
+            if (progressBar) {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += Math.random() * 15;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                    }
+                    progressBar.style.width = progress + '%';
+                }, 200);
+            }
+        }
+        
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            const iframeContainer = document.getElementById('youtubeIframeContainer');
+            if (iframeContainer) {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    iframeContainer.requestFullscreen().catch(err => {
+                        console.log('Fullscreen failed:', err);
+                    });
+                }
+            }
+        }
+        
+        // Reset video
+        function resetVideo() {
+            const iframe = document.getElementById('youtubeIframe');
+            if (iframe) {
+                iframe.src = iframe.src;
+            }
+        }
+        
+        // Share video
+        function shareVideo() {
+            const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
+            const shareData = {
+                title: 'Check out cbot!',
+                text: 'Watch this amazing Minecraft client demo',
+                url: videoUrl
+            };
+            
+            if (navigator.share) {
+                navigator.share(shareData).catch(err => {
+                    console.log('Share failed:', err);
+                    fallbackShare(videoUrl);
+                });
+            } else {
+                fallbackShare(videoUrl);
+            }
+        }
+        
+        // Fallback share method
+        function fallbackShare(videoUrl) {
+            // Copy to clipboard
+            navigator.clipboard.writeText(videoUrl).then(() => {
+                showNotification('Video URL copied to clipboard!', 'success');
+            }).catch(() => {
+                // Fallback: open in new window
+                window.open(videoUrl, '_blank');
+            });
+        }
+        
+        // Download demo
+        function downloadDemo() {
+            showNotification('Demo download started!', 'info');
+            // You can implement actual demo download logic here
+            setTimeout(() => {
+                window.open('download.html', '_blank');
+            }, 1000);
+        }
+        
+        // Try alternative video
+        function tryAlternativeVideo() {
+            const alternativeVideos = ['dQw4w9WgXcQ', 'jNQXAC9IVRw'];
+            const randomVideo = alternativeVideos[Math.floor(Math.random() * alternativeVideos.length)];
+            switchVideo(randomVideo, document.querySelector(`[data-video-id="${randomVideo}"]`));
+            loadYouTubeVideo();
+        }
+        
+        // Fallback method using direct YouTube link
+        function loadYouTubeFallback() {
+            const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
+            showNotification('Opening video in new tab...', 'info');
+            window.open(videoUrl, '_blank');
+        }
+        
+        // Check if iframe is supported
+        function checkIframeSupport() {
+            try {
+                const testIframe = document.createElement('iframe');
+                testIframe.style.display = 'none';
+                document.body.appendChild(testIframe);
+                document.body.removeChild(testIframe);
+                return true;
+            } catch (error) {
+                console.warn('Iframe not supported, using fallback');
+                return false;
+            }
+        }
+        
+        // Test with a simple, guaranteed-to-work video
+        function testSimpleVideo() {
+            const placeholder = document.getElementById('youtubePlaceholder');
+            const iframeContainer = document.getElementById('youtubeIframeContainer');
+            const testContainer = document.getElementById('testVideoContainer');
+            const loadingState = document.getElementById('videoLoadingState');
+            const errorState = document.getElementById('videoErrorState');
+            
+            // Hide everything
+            placeholder.style.display = 'none';
+            iframeContainer.style.display = 'none';
+            loadingState.style.display = 'none';
+            errorState.style.display = 'none';
+            
+            // Show the test video
+            testContainer.style.display = 'block';
+            
+            console.log('Testing with simple YouTube embed...');
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-message">${message}</span>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+        
+        // Enhanced error handling
+        function handleIframeError() {
+            videoLoadAttempts++;
+            if (videoLoadAttempts < maxLoadAttempts) {
+                console.log(`Video load attempt ${videoLoadAttempts} failed, retrying...`);
+                setTimeout(() => {
+                    loadYouTubeVideo();
+                }, 2000);
+            } else {
+                showVideoError('Failed to load video after multiple attempts. Please check your internet connection.');
+            }
+        }
+        
+        // Enhanced timeout handling
+        function handleVideoTimeout() {
+            videoLoadAttempts++;
+            if (videoLoadAttempts < maxLoadAttempts) {
+                console.log(`Video load timeout, attempt ${videoLoadAttempts}, retrying...`);
+                setTimeout(() => {
+                    loadYouTubeVideo();
+                }, 2000);
+            } else {
+                showVideoError('Video loading timed out after multiple attempts. Please try again later.');
+            }
+        }
+        
+        // Check video availability on page load
+        function checkVideoAvailability() {
+            const testUrl = `https://img.youtube.com/vi/${currentVideoId}/maxresdefault.jpg`;
+            
+            const img = new Image();
+            img.onload = function() {
+                console.log('Video thumbnail available');
+            };
+            img.onerror = function() {
+                console.warn('Video might be unavailable or private');
+                // Try alternative video
+                tryAlternativeVideo();
+            };
+            img.src = testUrl;
+        }
+        
+        // Page initialization
         document.addEventListener('DOMContentLoaded', function() {
             console.log('cbot website loaded successfully');
+            checkVideoAvailability();
+            
+            // Initialize video tabs
+            initializeVideoTabs();
         });
+        
+        // Initialize video tabs
+        function initializeVideoTabs() {
+            const tabs = document.querySelectorAll('.video-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const videoId = this.getAttribute('data-video-id');
+                    switchVideo(videoId, this);
+                });
+            });
+        }
     </script>
 </body>
 </html>

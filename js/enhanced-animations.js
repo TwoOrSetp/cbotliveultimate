@@ -1,66 +1,11 @@
 // Enhanced Animations and Background Effects for CBot
 
 document.addEventListener('DOMContentLoaded', function() {
-    initializeEnhancedTypingAnimations();
     initializeBackgroundEffects();
     initializeParticleSystem();
     initializeScrollEffects();
     initializeInteractiveElements();
 });
-
-// Enhanced Typing Animation System
-function initializeEnhancedTypingAnimations() {
-    const typingElements = document.querySelectorAll('.typing-text');
-    
-    typingElements.forEach((element, index) => {
-        const text = element.getAttribute('data-text');
-        if (!text) return;
-        
-        const delay = parseInt(element.getAttribute('data-delay')) || index * 800;
-        const speed = parseInt(element.getAttribute('data-speed')) || 50;
-        
-        element.textContent = '';
-        element.classList.add('typing');
-        
-        setTimeout(() => {
-            enhancedTypeText(element, text, speed);
-        }, delay);
-    });
-}
-
-function enhancedTypeText(element, text, speed) {
-    if (!element || !text) return;
-    
-    let i = 0;
-    element.textContent = '';
-    
-    function type() {
-        if (i < text.length && element) {
-            element.textContent += text.charAt(i);
-            i++;
-            
-            // Add typing sound effect (optional)
-            if (i % 3 === 0) {
-                playTypingSound();
-            }
-            
-            setTimeout(type, speed);
-        } else {
-            if (element) {
-                element.classList.remove('typing');
-                element.classList.add('completed');
-                
-                // Add completion effect
-                element.style.animation = 'textGlow 0.5s ease-out';
-                setTimeout(() => {
-                    element.style.animation = '';
-                }, 500);
-            }
-        }
-    }
-    
-    type();
-}
 
 // Background Effects System
 function initializeBackgroundEffects() {
@@ -253,39 +198,11 @@ function createClickEffect(e) {
     }
 }
 
-function playTypingSound() {
-    // Create a subtle typing sound effect using Web Audio API
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
-        
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-    } catch (error) {
-        // Fallback if Web Audio API is not available
-        console.log('Audio not supported');
-    }
-}
+
 
 // Add CSS animations dynamically
 const enhancedStyles = document.createElement('style');
 enhancedStyles.textContent = `
-    @keyframes textGlow {
-        0% { text-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
-        50% { text-shadow: 0 0 50px rgba(99, 102, 241, 0.8); }
-        100% { text-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
-    }
-    
     @keyframes ripple {
         to {
             transform: scale(4);

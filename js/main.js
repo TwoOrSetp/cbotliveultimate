@@ -53,6 +53,12 @@ function typeText(element, text, speed) {
             if (element) {
                 element.classList.remove('typing');
                 element.classList.add('completed');
+                
+                // Add completion glow effect
+                element.style.animation = 'textGlow 0.5s ease-out';
+                setTimeout(() => {
+                    element.style.animation = '';
+                }, 500);
             }
         }
     }
