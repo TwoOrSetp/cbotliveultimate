@@ -4,6 +4,8 @@ class YouTubePlayer {
         this.placeholder = null;
         this.iframe = null;
         this.isLoaded = false;
+        this.isLoading = false;
+        this.clickTimeout = null;
         this.init();
     }
 
@@ -53,10 +55,38 @@ class YouTubePlayer {
         // Fetch video information from YouTube
         this.fetchYouTubeVideoInfo(videoId);
 
-        // Setup click handler for placeholder
-        this.placeholder.addEventListener('click', () => {
-            this.loadYouTubeVideo(videoId);
+        // Setup click handler for placeholder with debouncing
+        this.placeholder.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.debouncedLoadVideo(videoId);
         });
+
+        // Also handle play button clicks specifically
+        const playButton = this.placeholder.querySelector('.youtube-play-button');
+        if (playButton) {
+            playButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.debouncedLoadVideo(videoId);
+            });
+        }
+    }
+
+    debouncedLoadVideo(videoId) {
+        // Prevent rapid clicking
+        if (this.isLoading) return;
+
+        // Clear any existing timeout
+        if (this.clickTimeout) {
+            clearTimeout(this.clickTimeout);
+        }
+
+        // Add small delay to prevent accidental double clicks
+        this.clickTimeout = setTimeout(() => {
+            this.loadYouTubeVideo(videoId);
+        }, 100);
+    }
 
         console.log('YouTube embed initialized with video ID:', videoId);
     }
@@ -64,23 +94,46 @@ class YouTubePlayer {
     loadYouTubeVideo(videoId) {
         if (!this.iframe || !this.placeholder) return;
 
-        // Show loading state
+        // Prevent multiple clicks
+        if (this.isLoading) return;
+        this.isLoading = true;
+
+        // Show loading state immediately
         this.showLoadingState();
 
-        // Set iframe source
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+        // Optimized embed URL for faster loading
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${window.location.origin}`;
+
+        // Preload iframe for faster response
         this.iframe.setAttribute('src', embedUrl);
 
-        // Hide placeholder and show iframe
-        this.placeholder.style.display = 'none';
-        this.iframe.style.display = 'block';
+        // Add load event listener for better timing
+        this.iframe.onload = () => {
+            this.hideLoadingState();
+            this.isLoading = false;
+            console.log('YouTube video loaded successfully:', videoId);
+        };
 
-        // Hide loading state after a delay
+        // Fallback timeout in case onload doesn't fire
         setTimeout(() => {
             this.hideLoadingState();
-        }, 1500);
+            this.isLoading = false;
+        }, 3000);
 
-        console.log('YouTube video loaded:', videoId);
+        // Hide placeholder and show iframe with smooth transition
+        this.placeholder.style.opacity = '0';
+        setTimeout(() => {
+            this.placeholder.style.display = 'none';
+            this.iframe.style.display = 'block';
+            this.iframe.style.opacity = '0';
+
+            // Fade in iframe
+            setTimeout(() => {
+                this.iframe.style.opacity = '1';
+            }, 50);
+        }, 300);
+
+        console.log('YouTube video loading:', videoId);
     }
 
     async fetchYouTubeVideoInfo(videoId) {
@@ -220,6 +273,11 @@ class YouTubePlayer {
         if (thumbnailElement) {
             thumbnailElement.classList.add('loading');
         }
+
+        // Add loading class to placeholder
+        if (this.placeholder) {
+            this.placeholder.classList.add('loading');
+        }
     }
 
     hideVideoInfoLoading() {
@@ -243,6 +301,11 @@ class YouTubePlayer {
         if (thumbnailElement) {
             thumbnailElement.classList.remove('loading');
         }
+
+        // Remove loading class from placeholder
+        if (this.placeholder) {
+            this.placeholder.classList.remove('loading');
+        }
     }
 
     setDefaultVideoInfo(videoId) {
@@ -255,10 +318,24 @@ class YouTubePlayer {
     }
 
     bindEvents() {
-        // Handle YouTube video configuration updates
+        // Handle download button clicks (prevent interference with video)
         document.addEventListener('click', (e) => {
+            // Download button handling
+            if (e.target.closest('.video-download-btn')) {
+                // Let the download button work normally
+                return;
+            }
+
+            // YouTube configuration
             if (e.target.closest('.youtube-config-btn')) {
+                e.preventDefault();
                 this.showYouTubeConfig();
+            }
+
+            // Prevent any other clicks from interfering with video
+            if (e.target.closest('.youtube-embed-container') && !e.target.closest('.youtube-placeholder')) {
+                e.preventDefault();
+                e.stopPropagation();
             }
         });
 
@@ -268,6 +345,24 @@ class YouTubePlayer {
                 this.closeModals();
             }
         });
+
+        // Handle window resize for responsive video
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+    }
+
+    handleResize() {
+        // Adjust video container on resize if needed
+        if (this.iframe && this.iframe.style.display === 'block') {
+            // Force iframe to maintain aspect ratio
+            const container = this.iframe.closest('.youtube-embed-container');
+            if (container) {
+                const width = container.offsetWidth;
+                const height = (width * 9) / 16; // 16:9 aspect ratio
+                this.iframe.style.height = `${height}px`;
+            }
+        }
     }
 
     showYouTubeConfig() {

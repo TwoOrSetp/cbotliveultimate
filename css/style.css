@@ -613,12 +613,23 @@ html {
     width: 100%;
     height: 100%;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     background: var(--background-secondary);
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .youtube-placeholder:hover {
     transform: scale(1.02);
+}
+
+.youtube-placeholder:active {
+    transform: scale(0.98);
+}
+
+.youtube-placeholder.loading {
+    pointer-events: none;
+    cursor: wait;
 }
 
 .youtube-thumbnail {
@@ -636,13 +647,24 @@ html {
     width: 80px;
     height: 56px;
     color: #ff0000;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+    cursor: pointer;
+    z-index: 10;
 }
 
 .youtube-placeholder:hover .youtube-play-button {
     transform: translate(-50%, -50%) scale(1.1);
     filter: drop-shadow(0 6px 30px rgba(0, 0, 0, 0.4));
+}
+
+.youtube-placeholder:active .youtube-play-button {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+.youtube-placeholder.loading .youtube-play-button {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.9);
 }
 
 .youtube-info {
@@ -685,6 +707,13 @@ html {
     width: 100%;
     height: 100%;
     border-radius: 1.5rem;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: auto;
+}
+
+.youtube-iframe[style*="opacity: 1"] {
+    opacity: 1;
 }
 
 /* YouTube Container Enhancements */
@@ -889,6 +918,9 @@ html {
     -webkit-backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
+    z-index: 100;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .video-download-btn::before {
