@@ -81,14 +81,12 @@ class YouTubePlayer {
             e.preventDefault();
             e.stopPropagation();
             console.log('=== PLACEHOLDER CLICKED ===');
-            console.log('Event:', e);
-            console.log('Video ID for loading:', videoId);
-            console.log('Current video ID from element:', this.placeholder.getAttribute('data-video-id'));
 
             // Use the current video ID from the element (in case it was updated)
             const currentVideoId = this.placeholder.getAttribute('data-video-id') || videoId;
             console.log('Using video ID:', currentVideoId);
 
+            // Try to load video in iframe first
             this.loadYouTubeVideo(currentVideoId);
         });
 
@@ -112,7 +110,18 @@ class YouTubePlayer {
             console.warn('Play button not found in placeholder');
         }
 
+        // Add double-click handler as backup
+        this.placeholder.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('=== DOUBLE CLICK - OPENING YOUTUBE DIRECTLY ===');
+
+            const currentVideoId = this.placeholder.getAttribute('data-video-id') || videoId;
+            this.openYouTubeDirectly(currentVideoId);
+        });
+
         console.log('Click handlers set up for video:', videoId);
+        console.log('Double-click will open YouTube directly as backup');
 
         // Note: Video data will be fetched by youtube-config.js
     }
@@ -125,21 +134,14 @@ class YouTubePlayer {
     loadYouTubeVideo(videoId) {
         console.log('=== LOADING YOUTUBE VIDEO ===');
         console.log('Video ID:', videoId);
-        console.log('Iframe element:', this.iframe);
-        console.log('Placeholder element:', this.placeholder);
 
         if (!this.iframe || !this.placeholder) {
             console.error('Missing iframe or placeholder elements');
-            console.log('Available elements:', {
-                iframe: !!this.iframe,
-                placeholder: !!this.placeholder
-            });
             return;
         }
 
         if (!videoId || videoId === '') {
             console.error('No video ID provided or empty video ID');
-            console.log('Video ID value:', videoId);
             return;
         }
 
@@ -152,20 +154,34 @@ class YouTubePlayer {
         this.isLoading = true;
         console.log('Starting to load YouTube video:', videoId);
 
-        // Build embed URL
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
+        // Build embed URL with proper parameters
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&controls=1&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=0`;
         console.log('Embed URL:', embedUrl);
 
-        // Set iframe source
-        this.iframe.src = embedUrl;
-        console.log('Iframe src set to:', this.iframe.src);
+        // Create a new iframe to ensure fresh load
+        const newIframe = document.createElement('iframe');
+        newIframe.className = 'youtube-iframe';
+        newIframe.src = embedUrl;
+        newIframe.frameBorder = '0';
+        newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        newIframe.allowFullscreen = true;
+        newIframe.style.width = '100%';
+        newIframe.style.height = '100%';
+        newIframe.style.borderRadius = '1.5rem';
+        newIframe.style.display = 'block';
+        newIframe.style.opacity = '1';
 
-        // Hide placeholder immediately and show iframe
+        // Replace old iframe with new one
+        const container = this.iframe.parentNode;
+        container.removeChild(this.iframe);
+        container.appendChild(newIframe);
+        this.iframe = newIframe;
+
+        // Hide placeholder and show iframe
         this.placeholder.style.display = 'none';
-        this.iframe.style.display = 'block';
-        this.iframe.style.opacity = '1';
+        newIframe.style.display = 'block';
 
-        console.log('Placeholder hidden, iframe shown');
+        console.log('New iframe created and video should be playing');
 
         // Reset loading state
         setTimeout(() => {
@@ -173,7 +189,22 @@ class YouTubePlayer {
             console.log('Video loading completed');
         }, 1000);
 
-        console.log('=== YOUTUBE VIDEO LOADING INITIATED ===');
+        console.log('=== YOUTUBE VIDEO SHOULD BE PLAYING ===');
+
+        // Fallback: If iframe doesn't work, open in new tab
+        setTimeout(() => {
+            if (!newIframe.src || newIframe.src === 'about:blank') {
+                console.warn('Iframe failed to load, opening YouTube directly');
+                window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+            }
+        }, 3000);
+    }
+
+    // Alternative method: Direct YouTube link
+    openYouTubeDirectly(videoId) {
+        console.log('Opening YouTube video directly:', videoId);
+        const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        window.open(youtubeUrl, '_blank');
     }
 
     async fetchYouTubeVideoInfo(videoId) {
@@ -786,6 +817,39 @@ window.manualLoadVideo = function(videoId) {
         window.youtubePlayer.loadYouTubeVideo(videoId);
     } else {
         console.error('YouTube player not initialized');
+    }
+};
+
+// Function to force open YouTube directly
+window.openYouTubeDirect = function(videoId) {
+    console.log('=== OPENING YOUTUBE DIRECTLY ===');
+    if (!videoId) {
+        videoId = 'OT6sQPEFGC8'; // Default video ID from config
+    }
+
+    const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    console.log('Opening URL:', youtubeUrl);
+    window.open(youtubeUrl, '_blank');
+};
+
+// Function to force iframe load
+window.forceIframeLoad = function(videoId) {
+    console.log('=== FORCE IFRAME LOAD ===');
+    if (!videoId) {
+        videoId = 'OT6sQPEFGC8';
+    }
+
+    const iframe = document.querySelector('.youtube-iframe');
+    const placeholder = document.querySelector('.youtube-placeholder');
+
+    if (iframe && placeholder) {
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1`;
+        iframe.src = embedUrl;
+        iframe.style.display = 'block';
+        placeholder.style.display = 'none';
+        console.log('Iframe forced to load:', embedUrl);
+    } else {
+        console.error('Iframe or placeholder not found');
     }
 };
 

@@ -1,4 +1,4 @@
-// YouTube Video Configuration System
+
 // Just add your YouTube URL here and everything else is automatic!
 
 class YouTubeConfig {
