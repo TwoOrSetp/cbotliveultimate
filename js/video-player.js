@@ -50,6 +50,9 @@ class YouTubePlayer {
             return;
         }
 
+        // Fetch video information from YouTube
+        this.fetchYouTubeVideoInfo(videoId);
+
         // Setup click handler for placeholder
         this.placeholder.addEventListener('click', () => {
             this.loadYouTubeVideo(videoId);
@@ -78,6 +81,177 @@ class YouTubePlayer {
         }, 1500);
 
         console.log('YouTube video loaded:', videoId);
+    }
+
+    async fetchYouTubeVideoInfo(videoId) {
+        // Show loading state
+        this.showVideoInfoLoading();
+
+        try {
+            // Method 1: Try YouTube oEmbed API (no API key required)
+            const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+
+            const response = await fetch(oEmbedUrl);
+            if (response.ok) {
+                const data = await response.json();
+                this.updateVideoInfo({
+                    title: data.title,
+                    author: data.author_name,
+                    thumbnail: data.thumbnail_url
+                });
+                this.hideVideoInfoLoading();
+                return;
+            }
+        } catch (error) {
+            console.warn('oEmbed API failed, trying alternative method:', error);
+        }
+
+        // Method 2: Try to get info from YouTube page directly
+        try {
+            await this.fetchVideoInfoFromPage(videoId);
+            this.hideVideoInfoLoading();
+        } catch (error) {
+            console.warn('Failed to fetch video info from page:', error);
+            // Method 3: Use thumbnail URL and set default info
+            this.updateVideoThumbnail(videoId);
+            this.setDefaultVideoInfo(videoId);
+            this.hideVideoInfoLoading();
+        }
+    }
+
+    async fetchVideoInfoFromPage(videoId) {
+        // This method scrapes basic info from YouTube page
+        const proxyUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+
+        const response = await fetch(proxyUrl);
+        if (response.ok) {
+            const data = await response.json();
+            this.updateVideoInfo({
+                title: data.title,
+                author: data.author_name,
+                thumbnail: data.thumbnail_url
+            });
+        } else {
+            throw new Error('Failed to fetch from noembed');
+        }
+    }
+
+    updateVideoInfo(info) {
+        if (!this.placeholder) return;
+
+        // Update title
+        const titleElement = this.placeholder.querySelector('.youtube-title');
+        if (titleElement && info.title) {
+            titleElement.textContent = info.title;
+        }
+
+        // Update channel/author
+        const channelElement = this.placeholder.querySelector('.youtube-channel');
+        if (channelElement && info.author) {
+            channelElement.textContent = `@${info.author.replace('@', '')}`;
+        }
+
+        // Update thumbnail
+        const thumbnailElement = this.placeholder.querySelector('.youtube-thumbnail');
+        if (thumbnailElement && info.thumbnail) {
+            thumbnailElement.src = info.thumbnail;
+            thumbnailElement.onerror = () => {
+                // Fallback to default thumbnail if custom fails
+                this.updateVideoThumbnail(this.placeholder.getAttribute('data-video-id'));
+            };
+        }
+
+        console.log('Updated video info:', info);
+    }
+
+    updateVideoThumbnail(videoId) {
+        const thumbnailElement = this.placeholder?.querySelector('.youtube-thumbnail');
+        if (thumbnailElement && videoId) {
+            // Use YouTube's thumbnail URLs
+            const thumbnailUrls = [
+                `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+                `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+                `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+                `https://img.youtube.com/vi/${videoId}/default.jpg`
+            ];
+
+            // Try thumbnails in order of quality
+            this.tryThumbnails(thumbnailElement, thumbnailUrls, 0);
+        }
+    }
+
+    tryThumbnails(imgElement, urls, index) {
+        if (index >= urls.length) {
+            // All thumbnails failed, keep the default SVG
+            console.warn('All YouTube thumbnails failed, using default');
+            return;
+        }
+
+        const img = new Image();
+        img.onload = () => {
+            imgElement.src = urls[index];
+            console.log(`Loaded thumbnail: ${urls[index]}`);
+        };
+        img.onerror = () => {
+            // Try next thumbnail
+            this.tryThumbnails(imgElement, urls, index + 1);
+        };
+        img.src = urls[index];
+    }
+
+    showVideoInfoLoading() {
+        const loadingOverlay = this.placeholder?.querySelector('.youtube-loading-overlay');
+        const titleElement = this.placeholder?.querySelector('.youtube-title');
+        const channelElement = this.placeholder?.querySelector('.youtube-channel');
+        const thumbnailElement = this.placeholder?.querySelector('.youtube-thumbnail');
+
+        if (loadingOverlay) {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        if (titleElement) {
+            titleElement.classList.add('loading');
+        }
+
+        if (channelElement) {
+            channelElement.classList.add('loading');
+        }
+
+        if (thumbnailElement) {
+            thumbnailElement.classList.add('loading');
+        }
+    }
+
+    hideVideoInfoLoading() {
+        const loadingOverlay = this.placeholder?.querySelector('.youtube-loading-overlay');
+        const titleElement = this.placeholder?.querySelector('.youtube-title');
+        const channelElement = this.placeholder?.querySelector('.youtube-channel');
+        const thumbnailElement = this.placeholder?.querySelector('.youtube-thumbnail');
+
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('hidden');
+        }
+
+        if (titleElement) {
+            titleElement.classList.remove('loading');
+        }
+
+        if (channelElement) {
+            channelElement.classList.remove('loading');
+        }
+
+        if (thumbnailElement) {
+            thumbnailElement.classList.remove('loading');
+        }
+    }
+
+    setDefaultVideoInfo(videoId) {
+        // Set default info if API calls fail
+        this.updateVideoInfo({
+            title: 'cbot Demo - Advanced Minecraft Client',
+            author: 'snopphin',
+            thumbnail: null // Will use YouTube thumbnail
+        });
     }
 
     bindEvents() {
@@ -275,6 +449,36 @@ class YouTubePlayer {
         }
         if (channelElement && channel) {
             channelElement.textContent = channel;
+        }
+    }
+
+    // Utility function to extract video ID from YouTube URL
+    static extractVideoId(url) {
+        const patterns = [
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+            /^([a-zA-Z0-9_-]{11})$/ // Direct video ID
+        ];
+
+        for (const pattern of patterns) {
+            const match = url.match(pattern);
+            if (match) {
+                return match[1];
+            }
+        }
+
+        return null;
+    }
+
+    // Method to update video from URL or ID
+    setVideoFromUrl(urlOrId) {
+        const videoId = YouTubePlayer.extractVideoId(urlOrId) || urlOrId;
+
+        if (videoId && this.placeholder) {
+            this.placeholder.setAttribute('data-video-id', videoId);
+            this.fetchYouTubeVideoInfo(videoId);
+            console.log('Video updated to:', videoId);
+        } else {
+            console.error('Invalid YouTube URL or video ID:', urlOrId);
         }
     }
 }

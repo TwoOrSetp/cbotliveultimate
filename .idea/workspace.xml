@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="01596ce7-2c37-4e88-9512-c1c3ad83d488" name="Changes" comment="j">
       <change beforePath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/video/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/video/cbot-demo-poster.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/video-player.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/video-player.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
