@@ -771,6 +771,7 @@ html {
 .youtube-loading-overlay.hidden {
     opacity: 0;
     pointer-events: none;
+    display: none !important;
 }
 
 .loading-spinner {

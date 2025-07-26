@@ -59,7 +59,11 @@ class YouTubePlayer {
             return;
         }
 
-        // Fetch video information from YouTube (only once)
+        // Set default content immediately, then try to fetch real data
+        this.setDefaultVideoInfo(videoId);
+        this.updateVideoThumbnail(videoId);
+
+        // Try to fetch real video information (optional enhancement)
         if (!this.isFetchingInfo) {
             this.fetchYouTubeVideoInfo(videoId);
         }
@@ -154,24 +158,21 @@ class YouTubePlayer {
 
         this.isFetchingInfo = true;
 
-        // Show loading state
-        this.showVideoInfoLoading();
+        // Don't show loading state since we already have default content
+        console.log('Fetching YouTube video info in background...');
 
         // Set a maximum timeout to prevent infinite loading
         const maxTimeout = setTimeout(() => {
-            console.warn('Video info fetch timeout, using defaults');
-            this.updateVideoThumbnail(videoId);
-            this.setDefaultVideoInfo(videoId);
-            this.hideVideoInfoLoading();
+            console.warn('Video info fetch timeout, keeping defaults');
             this.isFetchingInfo = false;
-        }, 10000); // 10 second maximum timeout
+        }, 3000); // Reduced to 3 seconds for faster fallback
 
         try {
             // Method 1: Try YouTube oEmbed API (no API key required)
             const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
 
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+            const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
 
             const response = await fetch(oEmbedUrl, {
                 signal: controller.signal,
@@ -185,12 +186,12 @@ class YouTubePlayer {
             if (response.ok) {
                 const data = await response.json();
                 clearTimeout(maxTimeout);
+                console.log('Successfully fetched YouTube data:', data.title);
                 this.updateVideoInfo({
                     title: data.title,
                     author: data.author_name,
                     thumbnail: data.thumbnail_url
                 });
-                this.hideVideoInfoLoading();
                 this.isFetchingInfo = false;
                 return;
             }
@@ -198,17 +199,10 @@ class YouTubePlayer {
             console.warn('oEmbed API failed:', error.message);
         }
 
-        // Method 2: Use direct thumbnail and set default info (no more API calls)
-        try {
-            clearTimeout(maxTimeout);
-            this.updateVideoThumbnail(videoId);
-            this.setDefaultVideoInfo(videoId);
-        } catch (error) {
-            console.error('Failed to set default video info:', error);
-        } finally {
-            this.hideVideoInfoLoading();
-            this.isFetchingInfo = false;
-        }
+        // Fallback: Keep default content (already set)
+        clearTimeout(maxTimeout);
+        console.log('Using default video info (API failed)');
+        this.isFetchingInfo = false;
     }
 
 
@@ -312,6 +306,8 @@ class YouTubePlayer {
     }
 
     hideVideoInfoLoading() {
+        console.log('Hiding video info loading...');
+
         const loadingOverlay = this.placeholder?.querySelector('.youtube-loading-overlay');
         const titleElement = this.placeholder?.querySelector('.youtube-title');
         const channelElement = this.placeholder?.querySelector('.youtube-channel');
@@ -319,6 +315,9 @@ class YouTubePlayer {
 
         if (loadingOverlay) {
             loadingOverlay.classList.add('hidden');
+            // Force hide with style as backup
+            loadingOverlay.style.display = 'none';
+            console.log('Loading overlay hidden');
         }
 
         if (titleElement) {
@@ -337,6 +336,32 @@ class YouTubePlayer {
         if (this.placeholder) {
             this.placeholder.classList.remove('loading');
         }
+
+        console.log('Video info loading state cleared');
+    }
+
+    forceHideLoading() {
+        console.log('Force hiding all loading states');
+
+        // Force hide loading overlay
+        const loadingOverlay = this.placeholder?.querySelector('.youtube-loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+            loadingOverlay.classList.add('hidden');
+        }
+
+        // Set default content immediately
+        const videoId = this.placeholder?.getAttribute('data-video-id');
+        if (videoId) {
+            this.setDefaultVideoInfo(videoId);
+            this.updateVideoThumbnail(videoId);
+        }
+
+        // Clear all states
+        this.hideVideoInfoLoading();
+        this.isFetchingInfo = false;
+
+        console.log('Force hide completed');
     }
 
     setDefaultVideoInfo(videoId) {
