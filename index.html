@@ -83,6 +83,56 @@
                     <div class="central-logo">
                         <img src="assets/icon/logo.jpg" alt="cbot logo" class="main-rotating-logo">
                     </div>
+
+                    <!-- Video Preview Section -->
+                    <div class="video-preview-section">
+                        <div class="video-container">
+                            <div class="video-overlay">
+                                <h3 class="video-title">See cbot in Action</h3>
+                                <p class="video-description">Watch how cbot enhances your Minecraft experience with advanced features</p>
+                            </div>
+                            <video
+                                class="demo-video"
+                                poster="assets/video/cbot-demo-poster.svg"
+                                preload="metadata"
+                                controls
+                                muted
+                                playsinline
+                                data-lazy="true">
+                                <source data-src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" type="video/mp4">
+                                <source data-src="https://sample-videos.com/zip/10/webm/SampleVideo_1280x720_1mb.webm" type="video/webm">
+                                <div class="video-fallback">
+                                    <img src="assets/video/cbot-demo-poster.svg" alt="cbot demo preview">
+                                    <p>Your browser doesn't support video playback. <a href="#download">Download cbot</a> to see it in action.</p>
+                                </div>
+                            </video>
+                            <div class="video-controls-overlay">
+                                <button class="play-pause-btn" aria-label="Play/Pause video">
+                                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>
+                                    </svg>
+                                    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                                        <path d="M14,19H18V5H14M6,19H10V5H6V19Z"/>
+                                    </svg>
+                                </button>
+                                <div class="video-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                    <div class="time-display">
+                                        <span class="current-time">0:00</span>
+                                        <span class="duration">0:00</span>
+                                    </div>
+                                </div>
+                                <button class="fullscreen-btn" aria-label="Toggle fullscreen">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M7,14H5V19H10V17H7V14M12,14H14V17H17V19H12V14M17,10H19V5H14V7H17V10M10,10V7H7V5H12V10H10Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="floating-elements">
                         <div class="floating-element"></div>
                         <div class="floating-element"></div>
@@ -114,6 +164,7 @@
 
     <script src="js/fallback.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/video-player.js"></script>
     <script src="js/image-utils.js"></script>
 </body>
 </html>
