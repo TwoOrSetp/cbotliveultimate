@@ -5,6 +5,7 @@ class YouTubePlayer {
         this.iframe = null;
         this.isLoaded = false;
         this.isLoading = false;
+        this.isFetchingInfo = false;
         this.clickTimeout = null;
         this.init();
     }
@@ -35,6 +36,12 @@ class YouTubePlayer {
     }
 
     setupYouTubeEmbed(container) {
+        // Prevent multiple setups
+        if (this.isLoaded) {
+            console.warn('YouTube embed already loaded');
+            return;
+        }
+
         this.youtubeContainer = container;
         this.placeholder = container.querySelector('.youtube-placeholder');
         this.iframe = container.querySelector('.youtube-iframe');
@@ -52,8 +59,10 @@ class YouTubePlayer {
             return;
         }
 
-        // Fetch video information from YouTube
-        this.fetchYouTubeVideoInfo(videoId);
+        // Fetch video information from YouTube (only once)
+        if (!this.isFetchingInfo) {
+            this.fetchYouTubeVideoInfo(videoId);
+        }
 
         // Setup click handler for placeholder with debouncing
         this.placeholder.addEventListener('click', (e) => {
@@ -137,60 +146,77 @@ class YouTubePlayer {
     }
 
     async fetchYouTubeVideoInfo(videoId) {
+        // Prevent infinite fetching
+        if (this.isFetchingInfo) {
+            console.warn('Already fetching video info, skipping...');
+            return;
+        }
+
+        this.isFetchingInfo = true;
+
         // Show loading state
         this.showVideoInfoLoading();
+
+        // Set a maximum timeout to prevent infinite loading
+        const maxTimeout = setTimeout(() => {
+            console.warn('Video info fetch timeout, using defaults');
+            this.updateVideoThumbnail(videoId);
+            this.setDefaultVideoInfo(videoId);
+            this.hideVideoInfoLoading();
+            this.isFetchingInfo = false;
+        }, 10000); // 10 second maximum timeout
 
         try {
             // Method 1: Try YouTube oEmbed API (no API key required)
             const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
 
-            const response = await fetch(oEmbedUrl);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+            const response = await fetch(oEmbedUrl, {
+                signal: controller.signal,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            clearTimeout(timeoutId);
+
             if (response.ok) {
                 const data = await response.json();
+                clearTimeout(maxTimeout);
                 this.updateVideoInfo({
                     title: data.title,
                     author: data.author_name,
                     thumbnail: data.thumbnail_url
                 });
                 this.hideVideoInfoLoading();
+                this.isFetchingInfo = false;
                 return;
             }
         } catch (error) {
-            console.warn('oEmbed API failed, trying alternative method:', error);
+            console.warn('oEmbed API failed:', error.message);
         }
 
-        // Method 2: Try to get info from YouTube page directly
+        // Method 2: Use direct thumbnail and set default info (no more API calls)
         try {
-            await this.fetchVideoInfoFromPage(videoId);
-            this.hideVideoInfoLoading();
-        } catch (error) {
-            console.warn('Failed to fetch video info from page:', error);
-            // Method 3: Use thumbnail URL and set default info
+            clearTimeout(maxTimeout);
             this.updateVideoThumbnail(videoId);
             this.setDefaultVideoInfo(videoId);
+        } catch (error) {
+            console.error('Failed to set default video info:', error);
+        } finally {
             this.hideVideoInfoLoading();
+            this.isFetchingInfo = false;
         }
     }
 
-    async fetchVideoInfoFromPage(videoId) {
-        // This method scrapes basic info from YouTube page
-        const proxyUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
 
-        const response = await fetch(proxyUrl);
-        if (response.ok) {
-            const data = await response.json();
-            this.updateVideoInfo({
-                title: data.title,
-                author: data.author_name,
-                thumbnail: data.thumbnail_url
-            });
-        } else {
-            throw new Error('Failed to fetch from noembed');
-        }
-    }
 
     updateVideoInfo(info) {
         if (!this.placeholder) return;
+
+        console.log('Updating video info:', info);
 
         // Update title
         const titleElement = this.placeholder.querySelector('.youtube-title');
@@ -204,17 +230,22 @@ class YouTubePlayer {
             channelElement.textContent = `@${info.author.replace('@', '')}`;
         }
 
-        // Update thumbnail
+        // Update thumbnail (with error prevention)
         const thumbnailElement = this.placeholder.querySelector('.youtube-thumbnail');
         if (thumbnailElement && info.thumbnail) {
-            thumbnailElement.src = info.thumbnail;
+            // Remove any existing error handlers to prevent loops
+            thumbnailElement.onerror = null;
+
+            // Set new error handler that doesn't call updateVideoThumbnail
             thumbnailElement.onerror = () => {
-                // Fallback to default thumbnail if custom fails
-                this.updateVideoThumbnail(this.placeholder.getAttribute('data-video-id'));
+                console.warn('Custom thumbnail failed, keeping default');
+                thumbnailElement.onerror = null; // Remove handler to prevent loops
             };
+
+            thumbnailElement.src = info.thumbnail;
         }
 
-        console.log('Updated video info:', info);
+        console.log('Video info updated successfully');
     }
 
     updateVideoThumbnail(videoId) {
@@ -575,6 +606,21 @@ class YouTubePlayer {
         } else {
             console.error('Invalid YouTube URL or video ID:', urlOrId);
         }
+    }
+
+    // Reset all states (useful for debugging)
+    reset() {
+        this.isLoading = false;
+        this.isFetchingInfo = false;
+        this.isLoaded = false;
+
+        if (this.clickTimeout) {
+            clearTimeout(this.clickTimeout);
+            this.clickTimeout = null;
+        }
+
+        this.hideVideoInfoLoading();
+        console.log('YouTube player reset');
     }
 }
 
