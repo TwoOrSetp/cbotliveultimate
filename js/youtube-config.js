@@ -52,6 +52,8 @@ class YouTubeConfig {
     }
 
     extractVideoId(url) {
+        console.log('Extracting video ID from URL:', url);
+
         const patterns = [
             /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
             /^([a-zA-Z0-9_-]{11})$/ // Direct video ID
@@ -60,10 +62,12 @@ class YouTubeConfig {
         for (const pattern of patterns) {
             const match = url.match(pattern);
             if (match && match[1]) {
+                console.log('Extracted video ID:', match[1]);
                 return match[1];
             }
         }
 
+        console.error('Could not extract video ID from URL:', url);
         return null;
     }
 
@@ -244,6 +248,18 @@ class YouTubeConfig {
 
 // Auto-initialize when script loads
 window.youtubeConfig = new YouTubeConfig();
+
+// Debug function to test video ID extraction
+window.testVideoId = function() {
+    const config = window.youtubeConfig;
+    const videoId = config.extractVideoId(config.config.videoUrl);
+    console.log('=== VIDEO ID TEST ===');
+    console.log('Config URL:', config.config.videoUrl);
+    console.log('Extracted ID:', videoId);
+    console.log('Placeholder element:', document.querySelector('.youtube-placeholder'));
+    console.log('Current data-video-id:', document.querySelector('.youtube-placeholder')?.getAttribute('data-video-id'));
+    return videoId;
+};
 
 // Global helper functions
 window.updateYouTubeVideo = (url) => {

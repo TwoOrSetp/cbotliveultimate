@@ -80,19 +80,36 @@ class YouTubePlayer {
         this.placeholder.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Placeholder clicked, loading video:', videoId);
-            this.loadYouTubeVideo(videoId);
+            console.log('=== PLACEHOLDER CLICKED ===');
+            console.log('Event:', e);
+            console.log('Video ID for loading:', videoId);
+            console.log('Current video ID from element:', this.placeholder.getAttribute('data-video-id'));
+
+            // Use the current video ID from the element (in case it was updated)
+            const currentVideoId = this.placeholder.getAttribute('data-video-id') || videoId;
+            console.log('Using video ID:', currentVideoId);
+
+            this.loadYouTubeVideo(currentVideoId);
         });
 
         // Also handle play button clicks specifically
         const playButton = this.placeholder.querySelector('.youtube-play-button');
         if (playButton) {
+            console.log('Play button found, setting up click handler');
             playButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Play button clicked, loading video:', videoId);
-                this.loadYouTubeVideo(videoId);
+                console.log('=== PLAY BUTTON CLICKED ===');
+                console.log('Video ID for loading:', videoId);
+
+                // Use the current video ID from the element
+                const currentVideoId = this.placeholder.getAttribute('data-video-id') || videoId;
+                console.log('Using video ID:', currentVideoId);
+
+                this.loadYouTubeVideo(currentVideoId);
             });
+        } else {
+            console.warn('Play button not found in placeholder');
         }
 
         console.log('Click handlers set up for video:', videoId);
@@ -106,13 +123,23 @@ class YouTubePlayer {
     }
 
     loadYouTubeVideo(videoId) {
+        console.log('=== LOADING YOUTUBE VIDEO ===');
+        console.log('Video ID:', videoId);
+        console.log('Iframe element:', this.iframe);
+        console.log('Placeholder element:', this.placeholder);
+
         if (!this.iframe || !this.placeholder) {
             console.error('Missing iframe or placeholder elements');
+            console.log('Available elements:', {
+                iframe: !!this.iframe,
+                placeholder: !!this.placeholder
+            });
             return;
         }
 
-        if (!videoId) {
-            console.error('No video ID provided');
+        if (!videoId || videoId === '') {
+            console.error('No video ID provided or empty video ID');
+            console.log('Video ID value:', videoId);
             return;
         }
 
@@ -126,16 +153,19 @@ class YouTubePlayer {
         console.log('Starting to load YouTube video:', videoId);
 
         // Build embed URL
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`;
         console.log('Embed URL:', embedUrl);
 
         // Set iframe source
         this.iframe.src = embedUrl;
+        console.log('Iframe src set to:', this.iframe.src);
 
         // Hide placeholder immediately and show iframe
         this.placeholder.style.display = 'none';
         this.iframe.style.display = 'block';
         this.iframe.style.opacity = '1';
+
+        console.log('Placeholder hidden, iframe shown');
 
         // Reset loading state
         setTimeout(() => {
@@ -143,7 +173,7 @@ class YouTubePlayer {
             console.log('Video loading completed');
         }, 1000);
 
-        console.log('YouTube video should be loading now');
+        console.log('=== YOUTUBE VIDEO LOADING INITIATED ===');
     }
 
     async fetchYouTubeVideoInfo(videoId) {
@@ -742,3 +772,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Export for use in other scripts
 window.YouTubePlayer = YouTubePlayer;
+
+// Debug function to manually load video
+window.manualLoadVideo = function(videoId) {
+    console.log('=== MANUAL VIDEO LOAD ===');
+    if (!videoId) {
+        videoId = 'OT6sQPEFGC8'; // Default video ID from config
+    }
+
+    console.log('Loading video ID:', videoId);
+
+    if (window.youtubePlayer) {
+        window.youtubePlayer.loadYouTubeVideo(videoId);
+    } else {
+        console.error('YouTube player not initialized');
+    }
+};
+
+// Debug function to check current state
+window.checkVideoState = function() {
+    console.log('=== VIDEO STATE CHECK ===');
+    console.log('YouTube Player:', window.youtubePlayer);
+    console.log('YouTube Config:', window.youtubeConfig);
+
+    const placeholder = document.querySelector('.youtube-placeholder');
+    const iframe = document.querySelector('.youtube-iframe');
+
+    console.log('Placeholder:', placeholder);
+    console.log('Iframe:', iframe);
+    console.log('Video ID on placeholder:', placeholder?.getAttribute('data-video-id'));
+    console.log('Iframe src:', iframe?.src);
+
+    if (window.youtubeConfig) {
+        const videoId = window.youtubeConfig.extractVideoId(window.youtubeConfig.config.videoUrl);
+        console.log('Config video ID:', videoId);
+    }
+};
