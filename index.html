@@ -88,8 +88,8 @@
                     <div class="video-preview-section">
                         <div class="video-container youtube-container">
                             <div class="youtube-embed-container" data-lazy="true">
-                                <!-- Change the data-video-id to your YouTube video ID -->
-                                <div class="youtube-placeholder" data-video-id="TTxAlkD-xDI">
+                                <!-- Video ID will be automatically set from youtube-config.js -->
+                                <div class="youtube-placeholder" data-video-id="">
                                     <img src="assets/video/cbot-demo-poster.svg" alt="cbot demo preview" class="youtube-thumbnail">
                                     <div class="youtube-play-button">
                                         <svg viewBox="0 0 68 48" fill="currentColor">
@@ -98,10 +98,10 @@
                                         </svg>
                                     </div>
                                     <div class="youtube-info">
-                                        <div class="youtube-title">Loading video title...</div>
-                                        <div class="youtube-channel">Loading channel...</div>
+                                        <div class="youtube-title">cbot Demo - Advanced Minecraft Client</div>
+                                        <div class="youtube-channel">@snopphin</div>
                                     </div>
-                                    <div class="youtube-loading-overlay">
+                                    <div class="youtube-loading-overlay hidden">
                                         <div class="loading-spinner"></div>
                                         <span>Fetching video info...</span>
                                     </div>
@@ -147,6 +147,7 @@
     </div>
 
     <script src="js/fallback.js"></script>
+    <script src="js/youtube-config.js"></script>
     <script src="js/main.js"></script>
     <script src="js/video-player.js"></script>
     <script src="js/image-utils.js"></script>

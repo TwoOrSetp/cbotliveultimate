@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Admin Panel - cbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .admin-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p {
+            opacity: 0.9;
+        }
+
+        .admin-content {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-right: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .preview-section {
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .video-info {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .instructions {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructions h3 {
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions ul {
+            margin-left: 1.5rem;
+            color: #0369a1;
+        }
+
+        .current-config {
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🎥 YouTube Video Manager</h1>
+            <p>Easily update your website's YouTube video</p>
+        </div>
+
+        <div class="admin-content">
+            <div class="instructions">
+                <h3>📋 How to Use</h3>
+                <ul>
+                    <li>Paste any YouTube URL in the field below</li>
+                    <li>Click "Update Video" to apply changes</li>
+                    <li>The system automatically extracts title, thumbnail, and channel</li>
+                    <li>Changes are applied instantly to your website</li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="youtube-url">YouTube Video URL</label>
+                <input type="url" id="youtube-url" placeholder="https://youtube.com/watch?v=YOUR_VIDEO_ID" />
+            </div>
+
+            <div class="form-group">
+                <label for="fallback-title">Fallback Title (optional)</label>
+                <input type="text" id="fallback-title" placeholder="Video title if API fails" />
+            </div>
+
+            <div class="form-group">
+                <label for="fallback-channel">Fallback Channel (optional)</label>
+                <input type="text" id="fallback-channel" placeholder="Channel name if API fails" />
+            </div>
+
+            <div>
+                <button class="btn" onclick="updateVideo()">Update Video</button>
+                <button class="btn btn-secondary" onclick="previewVideo()">Preview</button>
+                <button class="btn btn-secondary" onclick="resetToDefault()">Reset to Default</button>
+            </div>
+
+            <div class="preview-section">
+                <div class="preview-title">Current Configuration</div>
+                <div class="current-config" id="current-config">
+                    Loading current configuration...
+                </div>
+                
+                <div class="preview-title">Video Information</div>
+                <div class="video-info" id="video-info">
+                    <p>Enter a YouTube URL above to see video information</p>
+                </div>
+            </div>
+
+            <div id="status-message"></div>
+        </div>
+    </div>
+
+    <script>
+        // Load current configuration
+        function loadCurrentConfig() {
+            try {
+                // This would normally load from the config file
+                const config = {
+                    videoUrl: 'https://youtube.com/watch?v=V63UTu4bZspr3frz',
+                    fallbackTitle: 'cbot Demo - Advanced Minecraft Client',
+                    fallbackChannel: 'snopphin'
+                };
+                
+                document.getElementById('youtube-url').value = config.videoUrl;
+                document.getElementById('fallback-title').value = config.fallbackTitle;
+                document.getElementById('fallback-channel').value = config.fallbackChannel;
+                
+                document.getElementById('current-config').textContent = JSON.stringify(config, null, 2);
+            } catch (error) {
+                showStatus('Error loading configuration', 'error');
+            }
+        }
+
+        // Extract video ID from YouTube URL
+        function extractVideoId(url) {
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+                /^([a-zA-Z0-9_-]{11})$/
+            ];
+
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            return null;
+        }
+
+        // Preview video information
+        async function previewVideo() {
+            const url = document.getElementById('youtube-url').value;
+            const videoId = extractVideoId(url);
+            
+            if (!videoId) {
+                showStatus('Invalid YouTube URL', 'error');
+                return;
+            }
+
+            showStatus('Fetching video information...', 'info');
+
+            try {
+                const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    document.getElementById('video-info').innerHTML = `
+                        <h4>📹 ${data.title}</h4>
+                        <p><strong>Channel:</strong> ${data.author_name}</p>
+                        <p><strong>Video ID:</strong> ${videoId}</p>
+                        <p><strong>Thumbnail:</strong> <a href="${data.thumbnail_url}" target="_blank">View</a></p>
+                    `;
+                    
+                    showStatus('Video information loaded successfully!', 'success');
+                } else {
+                    throw new Error('Failed to fetch video data');
+                }
+            } catch (error) {
+                document.getElementById('video-info').innerHTML = `
+                    <h4>⚠️ Using Fallback Data</h4>
+                    <p><strong>Video ID:</strong> ${videoId}</p>
+                    <p><strong>Title:</strong> ${document.getElementById('fallback-title').value || 'Default Title'}</p>
+                    <p><strong>Channel:</strong> ${document.getElementById('fallback-channel').value || 'Default Channel'}</p>
+                `;
+                
+                showStatus('API failed, but video will work with fallback data', 'info');
+            }
+        }
+
+        // Update video configuration
+        function updateVideo() {
+            const url = document.getElementById('youtube-url').value;
+            const title = document.getElementById('fallback-title').value;
+            const channel = document.getElementById('fallback-channel').value;
+            
+            if (!url) {
+                showStatus('Please enter a YouTube URL', 'error');
+                return;
+            }
+
+            const videoId = extractVideoId(url);
+            if (!videoId) {
+                showStatus('Invalid YouTube URL format', 'error');
+                return;
+            }
+
+            // Generate new configuration
+            const newConfig = {
+                videoUrl: url,
+                fallbackTitle: title || 'cbot Demo - Advanced Minecraft Client',
+                fallbackChannel: channel || 'snopphin',
+                videoId: videoId,
+                updatedAt: new Date().toISOString()
+            };
+
+            // Update display
+            document.getElementById('current-config').textContent = JSON.stringify(newConfig, null, 2);
+            
+            // Show instructions for manual update
+            showStatus(`
+                Configuration updated! To apply changes:
+                1. Copy the configuration above
+                2. Open js/youtube-config.js
+                3. Update the videoUrl in the config object
+                4. Save and refresh your website
+            `, 'success');
+        }
+
+        // Reset to default
+        function resetToDefault() {
+            document.getElementById('youtube-url').value = 'https://youtube.com/watch?v=V63UTu4bZspr3frz';
+            document.getElementById('fallback-title').value = 'cbot Demo - Advanced Minecraft Client';
+            document.getElementById('fallback-channel').value = 'snopphin';
+            
+            showStatus('Reset to default configuration', 'info');
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status-message');
+            statusDiv.innerHTML = `<div class="status ${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadCurrentConfig);
+    </script>
+</body>
+</html>

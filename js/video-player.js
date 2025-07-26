@@ -157,52 +157,133 @@ class YouTubePlayer {
         }
 
         this.isFetchingInfo = true;
-
-        // Don't show loading state since we already have default content
-        console.log('Fetching YouTube video info in background...');
-
-        // Set a maximum timeout to prevent infinite loading
-        const maxTimeout = setTimeout(() => {
-            console.warn('Video info fetch timeout, keeping defaults');
-            this.isFetchingInfo = false;
-        }, 3000); // Reduced to 3 seconds for faster fallback
+        console.log('Fetching comprehensive YouTube data for:', videoId);
 
         try {
-            // Method 1: Try YouTube oEmbed API (no API key required)
-            const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+            // Try multiple methods to get complete video information
+            const videoData = await this.getCompleteVideoData(videoId);
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
-
-            const response = await fetch(oEmbedUrl, {
-                signal: controller.signal,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            clearTimeout(timeoutId);
-
-            if (response.ok) {
-                const data = await response.json();
-                clearTimeout(maxTimeout);
-                console.log('Successfully fetched YouTube data:', data.title);
-                this.updateVideoInfo({
-                    title: data.title,
-                    author: data.author_name,
-                    thumbnail: data.thumbnail_url
-                });
+            if (videoData) {
+                console.log('Successfully fetched complete YouTube data:', videoData);
+                this.updateVideoInfo(videoData);
                 this.isFetchingInfo = false;
                 return;
             }
         } catch (error) {
-            console.warn('oEmbed API failed:', error.message);
+            console.warn('Failed to fetch video data:', error.message);
         }
 
-        // Fallback: Keep default content (already set)
-        clearTimeout(maxTimeout);
-        console.log('Using default video info (API failed)');
+        // Fallback: Use YouTube thumbnail URLs and basic info
+        console.log('Using YouTube thumbnail fallback');
+        this.updateVideoThumbnail(videoId);
         this.isFetchingInfo = false;
+    }
+
+    async getCompleteVideoData(videoId) {
+        const methods = [
+            () => this.fetchFromOEmbed(videoId),
+            () => this.fetchFromNoEmbed(videoId),
+            () => this.fetchFromYouTubeAPI(videoId),
+            () => this.extractFromYouTubePage(videoId)
+        ];
+
+        for (const method of methods) {
+            try {
+                const data = await method();
+                if (data && data.title) {
+                    return data;
+                }
+            } catch (error) {
+                console.warn('Method failed, trying next:', error.message);
+                continue;
+            }
+        }
+
+        return null;
+    }
+
+    async fetchFromOEmbed(videoId) {
+        const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+
+        const response = await fetch(url, {
+            signal: AbortSignal.timeout(3000),
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error(`oEmbed failed: ${response.status}`);
+
+        const data = await response.json();
+        return {
+            title: data.title,
+            author: data.author_name,
+            thumbnail: data.thumbnail_url,
+            source: 'oembed'
+        };
+    }
+
+    async fetchFromNoEmbed(videoId) {
+        const url = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+
+        const response = await fetch(url, {
+            signal: AbortSignal.timeout(3000),
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error(`NoEmbed failed: ${response.status}`);
+
+        const data = await response.json();
+        return {
+            title: data.title,
+            author: data.author_name,
+            thumbnail: data.thumbnail_url,
+            source: 'noembed'
+        };
+    }
+
+    async fetchFromYouTubeAPI(videoId) {
+        // This would require an API key, but we can try the public endpoint
+        const url = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet&key=YOUR_API_KEY`;
+
+        // Skip this method for now since it requires API key
+        throw new Error('YouTube API requires key');
+    }
+
+    async extractFromYouTubePage(videoId) {
+        // Try to extract data from YouTube page metadata
+        const url = `https://www.youtube.com/watch?v=${videoId}`;
+
+        try {
+            // This is a fallback method - in practice, CORS will block this
+            // But we can try other proxy services
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+            const response = await fetch(proxyUrl, {
+                signal: AbortSignal.timeout(5000)
+            });
+
+            if (!response.ok) throw new Error(`Proxy failed: ${response.status}`);
+
+            const data = await response.json();
+            const html = data.contents;
+
+            // Extract title from meta tags
+            const titleMatch = html.match(/<meta property="og:title" content="([^"]+)"/);
+            const authorMatch = html.match(/<meta name="author" content="([^"]+)"/);
+            const thumbnailMatch = html.match(/<meta property="og:image" content="([^"]+)"/);
+
+            if (titleMatch) {
+                return {
+                    title: titleMatch[1],
+                    author: authorMatch ? authorMatch[1] : 'Unknown',
+                    thumbnail: thumbnailMatch ? thumbnailMatch[1] : null,
+                    source: 'page-extract'
+                };
+            }
+        } catch (error) {
+            throw new Error(`Page extraction failed: ${error.message}`);
+        }
+
+        throw new Error('No data found in page');
     }
 
 
