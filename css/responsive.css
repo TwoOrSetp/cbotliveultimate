@@ -181,6 +181,23 @@
         width: 45px;
         height: 45px;
     }
+
+    /* Custom YouTube controls on tablet */
+    .custom-youtube-controls {
+        bottom: 0.75rem;
+        padding: 0.6rem 0.8rem;
+        gap: 0.4rem;
+    }
+
+    .youtube-control-btn {
+        width: 38px;
+        height: 38px;
+    }
+
+    .youtube-control-btn svg {
+        width: 19px;
+        height: 19px;
+    }
 }
 
 @media (max-width: 576px) {
@@ -318,6 +335,25 @@
     .floating-element:nth-child(3) {
         width: 35px;
         height: 35px;
+    }
+
+    /* Custom YouTube controls on mobile */
+    .custom-youtube-controls {
+        bottom: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        gap: 0.25rem;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .youtube-control-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .youtube-control-btn svg {
+        width: 18px;
+        height: 18px;
     }
 }
 

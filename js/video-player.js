@@ -3,16 +3,41 @@ class YouTubePlayer {
         this.youtubeContainer = null;
         this.placeholder = null;
         this.iframe = null;
+        this.player = null;
         this.isLoaded = false;
         this.isLoading = false;
         this.isFetchingInfo = false;
         this.clickTimeout = null;
+        this.isPlayerReady = false;
+        this.currentVideoId = null;
+        this.playerState = null;
         this.init();
     }
 
     init() {
+        this.loadYouTubeAPI();
         this.setupLazyLoading();
         this.bindEvents();
+    }
+
+    loadYouTubeAPI() {
+        if (window.YT && window.YT.Player) {
+            console.log('YouTube API already loaded');
+            return;
+        }
+
+        if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            console.log('Loading YouTube IFrame API...');
+        }
+
+        window.onYouTubeIframeAPIReady = () => {
+            console.log('YouTube IFrame API ready');
+            this.isPlayerReady = true;
+        };
     }
 
     setupLazyLoading() {
@@ -75,6 +100,7 @@ class YouTubePlayer {
         this.placeholder.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             console.log('=== PLACEHOLDER CLICKED ===');
 
             // Use the current video ID from the element (in case it was updated)
@@ -83,7 +109,7 @@ class YouTubePlayer {
 
             // Try to load video in iframe first
             this.loadYouTubeVideo(currentVideoId);
-        });
+        }, true); // Use capture phase
 
         // Also handle play button clicks specifically
         const playButton = this.placeholder.querySelector('.youtube-play-button');
@@ -92,6 +118,7 @@ class YouTubePlayer {
             playButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                e.stopImmediatePropagation();
                 console.log('=== PLAY BUTTON CLICKED ===');
                 console.log('Video ID for loading:', videoId);
 
@@ -100,7 +127,7 @@ class YouTubePlayer {
                 console.log('Using video ID:', currentVideoId);
 
                 this.loadYouTubeVideo(currentVideoId);
-            });
+            }, true); // Use capture phase
         } else {
             console.warn('Play button not found in placeholder');
         }
@@ -204,17 +231,68 @@ class YouTubePlayer {
         }
     }
 
+    setupVideoHandlers(videoId) {
+        console.log('Setting up video handlers for:', videoId);
 
+        // Setup click handler for placeholder
+        this.placeholder.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            console.log('=== PLACEHOLDER CLICKED ===');
 
-        console.log('YouTube embed initialized with video ID:', videoId);
+            // Use the current video ID from the element (in case it was updated)
+            const currentVideoId = this.placeholder.getAttribute('data-video-id') || videoId;
+            console.log('Using video ID:', currentVideoId);
+
+            // Try to load video in iframe first
+            this.loadYouTubeVideo(currentVideoId);
+        }, true); // Use capture phase
+
+        // Also handle play button clicks specifically
+        const playButton = this.placeholder.querySelector('.youtube-play-button');
+        if (playButton) {
+            console.log('Play button found, setting up click handler');
+            playButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                console.log('=== PLAY BUTTON CLICKED ===');
+                console.log('Video ID for loading:', videoId);
+
+                // Use the current video ID from the element
+                const currentVideoId = this.placeholder.getAttribute('data-video-id') || videoId;
+                console.log('Using video ID:', currentVideoId);
+
+                this.loadYouTubeVideo(currentVideoId);
+            }, true); // Use capture phase
+        } else {
+            console.warn('Play button not found in placeholder');
+        }
+
+        // Add double-click handler as backup
+        this.placeholder.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('=== DOUBLE CLICK - OPENING YOUTUBE DIRECTLY ===');
+
+            const currentVideoId = this.placeholder.getAttribute('data-video-id') || videoId;
+            this.openYouTubeDirectly(currentVideoId);
+        });
+
+        console.log('Click handlers set up for video:', videoId);
+        console.log('Double-click will open YouTube directly as backup');
+
+        // Fetch real YouTube data immediately
+        console.log('Video handlers set up, fetching YouTube data...');
     }
 
     loadYouTubeVideo(videoId) {
         console.log('=== LOADING YOUTUBE VIDEO ===');
         console.log('Video ID:', videoId);
 
-        if (!this.iframe || !this.placeholder) {
-            console.error('Missing iframe or placeholder elements');
+        if (!this.placeholder) {
+            console.error('Missing placeholder element');
             return;
         }
 
@@ -223,62 +301,329 @@ class YouTubePlayer {
             return;
         }
 
-        // Prevent multiple clicks
         if (this.isLoading) {
             console.log('Already loading, ignoring click');
             return;
         }
 
         this.isLoading = true;
+        this.currentVideoId = videoId;
         console.log('Starting to load YouTube video:', videoId);
 
-        // Build embed URL with proper parameters
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&controls=1&fs=1&cc_load_policy=0&iv_load_policy=3&autohide=0`;
-        console.log('Embed URL:', embedUrl);
-
-        // Create a new iframe to ensure fresh load
-        const newIframe = document.createElement('iframe');
-        newIframe.className = 'youtube-iframe';
-        newIframe.src = embedUrl;
-        newIframe.frameBorder = '0';
-        newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-        newIframe.allowFullscreen = true;
-        newIframe.style.width = '100%';
-        newIframe.style.height = '100%';
-        newIframe.style.borderRadius = '1.5rem';
-        newIframe.style.display = 'block';
-        newIframe.style.opacity = '1';
-
-        // Replace old iframe with new one
-        const container = this.iframe.parentNode;
-        container.removeChild(this.iframe);
-        container.appendChild(newIframe);
-        this.iframe = newIframe;
-
-        // Hide placeholder and show iframe
         this.placeholder.style.display = 'none';
-        newIframe.style.display = 'block';
 
-        console.log('New iframe created and video should be playing');
+        if (window.YT && window.YT.Player) {
+            this.createYouTubePlayer(videoId);
+        } else {
+            this.createIframePlayer(videoId);
+        }
 
-        // Reset loading state
         setTimeout(() => {
             this.isLoading = false;
-            console.log('Video loading completed');
         }, 1000);
-
-        console.log('=== YOUTUBE VIDEO SHOULD BE PLAYING ===');
-
-        // Fallback: If iframe doesn't work, open in new tab
-        setTimeout(() => {
-            if (!newIframe.src || newIframe.src === 'about:blank') {
-                console.warn('Iframe failed to load, opening YouTube directly');
-                window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
-            }
-        }, 3000);
     }
 
-    // Alternative method: Direct YouTube link
+    createYouTubePlayer(videoId) {
+        console.log('Creating YouTube Player with API');
+
+        if (!this.iframe) {
+            console.error('No iframe element found');
+            return;
+        }
+
+        const playerId = 'youtube-player-' + Date.now();
+        this.iframe.id = playerId;
+        this.iframe.style.display = 'block';
+
+        this.player = new YT.Player(playerId, {
+            height: '100%',
+            width: '100%',
+            videoId: videoId,
+            playerVars: {
+                autoplay: 1,
+                controls: 1,
+                fs: 1,
+                rel: 0,
+                modestbranding: 1,
+                playsinline: 1,
+                enablejsapi: 1,
+                origin: window.location.origin
+            },
+            events: {
+                onReady: (event) => {
+                    console.log('YouTube player ready');
+                    this.onPlayerReady(event);
+                },
+                onStateChange: (event) => {
+                    console.log('YouTube player state changed:', event.data);
+                    this.onPlayerStateChange(event);
+                },
+                onError: (event) => {
+                    console.error('YouTube player error:', event.data);
+                    this.onPlayerError(event);
+                }
+            }
+        });
+
+        this.addCustomControls();
+    }
+
+    createIframePlayer(videoId) {
+        console.log('Creating iframe player (fallback)');
+
+        if (!this.iframe) {
+            const container = this.placeholder.parentNode;
+            this.iframe = document.createElement('iframe');
+            this.iframe.className = 'youtube-iframe';
+            container.appendChild(this.iframe);
+        }
+
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&fs=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=${window.location.origin}`;
+
+        this.iframe.src = embedUrl;
+        this.iframe.frameBorder = '0';
+        this.iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        this.iframe.allowFullscreen = true;
+        this.iframe.style.width = '100%';
+        this.iframe.style.height = '100%';
+        this.iframe.style.borderRadius = '1.5rem';
+        this.iframe.style.display = 'block';
+
+        console.log('Iframe player created with enhanced controls');
+    }
+
+    onPlayerReady(event) {
+        console.log('YouTube player is ready');
+        this.isPlayerReady = true;
+
+        if (this.currentVideoId) {
+            event.target.loadVideoById(this.currentVideoId);
+        }
+    }
+
+    onPlayerStateChange(event) {
+        this.playerState = event.data;
+
+        switch (event.data) {
+            case YT.PlayerState.PLAYING:
+                console.log('Video is playing');
+                this.updateCustomControls('playing');
+                break;
+            case YT.PlayerState.PAUSED:
+                console.log('Video is paused');
+                this.updateCustomControls('paused');
+                break;
+            case YT.PlayerState.ENDED:
+                console.log('Video ended');
+                this.updateCustomControls('ended');
+                break;
+            case YT.PlayerState.BUFFERING:
+                console.log('Video is buffering');
+                this.updateCustomControls('buffering');
+                break;
+        }
+    }
+
+    onPlayerError(event) {
+        console.error('YouTube player error:', event.data);
+        this.showErrorState();
+    }
+
+    addCustomControls() {
+        const container = this.iframe.closest('.youtube-embed-container');
+        if (!container || container.querySelector('.custom-youtube-controls')) {
+            return;
+        }
+
+        const controlsHTML = `
+            <div class="custom-youtube-controls">
+                <button class="youtube-control-btn play-pause-btn" title="Play/Pause">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                </button>
+                <button class="youtube-control-btn skip-back-btn" title="Skip Back 10s">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,5V1L7,6L12,11V7A6,6 0 0,1 18,13A6,6 0 0,1 12,19A6,6 0 0,1 6,13H4A8,8 0 0,0 12,21A8,8 0 0,0 20,13A8,8 0 0,0 12,5M12.5,8V13.25L16.25,15.1L15.5,16.5L11,14V8H12.5Z"/>
+                    </svg>
+                </button>
+                <button class="youtube-control-btn skip-forward-btn" title="Skip Forward 10s">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12,5V1L17,6L12,11V7A6,6 0 0,0 6,13A6,6 0 0,0 12,19A6,6 0 0,0 18,13H20A8,8 0 0,1 12,21A8,8 0 0,1 4,13A8,8 0 0,1 12,5M12.5,8V13.25L16.25,15.1L15.5,16.5L11,14V8H12.5Z"/>
+                    </svg>
+                </button>
+                <button class="youtube-control-btn fullscreen-btn" title="Fullscreen">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                    </svg>
+                </button>
+                <button class="youtube-control-btn back-btn" title="Back to Thumbnail">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', controlsHTML);
+        this.bindCustomControls();
+    }
+
+    bindCustomControls() {
+        const container = this.iframe.closest('.youtube-embed-container');
+        if (!container) return;
+
+        const playPauseBtn = container.querySelector('.play-pause-btn');
+        const skipBackBtn = container.querySelector('.skip-back-btn');
+        const skipForwardBtn = container.querySelector('.skip-forward-btn');
+        const fullscreenBtn = container.querySelector('.fullscreen-btn');
+        const backBtn = container.querySelector('.back-btn');
+
+        if (playPauseBtn) {
+            playPauseBtn.addEventListener('click', () => this.togglePlayPause());
+        }
+
+        if (skipBackBtn) {
+            skipBackBtn.addEventListener('click', () => this.skipBackward());
+        }
+
+        if (skipForwardBtn) {
+            skipForwardBtn.addEventListener('click', () => this.skipForward());
+        }
+
+        if (fullscreenBtn) {
+            fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+        }
+
+        if (backBtn) {
+            backBtn.addEventListener('click', () => this.showYouTubeThumbnail());
+        }
+    }
+
+    togglePlayPause() {
+        if (!this.player || !this.isPlayerReady) {
+            console.warn('Player not ready for play/pause');
+            return;
+        }
+
+        try {
+            if (this.playerState === YT.PlayerState.PLAYING) {
+                this.player.pauseVideo();
+                console.log('Video paused');
+            } else {
+                this.player.playVideo();
+                console.log('Video playing');
+            }
+        } catch (error) {
+            console.error('Error toggling play/pause:', error);
+        }
+    }
+
+    skipBackward() {
+        if (!this.player || !this.isPlayerReady) {
+            console.warn('Player not ready for skip');
+            return;
+        }
+
+        try {
+            const currentTime = this.player.getCurrentTime();
+            const newTime = Math.max(0, currentTime - 10);
+            this.player.seekTo(newTime, true);
+            console.log('Skipped backward 10 seconds');
+        } catch (error) {
+            console.error('Error skipping backward:', error);
+        }
+    }
+
+    skipForward() {
+        if (!this.player || !this.isPlayerReady) {
+            console.warn('Player not ready for skip');
+            return;
+        }
+
+        try {
+            const currentTime = this.player.getCurrentTime();
+            const duration = this.player.getDuration();
+            const newTime = Math.min(duration, currentTime + 10);
+            this.player.seekTo(newTime, true);
+            console.log('Skipped forward 10 seconds');
+        } catch (error) {
+            console.error('Error skipping forward:', error);
+        }
+    }
+
+    toggleFullscreen() {
+        const container = this.iframe.closest('.youtube-embed-container');
+        if (!container) return;
+
+        try {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+                console.log('Exited fullscreen');
+            } else {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+                console.log('Entered fullscreen');
+            }
+        } catch (error) {
+            console.error('Error toggling fullscreen:', error);
+        }
+    }
+
+    updateCustomControls(state) {
+        const container = this.iframe?.closest('.youtube-embed-container');
+        if (!container) return;
+
+        const playIcon = container.querySelector('.play-icon');
+        const pauseIcon = container.querySelector('.pause-icon');
+
+        if (playIcon && pauseIcon) {
+            if (state === 'playing') {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            } else {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            }
+        }
+    }
+
+    showYouTubeThumbnail() {
+        if (this.player) {
+            try {
+                this.player.destroy();
+            } catch (error) {
+                console.warn('Error destroying player:', error);
+            }
+            this.player = null;
+        }
+
+        if (this.iframe) {
+            this.iframe.style.display = 'none';
+            this.iframe.src = '';
+        }
+
+        if (this.placeholder) {
+            this.placeholder.style.display = 'block';
+        }
+
+        const container = this.iframe?.closest('.youtube-embed-container');
+        const customControls = container?.querySelector('.custom-youtube-controls');
+        if (customControls) {
+            customControls.remove();
+        }
+
+        console.log('Returned to thumbnail view');
+    }
+
     openYouTubeDirectly(videoId) {
         console.log('Opening YouTube video directly:', videoId);
         const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
@@ -582,16 +927,26 @@ class YouTubePlayer {
             }
         }, true); // Use capture phase to ensure download button works
 
-        // Handle escape key to close any modals
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Escape') {
-                this.closeModals();
-            }
-        });
-
         // Handle window resize for responsive video
         window.addEventListener('resize', () => {
             this.handleResize();
+        });
+
+        // Handle fullscreen changes
+        document.addEventListener('fullscreenchange', () => {
+            this.handleFullscreenChange();
+        });
+
+        document.addEventListener('webkitfullscreenchange', () => {
+            this.handleFullscreenChange();
+        });
+
+        document.addEventListener('mozfullscreenchange', () => {
+            this.handleFullscreenChange();
+        });
+
+        document.addEventListener('MSFullscreenChange', () => {
+            this.handleFullscreenChange();
         });
 
         // Fix cursor issues
@@ -606,6 +961,22 @@ class YouTubePlayer {
                 document.body.style.cursor = '';
             }
         });
+    }
+
+    handleFullscreenChange() {
+        const container = this.iframe?.closest('.youtube-embed-container');
+        if (!container) return;
+
+        const isFullscreen = !!(document.fullscreenElement ||
+                                document.webkitFullscreenElement ||
+                                document.mozFullScreenElement ||
+                                document.msFullscreenElement);
+
+        if (isFullscreen) {
+            container.classList.add('fullscreen-active');
+        } else {
+            container.classList.remove('fullscreen-active');
+        }
     }
 
     handleResize() {

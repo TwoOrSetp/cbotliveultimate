@@ -7,12 +7,15 @@
     <meta name="description" content="cbot - Number 1">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/enhanced-background.css">
+    <link rel="stylesheet" href="css/special-effects.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="matrix-rain"></div>
     <div class="container">
         <header class="header">
             <nav class="nav">
@@ -46,20 +49,20 @@
         <main class="main">
             <section id="home" class="hero">
                 <div class="hero-background">
-                    <div class="floating-logo floating-logo-1">
+                    <div class="floating-logo floating-logo-1 magnetic">
                         <img src="assets/icon/logo.jpg" alt="cbot logo" class="rotating-logo">
                     </div>
-                    <div class="floating-logo floating-logo-2">
+                    <div class="floating-logo floating-logo-2 magnetic">
                         <img src="assets/icon/logo.jpg" alt="cbot logo" class="rotating-logo">
                     </div>
-                    <div class="floating-logo floating-logo-3">
+                    <div class="floating-logo floating-logo-3 magnetic">
                         <img src="assets/icon/logo.jpg" alt="cbot logo" class="rotating-logo">
                     </div>
-                    <div class="particle particle-1"></div>
-                    <div class="particle particle-2"></div>
-                    <div class="particle particle-3"></div>
-                    <div class="particle particle-4"></div>
-                    <div class="particle particle-5"></div>
+                    <div class="particle particle-1 pulse-glow"></div>
+                    <div class="particle particle-2 pulse-glow"></div>
+                    <div class="particle particle-3 pulse-glow"></div>
+                    <div class="particle particle-4 pulse-glow"></div>
+                    <div class="particle particle-5 pulse-glow"></div>
                 </div>
                 <div class="hero-content">
                     <h1 class="hero-title">
@@ -69,53 +72,22 @@
                         <span class="typing-text" data-text="Best ClickBot" data-delay="2000"></span>
                     </p>
                     <div class="hero-buttons">
-                        <a href="download.html" class="btn btn-primary">
+                        <a href="download.html" class="btn btn-primary shimmer">
                             <img src="assets/icon/download-btn.svg" alt="" class="btn-icon">
                             <span>Download Now</span>
                         </a>
-                        <a href="about.html" class="btn btn-secondary">
+                        <a href="about.html" class="btn btn-secondary shimmer">
                             <img src="assets/icon/learn-more.svg" alt="" class="btn-icon">
                             <span>Learn More</span>
                         </a>
                     </div>
                 </div>
                 <div class="hero-visual">
-                    <div class="central-logo">
+                    <div class="central-logo energy-field">
                         <img src="assets/icon/logo.jpg" alt="cbot logo" class="main-rotating-logo">
                     </div>
 
-                    <!-- YouTube Video Preview Section -->
-                    <div class="video-preview-section">
-                        <div class="video-container youtube-container">
-                            <div class="youtube-embed-container" data-lazy="true">
-                                <!-- Video ID will be automatically set from youtube-config.js -->
-                                <div class="youtube-placeholder" data-video-id="">
-                                    <img src="assets/video/cbot-demo-poster.svg" alt="cbot demo preview" class="youtube-thumbnail">
-                                    <div class="youtube-play-button">
-                                        <svg viewBox="0 0 68 48" fill="currentColor">
-                                            <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"/>
-                                            <path d="M45,24L27,14v20L45,24z" fill="#000"/>
-                                        </svg>
-                                    </div>
-                                    <div class="youtube-info">
-                                        <div class="youtube-title">cbot Demo - Advanced Minecraft Client</div>
-                                        <div class="youtube-channel">@snopphin</div>
-                                    </div>
-                                    <div class="youtube-loading-overlay hidden">
-                                        <div class="loading-spinner"></div>
-                                        <span>Fetching video info...</span>
-                                    </div>
-                                </div>
-                                <iframe
-                                    class="youtube-iframe"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen
-                                    style="display: none;">
-                                </iframe>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div class="floating-elements">
                         <div class="floating-element"></div>
@@ -130,6 +102,60 @@
                     <h2 class="section-title">
                         <span class="typing-text" data-text="Why Choose cbot?" data-delay="3000"></span>
                     </h2>
+                    <p class="section-subtitle">
+                        <span class="typing-text" data-text="Experience the power of advanced automation" data-delay="3500"></span>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Preview Cbot Section -->
+            <section class="preview-section">
+                <div class="container">
+                    <div class="preview-header">
+                        <h2 class="preview-title">
+                            <span class="typing-text" data-text="Preview Cbot" data-delay="3000"></span>
+                        </h2>
+                        <p class="preview-subtitle">
+                            <span class="typing-text" data-text="Watch the demo to see cbot in action" data-delay="4000"></span>
+                        </p>
+                    </div>
+                    
+                    <div class="video-preview-section">
+                        <div class="video-container glow-border holographic">
+                            <div class="youtube-embed-wrapper">
+                                <div class="youtube-placeholder" id="youtubePlaceholder">
+                                    <img src="https://img.youtube.com/vi/OT6sQPEFGC8/maxresdefault.jpg" 
+                                         alt="cbot Demo Video" 
+                                         class="youtube-thumbnail"
+                                         onerror="this.src='https://img.youtube.com/vi/OT6sQPEFGC8/hqdefault.jpg'">
+                                    
+                                    <div class="youtube-play-button" onclick="loadYouTubeVideo()">
+                                        <svg viewBox="0 0 68 48" fill="currentColor">
+                                            <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z"/>
+                                            <path d="M45,24L27,14v20L45,24z" fill="#000"/>
+                                        </svg>
+                                    </div>
+                                    
+                                    <div class="youtube-info">
+                                        <div class="youtube-title">cbot - Advanced Minecraft Client Demo</div>
+                                        <div class="youtube-channel">@snopphin</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="youtube-iframe-container" id="youtubeIframeContainer" style="display: none;">
+                                    <iframe 
+                                        id="youtubeIframe"
+                                        width="100%" 
+                                        height="100%" 
+                                        src="" 
+                                        frameborder="0" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
@@ -146,10 +172,37 @@
         </footer>
     </div>
 
-    <script src="js/fallback.js"></script>
-    <script src="js/youtube-config.js"></script>
+        <script src="js/fallback.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/video-player.js"></script>
+    <script src="js/enhanced-animations.js"></script>
     <script src="js/image-utils.js"></script>
+
+    <script>
+        // YouTube video loading function
+        function loadYouTubeVideo() {
+            const placeholder = document.getElementById('youtubePlaceholder');
+            const iframeContainer = document.getElementById('youtubeIframeContainer');
+            const iframe = document.getElementById('youtubeIframe');
+            
+            if (placeholder && iframeContainer && iframe) {
+                // Hide placeholder and show iframe
+                placeholder.style.display = 'none';
+                iframeContainer.style.display = 'block';
+                
+                // Set the YouTube embed URL with autoplay
+                const videoId = 'OT6sQPEFGC8';
+                const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=1&enablejsapi=1&playsinline=1&origin=${window.location.origin}`;
+                
+                iframe.src = embedUrl;
+                
+                console.log('YouTube video loaded successfully');
+            }
+        }
+        
+        // Simple page initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('cbot website loaded successfully');
+        });
+    </script>
 </body>
 </html>
