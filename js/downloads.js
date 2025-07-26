@@ -4,7 +4,6 @@ class DownloadManager {
         this.initializeDownloads();
         this.bindEvents();
     }
-
     initializeDownloads() {
         this.downloads.set('tools.zip', {
             name: 'Professional Tools',
@@ -13,7 +12,6 @@ class DownloadManager {
             url: 'assets/downloads/tools.zip',
             type: 'application/zip'
         });
-
         this.downloads.set('resources.zip', {
             name: 'Resource Pack',
             size: '28.7 MB',
@@ -21,7 +19,6 @@ class DownloadManager {
             url: 'assets/downloads/resources.zip',
             type: 'application/zip'
         });
-
         this.downloads.set('docs.pdf', {
             name: 'Documentation',
             size: '5.1 MB',
@@ -30,7 +27,6 @@ class DownloadManager {
             type: 'application/pdf'
         });
     }
-
     bindEvents() {
         const downloadButtons = document.querySelectorAll('.download-btn');
         downloadButtons.forEach(button => {
@@ -41,19 +37,15 @@ class DownloadManager {
             });
         });
     }
-
     async handleDownload(fileName, button) {
         const downloadInfo = this.downloads.get(fileName);
-        
         if (!downloadInfo) {
             this.showNotification('File not found', 'error');
             return;
         }
-
         try {
             button.disabled = true;
             button.classList.add('downloading');
-            
             const originalText = button.textContent;
             button.innerHTML = `
                 <svg class="download-spinner" viewBox="0 0 24 24" fill="currentColor">
@@ -61,17 +53,13 @@ class DownloadManager {
                 </svg>
                 Preparing...
             `;
-
             await this.simulateDownloadPreparation();
-
             if (await this.checkFileExists(downloadInfo.url)) {
                 this.startDirectDownload(downloadInfo, button);
             } else {
                 this.generateDemoFile(downloadInfo, button);
             }
-
             this.trackDownload(fileName);
-            
         } catch (error) {
             console.error('Download error:', error);
             this.showNotification('Download failed. Please try again.', 'error');
@@ -83,7 +71,6 @@ class DownloadManager {
             }, 2000);
         }
     }
-
     async checkFileExists(url) {
         try {
             const response = await fetch(url, { method: 'HEAD' });
@@ -92,30 +79,24 @@ class DownloadManager {
             return false;
         }
     }
-
     startDirectDownload(downloadInfo, button) {
         const link = document.createElement('a');
         link.href = downloadInfo.url;
         link.download = downloadInfo.name;
         link.style.display = 'none';
-        
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
         button.innerHTML = `
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"/>
             </svg>
             Downloaded!
         `;
-        
         this.showNotification(`${downloadInfo.name} downloaded successfully!`, 'success');
     }
-
     generateDemoFile(downloadInfo, button) {
         let content, mimeType, extension;
-        
         switch (downloadInfo.type) {
             case 'application/zip':
                 content = this.createDemoZipContent(downloadInfo.name);
@@ -132,35 +113,27 @@ class DownloadManager {
                 mimeType = 'text/plain';
                 extension = '.txt';
         }
-        
         const blob = new Blob([content], { type: mimeType });
         const url = URL.createObjectURL(blob);
-        
         const link = document.createElement('a');
         link.href = url;
         link.download = downloadInfo.name.replace(/\s+/g, '_') + extension;
         link.style.display = 'none';
-        
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
         URL.revokeObjectURL(url);
-        
         button.innerHTML = `
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"/>
             </svg>
             Downloaded!
         `;
-        
         this.showNotification(`${downloadInfo.name} downloaded successfully!`, 'success');
     }
-
     createDemoZipContent(name) {
         return `Demo ${name} Package\n\nThis is a demonstration file for ${name}.\n\nContents:\n- Sample utilities\n- Documentation\n- Configuration files\n\nFor the full version, please contact support.\n\nGenerated: ${new Date().toISOString()}`;
     }
-
     createDemoPDFContent(name) {
         return `%PDF-1.4
 1 0 obj
@@ -169,7 +142,6 @@ class DownloadManager {
 /Pages 2 0 R
 >>
 endobj
-
 2 0 obj
 <<
 /Type /Pages
@@ -177,7 +149,6 @@ endobj
 /Count 1
 >>
 endobj
-
 3 0 obj
 <<
 /Type /Page
@@ -186,7 +157,6 @@ endobj
 /Contents 4 0 R
 >>
 endobj
-
 4 0 obj
 <<
 /Length 44
@@ -199,7 +169,6 @@ BT
 ET
 endstream
 endobj
-
 xref
 0 5
 0000000000 65535 f 
@@ -216,31 +185,24 @@ startxref
 300
 %%EOF`;
     }
-
     createDemoTextContent(name) {
         return `${name} - Demo Version
-
 This is a demonstration file for ${name}.
-
 Features:
 - Professional quality tools
 - Easy to use interface
 - Comprehensive documentation
 - Regular updates
-
 For the full version with all features, please visit our website.
-
 Generated: ${new Date().toLocaleString()}
 Version: Demo 1.0
 `;
     }
-
     async simulateDownloadPreparation() {
         return new Promise(resolve => {
             setTimeout(resolve, 1000 + Math.random() * 1000);
         });
     }
-
     trackDownload(fileName) {
         const downloads = JSON.parse(localStorage.getItem('downloadHistory') || '[]');
         downloads.push({
@@ -248,14 +210,11 @@ Version: Demo 1.0
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent
         });
-        
         if (downloads.length > 50) {
             downloads.splice(0, downloads.length - 50);
         }
-        
         localStorage.setItem('downloadHistory', JSON.stringify(downloads));
     }
-
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
@@ -265,23 +224,18 @@ Version: Demo 1.0
                 <button class="notification-close">&times;</button>
             </div>
         `;
-        
         document.body.appendChild(notification);
-        
         setTimeout(() => {
             notification.classList.add('show');
         }, 100);
-        
         const closeBtn = notification.querySelector('.notification-close');
         closeBtn.addEventListener('click', () => {
             this.hideNotification(notification);
         });
-        
         setTimeout(() => {
             this.hideNotification(notification);
         }, 5000);
     }
-
     hideNotification(notification) {
         notification.classList.remove('show');
         setTimeout(() => {
@@ -290,16 +244,13 @@ Version: Demo 1.0
             }
         }, 300);
     }
-
     getDownloadHistory() {
         return JSON.parse(localStorage.getItem('downloadHistory') || '[]');
     }
-
     clearDownloadHistory() {
         localStorage.removeItem('downloadHistory');
     }
 }
-
 const notificationStyles = `
     .notification {
         position: fixed;
@@ -315,35 +266,28 @@ const notificationStyles = `
         transition: transform 0.3s ease;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
-    
     .notification.show {
         transform: translateX(0);
     }
-    
     .notification-success {
         border-left: 4px solid #10b981;
     }
-    
     .notification-error {
         border-left: 4px solid #ef4444;
     }
-    
     .notification-info {
         border-left: 4px solid var(--primary-color);
     }
-    
     .notification-content {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 1rem;
     }
-    
     .notification-message {
         color: var(--text-primary);
         font-weight: 500;
     }
-    
     .notification-close {
         background: none;
         border: none;
@@ -359,33 +303,27 @@ const notificationStyles = `
         border-radius: 50%;
         transition: background-color 0.2s ease;
     }
-    
     .notification-close:hover {
         background-color: var(--background-secondary);
     }
-    
     .download-spinner {
         width: 16px;
         height: 16px;
         margin-right: 0.5rem;
         animation: spin 1s linear infinite;
     }
-    
     @keyframes spin {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
-    
     .downloading {
         opacity: 0.7;
         cursor: not-allowed;
     }
 `;
-
 const styleSheet = document.createElement('style');
 styleSheet.textContent = notificationStyles;
 document.head.appendChild(styleSheet);
-
 document.addEventListener('DOMContentLoaded', () => {
     new DownloadManager();
 });

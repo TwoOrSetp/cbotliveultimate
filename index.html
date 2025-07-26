@@ -75,12 +75,8 @@
                     </p>
                     <div class="hero-stats">
                         <div class="stat-item">
-                            <span class="stat-number">10K+</span>
-                            <span class="stat-label">Active Users</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">99.9%</span>
-                            <span class="stat-label">Uptime</span>
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Working</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-number">24/7</span>
@@ -119,25 +115,22 @@
 
             <section class="features">
                 <div class="section-header">
-                    <h2 class="section-title">
-                        <span class="typing-text" data-text="Why Choose cbot?" data-delay="3000"></span>
-                    </h2>
                     <p class="section-subtitle">
-                        <span class="typing-text" data-text="Experience the power of advanced automation" data-delay="3500"></span>
+                        <span class="typing-text" data-text="Preview How To Use Cbot" data-delay="3500"></span>
                     </p>
                 </div>
                 
         
             </section>
 
-            <!-- Simple Video Section -->
+
             <section class="hero-section" id="preview">
                 <div class="container">
                     <div class="simple-video-container">
                         <iframe 
                             width="100%" 
                             height="500" 
-                            src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" 
+                            src="https://www.youtube.com/embed/lj_erqEyLVA?rel=0" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                             allowfullscreen>
@@ -168,26 +161,24 @@
     <script src="js/image-utils.js"></script>
 
     <script>
-        // Global variables for video management
-        let currentVideoId = 'dQw4w9WgXcQ';
+        let currentVideoId = 'lj_erqEyLVA';
         let videoLoadAttempts = 0;
         const maxLoadAttempts = 3;
         
-        // Video metadata for different videos
         const videoMetadata = {
-            'dQw4w9WgXcQ': {
+            'lj_erqEyLVA': {
                 title: 'cbot - Advanced Minecraft Client Demo',
                 channel: '@snopphin',
                 duration: '3:45',
                 description: 'Watch cbot in action! This demo showcases the advanced features and capabilities of our Minecraft client, including automation, performance optimization, and user-friendly interface.'
             },
-            'jNQXAC9IVRw': {
+            'dQw4w9WgXcQ': {
                 title: 'cbot Features Overview',
                 channel: '@snopphin',
                 duration: '2:30',
                 description: 'Explore the powerful features of cbot including automation tools, performance enhancements, and customization options.'
             },
-            'ks0U4lCfqtQ': {
+            'jNQXAC9IVRw': {
                 title: 'cbot Tutorial Guide',
                 channel: '@snopphin',
                 duration: '5:15',
@@ -195,17 +186,28 @@
             }
         };
         
-        // Simple video functions (removed complex logic)
         function loadYouTubeVideo() {
             console.log('Simple video player - no complex functions needed');
         }
+        
+        function switchVideo(videoId, element) {
+            currentVideoId = videoId;
+            
+            const iframe = document.getElementById('youtubeIframe');
+            if (iframe) {
+                iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0`;
+            }
+            
+            const metadata = videoMetadata[videoId];
+            if (metadata) {
+                const thumbnail = document.getElementById('youtubeThumbnail');
+                if (thumbnail) {
                     thumbnail.src = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
                     thumbnail.onerror = function() {
                         this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
                     };
                 }
                 
-                // Update title and info
                 const title = document.getElementById('youtubeTitle');
                 const channel = document.getElementById('youtubeChannel');
                 const duration = document.getElementById('youtubeDuration');
@@ -214,7 +216,6 @@
                 if (channel) channel.textContent = metadata.channel;
                 if (duration) duration.textContent = metadata.duration;
                 
-                // Update description
                 const description = document.querySelector('.video-description p');
                 if (description) description.textContent = metadata.description;
             }
@@ -228,7 +229,6 @@
             const errorState = document.getElementById('videoErrorState');
             const iframe = document.getElementById('youtubeIframe');
             
-            // Clear iframe source
             if (iframe) {
                 iframe.src = '';
                 if (iframe.dataset.loadTimeout) {
@@ -236,17 +236,14 @@
                 }
             }
             
-            // Show placeholder, hide others
             if (placeholder) placeholder.style.display = 'block';
             if (iframeContainer) iframeContainer.style.display = 'none';
             if (loadingState) loadingState.style.display = 'none';
             if (errorState) errorState.style.display = 'none';
             
-            // Reset load attempts
             videoLoadAttempts = 0;
         }
         
-        // Simulate loading progress
         function simulateLoadingProgress() {
             const progressBar = document.getElementById('loadingProgress');
             if (progressBar) {
@@ -262,7 +259,6 @@
             }
         }
         
-        // Toggle fullscreen
         function toggleFullscreen() {
             const iframeContainer = document.getElementById('youtubeIframeContainer');
             if (iframeContainer) {
@@ -276,7 +272,6 @@
             }
         }
         
-        // Reset video
         function resetVideo() {
             const iframe = document.getElementById('youtubeIframe');
             if (iframe) {
@@ -284,7 +279,6 @@
             }
         }
         
-        // Share video
         function shareVideo() {
             const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
             const shareData = {
@@ -303,27 +297,21 @@
             }
         }
         
-        // Fallback share method
         function fallbackShare(videoUrl) {
-            // Copy to clipboard
             navigator.clipboard.writeText(videoUrl).then(() => {
                 showNotification('Video URL copied to clipboard!', 'success');
             }).catch(() => {
-                // Fallback: open in new window
                 window.open(videoUrl, '_blank');
             });
         }
         
-        // Download demo
         function downloadDemo() {
             showNotification('Demo download started!', 'info');
-            // You can implement actual demo download logic here
             setTimeout(() => {
                 window.open('download.html', '_blank');
             }, 1000);
         }
         
-        // Try alternative video
         function tryAlternativeVideo() {
             const alternativeVideos = ['dQw4w9WgXcQ', 'jNQXAC9IVRw'];
             const randomVideo = alternativeVideos[Math.floor(Math.random() * alternativeVideos.length)];
@@ -331,14 +319,12 @@
             loadYouTubeVideo();
         }
         
-        // Fallback method using direct YouTube link
         function loadYouTubeFallback() {
             const videoUrl = `https://www.youtube.com/watch?v=${currentVideoId}`;
             showNotification('Opening video in new tab...', 'info');
             window.open(videoUrl, '_blank');
         }
         
-        // Check if iframe is supported
         function checkIframeSupport() {
             try {
                 const testIframe = document.createElement('iframe');
@@ -352,7 +338,6 @@
             }
         }
         
-        // Test with a simple, guaranteed-to-work video
         function testSimpleVideo() {
             const placeholder = document.getElementById('youtubePlaceholder');
             const iframeContainer = document.getElementById('youtubeIframeContainer');
@@ -360,19 +345,16 @@
             const loadingState = document.getElementById('videoLoadingState');
             const errorState = document.getElementById('videoErrorState');
             
-            // Hide everything
             placeholder.style.display = 'none';
             iframeContainer.style.display = 'none';
             loadingState.style.display = 'none';
             errorState.style.display = 'none';
             
-            // Show the test video
             testContainer.style.display = 'block';
             
             console.log('Testing with simple YouTube embed...');
         }
         
-        // Show notification
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
@@ -385,12 +367,10 @@
             
             document.body.appendChild(notification);
             
-            // Show notification
             setTimeout(() => {
                 notification.classList.add('show');
             }, 100);
             
-            // Auto remove after 5 seconds
             setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => {
@@ -401,7 +381,6 @@
             }, 5000);
         }
         
-        // Enhanced error handling
         function handleIframeError() {
             videoLoadAttempts++;
             if (videoLoadAttempts < maxLoadAttempts) {
@@ -414,7 +393,6 @@
             }
         }
         
-        // Enhanced timeout handling
         function handleVideoTimeout() {
             videoLoadAttempts++;
             if (videoLoadAttempts < maxLoadAttempts) {
@@ -427,7 +405,6 @@
             }
         }
         
-        // Check video availability on page load
         function checkVideoAvailability() {
             const testUrl = `https://img.youtube.com/vi/${currentVideoId}/maxresdefault.jpg`;
             
@@ -437,22 +414,18 @@
             };
             img.onerror = function() {
                 console.warn('Video might be unavailable or private');
-                // Try alternative video
                 tryAlternativeVideo();
             };
             img.src = testUrl;
         }
         
-        // Page initialization
         document.addEventListener('DOMContentLoaded', function() {
             console.log('cbot website loaded successfully');
             checkVideoAvailability();
             
-            // Initialize video tabs
             initializeVideoTabs();
         });
         
-        // Initialize video tabs
         function initializeVideoTabs() {
             const tabs = document.querySelectorAll('.video-tab');
             tabs.forEach(tab => {

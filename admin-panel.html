@@ -221,10 +221,8 @@
     </div>
 
     <script>
-        // Load current configuration
         function loadCurrentConfig() {
             try {
-                // This would normally load from the config file
                 const config = {
                     videoUrl: 'https://youtube.com/watch?v=V63UTu4bZspr3frz',
                     fallbackTitle: 'cbot Demo - Advanced Minecraft Client',
@@ -241,7 +239,6 @@
             }
         }
 
-        // Extract video ID from YouTube URL
         function extractVideoId(url) {
             const patterns = [
                 /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
