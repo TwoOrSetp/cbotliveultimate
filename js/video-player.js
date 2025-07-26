@@ -1,12 +1,8 @@
-class VideoPlayer {
+class YouTubePlayer {
     constructor() {
-        this.video = null;
-        this.playPauseBtn = null;
-        this.progressBar = null;
-        this.progressFill = null;
-        this.currentTimeDisplay = null;
-        this.durationDisplay = null;
-        this.fullscreenBtn = null;
+        this.youtubeContainer = null;
+        this.placeholder = null;
+        this.iframe = null;
         this.isLoaded = false;
         this.init();
     }
@@ -17,14 +13,14 @@ class VideoPlayer {
     }
 
     setupLazyLoading() {
-        const video = document.querySelector('.demo-video[data-lazy="true"]');
-        if (!video) return;
+        const youtubeContainer = document.querySelector('.youtube-embed-container[data-lazy="true"]');
+        if (!youtubeContainer) return;
 
         // Create intersection observer for lazy loading
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !this.isLoaded) {
-                    this.loadVideo(entry.target);
+                    this.setupYouTubeEmbed(entry.target);
                     observer.unobserve(entry.target);
                 }
             });
@@ -33,101 +29,83 @@ class VideoPlayer {
             threshold: 0.1
         });
 
-        observer.observe(video);
+        observer.observe(youtubeContainer);
     }
 
-    loadVideo(video) {
-        this.video = video;
+    setupYouTubeEmbed(container) {
+        this.youtubeContainer = container;
+        this.placeholder = container.querySelector('.youtube-placeholder');
+        this.iframe = container.querySelector('.youtube-iframe');
         this.isLoaded = true;
 
-        // Load video sources
-        const sources = video.querySelectorAll('source[data-src]');
-        sources.forEach(source => {
-            source.src = source.getAttribute('data-src');
-            source.removeAttribute('data-src');
+        if (!this.placeholder || !this.iframe) {
+            console.error('YouTube placeholder or iframe not found');
+            return;
+        }
+
+        // Get video ID from placeholder
+        const videoId = this.placeholder.getAttribute('data-video-id');
+        if (!videoId) {
+            console.error('YouTube video ID not found');
+            return;
+        }
+
+        // Setup click handler for placeholder
+        this.placeholder.addEventListener('click', () => {
+            this.loadYouTubeVideo(videoId);
         });
 
-        // Load the video
-        video.load();
-
-        // Setup custom controls
-        this.setupCustomControls();
-
-        // Add loading indicator
-        this.showLoadingState();
-
-        // Handle video events
-        video.addEventListener('loadedmetadata', () => {
-            this.hideLoadingState();
-            this.updateDuration();
-        });
-
-        video.addEventListener('error', () => {
-            this.showErrorState();
-        });
-
-        video.addEventListener('timeupdate', () => {
-            this.updateProgress();
-        });
-
-        video.addEventListener('ended', () => {
-            this.resetPlayButton();
-        });
-
-        console.log('Video lazy loaded and initialized');
+        console.log('YouTube embed initialized with video ID:', videoId);
     }
 
-    setupCustomControls() {
-        if (!this.video) return;
+    loadYouTubeVideo(videoId) {
+        if (!this.iframe || !this.placeholder) return;
 
-        this.playPauseBtn = document.querySelector('.play-pause-btn');
-        this.progressBar = document.querySelector('.progress-bar');
-        this.progressFill = document.querySelector('.progress-fill');
-        this.currentTimeDisplay = document.querySelector('.current-time');
-        this.durationDisplay = document.querySelector('.duration');
-        this.fullscreenBtn = document.querySelector('.fullscreen-btn');
+        // Show loading state
+        this.showLoadingState();
 
-        // Hide native controls
-        this.video.controls = false;
+        // Set iframe source
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+        this.iframe.setAttribute('src', embedUrl);
+
+        // Hide placeholder and show iframe
+        this.placeholder.style.display = 'none';
+        this.iframe.style.display = 'block';
+
+        // Hide loading state after a delay
+        setTimeout(() => {
+            this.hideLoadingState();
+        }, 1500);
+
+        console.log('YouTube video loaded:', videoId);
     }
 
     bindEvents() {
+        // Handle YouTube video configuration updates
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.play-pause-btn')) {
-                this.togglePlayPause();
-            }
-            
-            if (e.target.closest('.fullscreen-btn')) {
-                this.toggleFullscreen();
-            }
-            
-            if (e.target.closest('.progress-bar')) {
-                this.seekVideo(e);
+            if (e.target.closest('.youtube-config-btn')) {
+                this.showYouTubeConfig();
             }
         });
 
-        // Keyboard controls
+        // Handle escape key to close any modals
         document.addEventListener('keydown', (e) => {
-            if (!this.video || document.activeElement !== this.video) return;
-            
-            switch (e.code) {
-                case 'Space':
-                    e.preventDefault();
-                    this.togglePlayPause();
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    this.video.currentTime = Math.max(0, this.video.currentTime - 10);
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    this.video.currentTime = Math.min(this.video.duration, this.video.currentTime + 10);
-                    break;
-                case 'KeyF':
-                    e.preventDefault();
-                    this.toggleFullscreen();
-                    break;
+            if (e.code === 'Escape') {
+                this.closeModals();
             }
+        });
+    }
+
+    showYouTubeConfig() {
+        // This could be used to show a modal for changing the YouTube video
+        console.log('YouTube configuration requested');
+    }
+
+    closeModals() {
+        // Close any open modals or overlays
+        const modals = document.querySelectorAll('.modal, .overlay');
+        modals.forEach(modal => {
+            modal.style.display = 'none';
         });
     }
 
@@ -210,14 +188,17 @@ class VideoPlayer {
     }
 
     showLoadingState() {
-        const container = this.video?.closest('.video-container');
+        const container = this.youtubeContainer?.closest('.video-container');
         if (!container) return;
+
+        // Remove existing loading element
+        this.hideLoadingState();
 
         const loadingElement = document.createElement('div');
         loadingElement.className = 'video-loading';
         loadingElement.innerHTML = `
             <div class="spinner"></div>
-            <p>Loading video...</p>
+            <p>Loading YouTube video...</p>
         `;
         container.appendChild(loadingElement);
     }
@@ -230,7 +211,7 @@ class VideoPlayer {
     }
 
     showErrorState() {
-        const container = this.video?.closest('.video-container');
+        const container = this.youtubeContainer?.closest('.video-container');
         if (!container) return;
 
         this.hideLoadingState();
@@ -241,39 +222,67 @@ class VideoPlayer {
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"/>
             </svg>
-            <h3>Video Unavailable</h3>
-            <p>Sorry, the video could not be loaded. Please try refreshing the page.</p>
+            <h3>YouTube Video Unavailable</h3>
+            <p>Sorry, the YouTube video could not be loaded. Please check your connection or try again later.</p>
+            <a href="https://youtube.com/@snopphin" target="_blank" rel="noopener" class="btn btn-primary">
+                Visit YouTube Channel
+            </a>
         `;
         container.appendChild(errorElement);
     }
 
-    // Method to preload video for better performance
-    preloadVideo() {
-        if (this.video && !this.video.src) {
-            this.loadVideo(this.video);
+    // Method to change YouTube video
+    changeYouTubeVideo(videoId) {
+        if (!videoId) return;
+
+        const placeholder = this.youtubeContainer?.querySelector('.youtube-placeholder');
+        if (placeholder) {
+            placeholder.setAttribute('data-video-id', videoId);
+
+            // Reset to placeholder state
+            if (this.iframe) {
+                this.iframe.style.display = 'none';
+                this.iframe.removeAttribute('src');
+            }
+            if (this.placeholder) {
+                this.placeholder.style.display = 'block';
+            }
+
+            console.log('YouTube video changed to:', videoId);
         }
     }
 
-    // Method to get video statistics
-    getVideoStats() {
-        if (!this.video) return null;
+    // Method to get current YouTube video info
+    getYouTubeInfo() {
+        const placeholder = this.youtubeContainer?.querySelector('.youtube-placeholder');
+        if (!placeholder) return null;
 
         return {
-            duration: this.video.duration,
-            currentTime: this.video.currentTime,
-            played: this.video.played.length > 0,
-            paused: this.video.paused,
-            ended: this.video.ended,
-            volume: this.video.volume,
-            muted: this.video.muted
+            videoId: placeholder.getAttribute('data-video-id'),
+            isLoaded: this.iframe?.style.display === 'block',
+            title: placeholder.querySelector('.youtube-title')?.textContent,
+            channel: placeholder.querySelector('.youtube-channel')?.textContent
         };
+    }
+
+    // Method to update YouTube video info
+    updateYouTubeInfo(title, channel) {
+        const titleElement = this.youtubeContainer?.querySelector('.youtube-title');
+        const channelElement = this.youtubeContainer?.querySelector('.youtube-channel');
+
+        if (titleElement && title) {
+            titleElement.textContent = title;
+        }
+        if (channelElement && channel) {
+            channelElement.textContent = channel;
+        }
     }
 }
 
-// Initialize video player when DOM is ready
+// Initialize YouTube player when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.videoPlayer = new VideoPlayer();
+    window.youtubePlayer = new YouTubePlayer();
 });
 
 // Export for use in other scripts
-window.VideoPlayer = VideoPlayer;
+window.YouTubePlayer = YouTubePlayer;
