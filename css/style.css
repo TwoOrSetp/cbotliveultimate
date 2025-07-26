@@ -533,6 +533,8 @@ html {
     z-index: 2;
     max-width: 800px;
     width: 100%;
+    cursor: default;
+    pointer-events: auto;
 }
 
 .video-container {
@@ -606,6 +608,8 @@ html {
     border-radius: 1.5rem;
     overflow: hidden;
     background: var(--background-secondary);
+    pointer-events: auto;
+    cursor: default;
 }
 
 .youtube-placeholder {
@@ -617,14 +621,18 @@ html {
     background: var(--background-secondary);
     user-select: none;
     -webkit-user-select: none;
+    pointer-events: auto;
+    z-index: 5;
 }
 
 .youtube-placeholder:hover {
     transform: scale(1.02);
+    cursor: pointer;
 }
 
 .youtube-placeholder:active {
     transform: scale(0.98);
+    cursor: pointer;
 }
 
 .youtube-placeholder.loading {
@@ -708,12 +716,15 @@ html {
     height: 100%;
     border-radius: 1.5rem;
     transition: opacity 0.3s ease;
-    opacity: 0;
+    opacity: 1;
     pointer-events: auto;
+    cursor: default;
+    z-index: 10;
 }
 
-.youtube-iframe[style*="opacity: 1"] {
+.youtube-iframe[style*="display: block"] {
     opacity: 1;
+    pointer-events: auto;
 }
 
 /* YouTube Container Enhancements */
@@ -744,11 +755,46 @@ html {
 /* Ensure video overlay text is always visible */
 .video-container .video-overlay {
     z-index: 15 !important;
+    pointer-events: none;
 }
 
 .video-container .video-overlay * {
     position: relative;
     z-index: 16;
+    pointer-events: none;
+}
+
+/* Fix cursor and pointer events for video area */
+.video-container {
+    cursor: default;
+}
+
+.video-container * {
+    cursor: inherit;
+}
+
+.youtube-placeholder,
+.youtube-play-button {
+    cursor: pointer !important;
+}
+
+.video-download-btn,
+.video-download-btn * {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* Prevent cursor glitches */
+.youtube-embed-container,
+.youtube-embed-container * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.youtube-iframe {
+    cursor: default !important;
 }
 
 /* YouTube Loading Overlay */
@@ -898,6 +944,9 @@ html {
     margin-top: 2rem;
     text-align: center;
     animation: downloadButtonSlideUp 1s ease-out 1s both;
+    position: relative;
+    z-index: 100;
+    pointer-events: auto;
 }
 
 .video-download-btn {
@@ -919,9 +968,10 @@ html {
     -webkit-backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
-    z-index: 100;
+    z-index: 1000;
     pointer-events: auto;
     cursor: pointer;
+    isolation: isolate;
 }
 
 .video-download-btn::before {
@@ -2648,6 +2698,7 @@ html {
     .video-download-btn {
         padding: 1.25rem 2rem;
         margin: 0 1rem;
+        cursor: pointer !important;
     }
 
     .download-text {
@@ -2657,6 +2708,14 @@ html {
     .download-icon {
         width: 28px;
         height: 28px;
+    }
+
+    /* Ensure download section is isolated on mobile */
+    .video-download-section {
+        position: relative;
+        z-index: 1000;
+        isolation: isolate;
+        pointer-events: auto;
     }
 }
 

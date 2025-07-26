@@ -452,26 +452,21 @@ class YouTubePlayer {
     }
 
     bindEvents() {
-        // Handle download button clicks (prevent interference with video)
+        // Handle download button clicks (ensure they work)
         document.addEventListener('click', (e) => {
-            // Download button handling
+            // Download button handling - ensure it works
             if (e.target.closest('.video-download-btn')) {
-                // Let the download button work normally
-                return;
+                console.log('Download button clicked');
+                return true; // Let the download button work normally
             }
 
             // YouTube configuration
             if (e.target.closest('.youtube-config-btn')) {
                 e.preventDefault();
                 this.showYouTubeConfig();
+                return;
             }
-
-            // Prevent any other clicks from interfering with video
-            if (e.target.closest('.youtube-embed-container') && !e.target.closest('.youtube-placeholder')) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        });
+        }, true); // Use capture phase to ensure download button works
 
         // Handle escape key to close any modals
         document.addEventListener('keydown', (e) => {
@@ -483,6 +478,19 @@ class YouTubePlayer {
         // Handle window resize for responsive video
         window.addEventListener('resize', () => {
             this.handleResize();
+        });
+
+        // Fix cursor issues
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('.youtube-iframe')) {
+                document.body.style.cursor = 'default';
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('.youtube-iframe')) {
+                document.body.style.cursor = '';
+            }
         });
     }
 
