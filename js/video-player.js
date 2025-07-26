@@ -52,25 +52,20 @@ class YouTubePlayer {
             return;
         }
 
-        // Get video ID from placeholder (might be set by youtube-config.js)
-        let videoId = this.placeholder.getAttribute('data-video-id');
+        // Get video ID directly from HTML data-video-id attribute
+        const videoId = this.placeholder.getAttribute('data-video-id');
 
-        // If no video ID, wait for config to load
         if (!videoId || videoId === '') {
-            console.log('No video ID found, waiting for config...');
-            setTimeout(() => {
-                videoId = this.placeholder.getAttribute('data-video-id');
-                if (videoId) {
-                    console.log('Video ID found after config load:', videoId);
-                    this.setupVideoHandlers(videoId);
-                } else {
-                    console.error('Still no video ID found after waiting');
-                }
-            }, 500);
+            console.error('No video ID found in data-video-id attribute');
+            console.log('Please set data-video-id="YOUR_VIDEO_ID" in the HTML');
             return;
         }
 
+        console.log('Found video ID:', videoId);
         this.setupVideoHandlers(videoId);
+
+        // Immediately fetch real YouTube data
+        this.fetchRealYouTubeData(videoId);
     }
 
     setupVideoHandlers(videoId) {
@@ -123,7 +118,90 @@ class YouTubePlayer {
         console.log('Click handlers set up for video:', videoId);
         console.log('Double-click will open YouTube directly as backup');
 
-        // Note: Video data will be fetched by youtube-config.js
+        // Fetch real YouTube data immediately
+        console.log('Video handlers set up, fetching YouTube data...');
+    }
+
+    async fetchRealYouTubeData(videoId) {
+        console.log('=== FETCHING REAL YOUTUBE DATA ===');
+        console.log('Video ID:', videoId);
+
+        try {
+            // Use YouTube oEmbed API to get real video data
+            const apiUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+            console.log('API URL:', apiUrl);
+
+            const response = await fetch(apiUrl, {
+                signal: AbortSignal.timeout(5000)
+            });
+
+            if (!response.ok) {
+                throw new Error(`API response not OK: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Got YouTube data:', data);
+
+            // Update the video information with real data
+            this.updateVideoDisplay(data);
+
+        } catch (error) {
+            console.warn('Failed to fetch YouTube data:', error);
+            console.log('Using YouTube thumbnail fallback');
+            this.setYouTubeThumbnailFallback(videoId);
+        }
+    }
+
+    updateVideoDisplay(youtubeData) {
+        console.log('=== UPDATING VIDEO DISPLAY ===');
+
+        // Update title
+        const titleElement = this.placeholder?.querySelector('.youtube-title');
+        if (titleElement && youtubeData.title) {
+            titleElement.textContent = youtubeData.title;
+            console.log('Updated title:', youtubeData.title);
+        }
+
+        // Update channel/author
+        const channelElement = this.placeholder?.querySelector('.youtube-channel');
+        if (channelElement && youtubeData.author_name) {
+            channelElement.textContent = `@${youtubeData.author_name}`;
+            console.log('Updated channel:', youtubeData.author_name);
+        }
+
+        // Update thumbnail
+        const thumbnailElement = this.placeholder?.querySelector('.youtube-thumbnail');
+        if (thumbnailElement && youtubeData.thumbnail_url) {
+            thumbnailElement.src = youtubeData.thumbnail_url;
+            console.log('Updated thumbnail:', youtubeData.thumbnail_url);
+
+            // Handle thumbnail load error
+            thumbnailElement.onerror = () => {
+                console.warn('Thumbnail failed to load, using YouTube fallback');
+                this.setYouTubeThumbnailFallback(this.placeholder.getAttribute('data-video-id'));
+            };
+        }
+
+        console.log('Video display updated with real YouTube data');
+    }
+
+    setYouTubeThumbnailFallback(videoId) {
+        const thumbnailElement = this.placeholder?.querySelector('.youtube-thumbnail');
+        if (thumbnailElement && videoId) {
+            // Use YouTube's direct thumbnail URLs
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            console.log('Setting fallback thumbnail:', thumbnailUrl);
+
+            thumbnailElement.src = thumbnailUrl;
+
+            // If maxres fails, try hqdefault
+            thumbnailElement.onerror = () => {
+                const fallbackUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                console.log('Maxres failed, trying hqdefault:', fallbackUrl);
+                thumbnailElement.src = fallbackUrl;
+                thumbnailElement.onerror = null; // Prevent infinite loop
+            };
+        }
     }
 
 
@@ -208,33 +286,8 @@ class YouTubePlayer {
     }
 
     async fetchYouTubeVideoInfo(videoId) {
-        // Prevent infinite fetching
-        if (this.isFetchingInfo) {
-            console.warn('Already fetching video info, skipping...');
-            return;
-        }
-
-        this.isFetchingInfo = true;
-        console.log('Fetching comprehensive YouTube data for:', videoId);
-
-        try {
-            // Try multiple methods to get complete video information
-            const videoData = await this.getCompleteVideoData(videoId);
-
-            if (videoData) {
-                console.log('Successfully fetched complete YouTube data:', videoData);
-                this.updateVideoInfo(videoData);
-                this.isFetchingInfo = false;
-                return;
-            }
-        } catch (error) {
-            console.warn('Failed to fetch video data:', error.message);
-        }
-
-        // Fallback: Use YouTube thumbnail URLs and basic info
-        console.log('Using YouTube thumbnail fallback');
-        this.updateVideoThumbnail(videoId);
-        this.isFetchingInfo = false;
+        // Use the new simplified method
+        return this.fetchRealYouTubeData(videoId);
     }
 
     async getCompleteVideoData(videoId) {
@@ -720,6 +773,9 @@ class YouTubePlayer {
                 this.placeholder.style.display = 'block';
             }
 
+            // Fetch new video data
+            this.fetchRealYouTubeData(videoId);
+
             console.log('YouTube video changed to:', videoId);
         }
     }
@@ -850,6 +906,23 @@ window.forceIframeLoad = function(videoId) {
         console.log('Iframe forced to load:', embedUrl);
     } else {
         console.error('Iframe or placeholder not found');
+    }
+};
+
+// Function to refresh video data
+window.refreshVideoData = function(videoId) {
+    console.log('=== REFRESHING VIDEO DATA ===');
+    if (!videoId) {
+        const placeholder = document.querySelector('.youtube-placeholder');
+        videoId = placeholder?.getAttribute('data-video-id') || 'OT6sQPEFGC8';
+    }
+
+    console.log('Refreshing data for video ID:', videoId);
+
+    if (window.youtubePlayer && window.youtubePlayer.fetchRealYouTubeData) {
+        window.youtubePlayer.fetchRealYouTubeData(videoId);
+    } else {
+        console.error('YouTube player not available');
     }
 };
 
