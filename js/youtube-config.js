@@ -6,7 +6,7 @@ class YouTubeConfig {
         this.config = {
             // MAIN VIDEO CONFIGURATION
             // Just paste your YouTube URL here - everything else is automatic!
-            videoUrl: 'https://youtube.com/watch?v=V63UTu4bZspr3frz',
+            videoUrl: 'https://www.youtube.com/watch?v=OT6sQPEFGC8',
             
             // OPTIONAL: Override automatic detection
             fallbackTitle: 'cbot Demo - Advanced Minecraft Client',
@@ -33,19 +33,22 @@ class YouTubeConfig {
 
     applyConfig() {
         const videoId = this.extractVideoId(this.config.videoUrl);
-        
+
         if (!videoId) {
             console.error('Invalid YouTube URL:', this.config.videoUrl);
             return;
         }
 
         console.log('Applying YouTube config for video:', videoId);
-        
+
         // Update the HTML with the video ID
         this.updateVideoElement(videoId);
-        
-        // Set fallback data
+
+        // Set fallback data first
         this.setFallbackData();
+
+        // Then fetch real data from YouTube
+        this.fetchRealVideoData(videoId);
     }
 
     extractVideoId(url) {
@@ -66,19 +69,29 @@ class YouTubeConfig {
 
     updateVideoElement(videoId) {
         const placeholder = document.querySelector('.youtube-placeholder');
-        
+
         if (placeholder) {
             // Update video ID
             placeholder.setAttribute('data-video-id', videoId);
-            
+            console.log('Set video ID on placeholder:', videoId);
+
             // Update embed URL
             const iframe = document.querySelector('.youtube-iframe');
             if (iframe) {
                 const embedUrl = this.buildEmbedUrl(videoId);
                 iframe.setAttribute('data-src', embedUrl);
+                console.log('Set embed URL:', embedUrl);
             }
-            
+
+            // Trigger video player setup if it exists
+            if (window.youtubePlayer && window.youtubePlayer.setupVideoHandlers) {
+                console.log('Triggering video player setup');
+                window.youtubePlayer.setupVideoHandlers(videoId);
+            }
+
             console.log('Updated video element with ID:', videoId);
+        } else {
+            console.error('YouTube placeholder not found');
         }
     }
 
@@ -106,6 +119,63 @@ class YouTubeConfig {
         
         if (channelElement) {
             channelElement.textContent = `@${this.config.fallbackChannel}`;
+        }
+    }
+
+    async fetchRealVideoData(videoId) {
+        console.log('Fetching real YouTube data for:', videoId);
+
+        try {
+            // Try YouTube oEmbed API
+            const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`, {
+                signal: AbortSignal.timeout(5000)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Got real YouTube data:', data);
+
+                // Update title
+                const titleElement = document.querySelector('.youtube-title');
+                if (titleElement && data.title) {
+                    titleElement.textContent = data.title;
+                }
+
+                // Update channel
+                const channelElement = document.querySelector('.youtube-channel');
+                if (channelElement && data.author_name) {
+                    channelElement.textContent = `@${data.author_name}`;
+                }
+
+                // Update thumbnail
+                const thumbnailElement = document.querySelector('.youtube-thumbnail');
+                if (thumbnailElement && data.thumbnail_url) {
+                    thumbnailElement.src = data.thumbnail_url;
+                }
+
+                console.log('Updated video info with real data');
+            } else {
+                console.warn('YouTube API failed, using fallback data');
+                this.setYouTubeThumbnail(videoId);
+            }
+        } catch (error) {
+            console.warn('Failed to fetch YouTube data:', error);
+            this.setYouTubeThumbnail(videoId);
+        }
+    }
+
+    setYouTubeThumbnail(videoId) {
+        const thumbnailElement = document.querySelector('.youtube-thumbnail');
+        if (thumbnailElement) {
+            // Use YouTube's direct thumbnail URL
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            thumbnailElement.src = thumbnailUrl;
+
+            // Fallback to lower quality if maxres fails
+            thumbnailElement.onerror = () => {
+                thumbnailElement.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+                thumbnailElement.onerror = null;
+            };
         }
     }
 
