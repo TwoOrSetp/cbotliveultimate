@@ -1498,6 +1498,8 @@ html {
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 }
 
 .showcase-item:hover {
@@ -1528,6 +1530,8 @@ html {
     padding: 2rem;
     margin-bottom: 2rem;
     transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 }
 
 .feature-item:hover {

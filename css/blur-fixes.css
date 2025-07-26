@@ -1,0 +1,275 @@
+/* Blur Fixes and Animation Optimizations */
+
+/* Fix for blurry elements during animations */
+.typing-text,
+.hero-title,
+.hero-subtitle,
+.section-title,
+.preview-title,
+.btn,
+.nav-link,
+.floating-logo,
+.main-rotating-logo,
+.video-container,
+.download-card,
+.feature-card,
+.social-link {
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: translateZ(0) scale(1.0, 1.0);
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Fix for blurry text during animations */
+.typing-text,
+.hero-title,
+.hero-subtitle,
+.section-title,
+.preview-title,
+.nav-link,
+.btn {
+    font-smooth: always !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility;
+}
+
+/* Optimize image rendering */
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+/* Fix for backdrop-filter performance */
+.header,
+.nav-links,
+.video-container,
+.download-card,
+.feature-card,
+.social-link,
+.footer {
+    will-change: backdrop-filter;
+    transform: translateZ(0);
+}
+
+/* Reduce blur intensity for better performance */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .typing-text {
+        animation: none !important;
+        width: 100% !important;
+    }
+}
+
+/* Optimize for high DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .typing-text,
+    .hero-title,
+    .hero-subtitle,
+    .section-title,
+    .preview-title {
+        -webkit-font-smoothing: subpixel-antialiased;
+        font-smooth: never;
+    }
+}
+
+/* Fix for Chrome blur issues during transforms */
+.floating-logo,
+.main-rotating-logo,
+.particle {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+/* Optimize video container rendering */
+.youtube-embed-wrapper,
+.youtube-placeholder,
+.youtube-iframe-container {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Fix for button hover blur */
+.btn:hover {
+    transform: translateY(-2px) translateZ(0);
+    -webkit-transform: translateY(-2px) translateZ(0);
+}
+
+/* Optimize navigation blur */
+.nav-links:hover {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* Fix for card hover effects */
+.download-card:hover,
+.feature-card:hover,
+.social-link:hover {
+    transform: translateY(-5px) translateZ(0);
+    -webkit-transform: translateY(-5px) translateZ(0);
+}
+
+/* Optimize floating animations */
+@keyframes float1 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg) scale(1) translateZ(0);
+        opacity: 0.15;
+    }
+    25% {
+        transform: translate(30px, -20px) rotate(90deg) scale(1.1) translateZ(0);
+        opacity: 0.2;
+    }
+    50% {
+        transform: translate(-20px, -40px) rotate(180deg) scale(0.9) translateZ(0);
+        opacity: 0.15;
+    }
+    75% {
+        transform: translate(-40px, 20px) rotate(270deg) scale(1.05) translateZ(0);
+        opacity: 0.2;
+    }
+}
+
+@keyframes float2 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg) scale(1) translateZ(0);
+        opacity: 0.15;
+    }
+    33% {
+        transform: translate(-25px, 30px) rotate(120deg) scale(1.1) translateZ(0);
+        opacity: 0.2;
+    }
+    66% {
+        transform: translate(40px, -15px) rotate(240deg) scale(0.9) translateZ(0);
+        opacity: 0.15;
+    }
+}
+
+@keyframes float3 {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg) scale(1) translateZ(0);
+        opacity: 0.15;
+    }
+    20% {
+        transform: translate(20px, -30px) rotate(72deg) scale(1.1) translateZ(0);
+        opacity: 0.2;
+    }
+    40% {
+        transform: translate(-30px, -20px) rotate(144deg) scale(0.9) translateZ(0);
+        opacity: 0.15;
+    }
+    60% {
+        transform: translate(-25px, 25px) rotate(216deg) scale(1.05) translateZ(0);
+        opacity: 0.2;
+    }
+    80% {
+        transform: translate(35px, 15px) rotate(288deg) scale(1.1) translateZ(0);
+        opacity: 0.15;
+    }
+}
+
+/* Optimize particle animations */
+@keyframes particleFloat1 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1) translateZ(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(50px, -80px) scale(1.2) translateZ(0);
+        opacity: 0.9;
+    }
+}
+
+@keyframes particleFloat2 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1) translateZ(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(-60px, 70px) scale(1.1) translateZ(0);
+        opacity: 0.8;
+    }
+}
+
+@keyframes particleFloat3 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1) translateZ(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(40px, -60px) scale(1.3) translateZ(0);
+        opacity: 1;
+    }
+}
+
+@keyframes particleFloat4 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1) translateZ(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(-45px, -50px) scale(1.1) translateZ(0);
+        opacity: 0.9;
+    }
+}
+
+@keyframes particleFloat5 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1) translateZ(0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translate(30px, 40px) scale(1.2) translateZ(0);
+        opacity: 0.8;
+    }
+}
+
+/* Optimize logo rotation */
+@keyframes logoRotateMain {
+    from {
+        transform: rotate(0deg) translateZ(0);
+    }
+    to {
+        transform: rotate(360deg) translateZ(0);
+    }
+}
+
+@keyframes logoRotate {
+    from {
+        transform: rotate(0deg) translateZ(0);
+    }
+    to {
+        transform: rotate(360deg) translateZ(0);
+    }
+}
+
+/* Optimize typing animation */
+@keyframes typingEffect {
+    from { 
+        width: 0; 
+        transform: translateZ(0);
+    }
+    to { 
+        width: 100%; 
+        transform: translateZ(0);
+    }
+}
+
+/* Optimize cursor blink */
+@keyframes typingCursor {
+    0%, 50% { 
+        border-color: var(--primary-color); 
+        transform: translateZ(0);
+    }
+    51%, 100% { 
+        border-color: transparent; 
+        transform: translateZ(0);
+    }
+} 
