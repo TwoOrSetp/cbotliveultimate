@@ -563,28 +563,39 @@ html {
     right: 0;
     background: linear-gradient(
         180deg,
-        rgba(0, 0, 0, 0.8) 0%,
-        rgba(0, 0, 0, 0.4) 50%,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0.7) 40%,
+        rgba(0, 0, 0, 0.3) 70%,
         transparent 100%
     );
     padding: 2rem;
-    z-index: 3;
+    z-index: 10;
     pointer-events: none;
 }
 
 .video-title {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: white;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 0.75rem;
+    text-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(0, 0, 0, 0.6);
+    line-height: 1.2;
+    z-index: 15;
+    position: relative;
 }
 
 .video-description {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.95);
     margin: 0;
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.8),
+        0 0 15px rgba(0, 0, 0, 0.6);
+    line-height: 1.4;
+    z-index: 15;
+    position: relative;
 }
 
 /* YouTube Embed Styling */
@@ -641,25 +652,33 @@ html {
     right: 0;
     background: linear-gradient(
         0deg,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.7) 50%,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(0, 0, 0, 0.8) 60%,
+        rgba(0, 0, 0, 0.4) 80%,
         transparent 100%
     );
-    padding: 2rem 1.5rem 1.5rem;
+    padding: 3rem 1.5rem 1.5rem;
     color: white;
+    z-index: 8;
 }
 
 .youtube-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(0, 0, 0, 0.6);
+    line-height: 1.3;
 }
 
 .youtube-channel {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.8),
+        0 0 15px rgba(0, 0, 0, 0.6);
+    font-weight: 500;
 }
 
 .youtube-iframe {
@@ -684,13 +703,23 @@ html {
     border-radius: 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
-    z-index: 5;
+    z-index: 12;
     opacity: 0.8;
     transition: opacity 0.3s ease;
 }
 
 .youtube-container:hover::after {
     opacity: 1;
+}
+
+/* Ensure video overlay text is always visible */
+.video-container .video-overlay {
+    z-index: 15 !important;
+}
+
+.video-container .video-overlay * {
+    position: relative;
+    z-index: 16;
 }
 
 /* YouTube Loading Animation */
@@ -756,6 +785,90 @@ html {
         rgba(0, 0, 0, 0.8) 50%,
         transparent 100%
     );
+}
+
+/* Video Download Button Section */
+.video-download-section {
+    margin-top: 2rem;
+    text-align: center;
+    animation: downloadButtonSlideUp 1s ease-out 1s both;
+}
+
+.video-download-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem 3rem;
+    background: var(--gradient-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow:
+        0 10px 30px rgba(99, 102, 241, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.video-download-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.6s ease;
+}
+
+.video-download-btn:hover::before {
+    left: 100%;
+}
+
+.video-download-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow:
+        0 15px 40px rgba(99, 102, 241, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.download-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0.5rem;
+}
+
+.download-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.download-subtitle {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+@keyframes downloadButtonSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .video-fallback {
@@ -2420,6 +2533,21 @@ html {
 
     .time-display {
         font-size: 0.75rem;
+    }
+
+    /* Video download button on mobile */
+    .video-download-btn {
+        padding: 1.25rem 2rem;
+        margin: 0 1rem;
+    }
+
+    .download-text {
+        font-size: 1.125rem;
+    }
+
+    .download-icon {
+        width: 28px;
+        height: 28px;
     }
 }
 
