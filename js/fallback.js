@@ -15,7 +15,6 @@
         const typingElements = document.querySelectorAll('.typing-text');
         typingElements.forEach(element => {
             const text = element.getAttribute('data-text');
-            // Only set if not already exactly equal
             if (text && element.textContent !== text) {
                 element.textContent = text;
                 element.classList.remove('typing');
