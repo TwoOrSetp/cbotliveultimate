@@ -5,20 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="01596ce7-2c37-4e88-9512-c1c3ad83d488" name="Changes" comment="j">
-      <change afterPath="$PROJECT_DIR$/test-youtube.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AugmentWebviewStateStore.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ASSET-INTEGRATION-SUMMARY.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DEPLOYMENT.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/UPGRADE-SUMMARY.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YOUTUBE-AUTO-CONFIG.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YOUTUBE-INTEGRATION.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/YOUTUBE-SIMPLE-CONFIG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin-panel.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin-panel.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/responsive.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/responsive.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/download.html" beforeDir="false" afterPath="$PROJECT_DIR$/download.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/video-player.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/video-player.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/youtube-config.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/youtube-config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/github-api.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/github-api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -7,9 +7,14 @@ class GitHubAPI {
         this.init();
     }
     init() {
+        console.log('GitHub API initializing...');
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.loadRelease());
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOM loaded, loading release...');
+                this.loadRelease();
+            });
         } else {
+            console.log('DOM already loaded, loading release...');
             this.loadRelease();
         }
     }
@@ -139,10 +144,24 @@ class GitHubAPI {
         `;
         const downloadBtn = card.querySelector('.download-btn');
         downloadBtn.addEventListener('click', (e) => {
+            if (downloadBtn.disabled || downloadBtn.classList.contains('disabled')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+            
+            downloadBtn.disabled = true;
+            downloadBtn.classList.add('disabled');
+            
             this.trackDownload(asset);
             this.showDownloadFeedback(downloadBtn);
             this.incrementDownloadCount(card, asset.name);
             console.log(`Download started: ${asset.name} (${fileSize})`);
+            
+            setTimeout(() => {
+                downloadBtn.disabled = false;
+                downloadBtn.classList.remove('disabled');
+            }, 3000);
         });
         return card;
     }
@@ -276,9 +295,9 @@ class GitHubAPI {
 3. Launch Minecraft with Forge/Fabric
 4. Configure settings in-game
 ## 🔗 Links
-- **Discord**: https:
-- **YouTube**: https:
-- **GitHub**: https:
+- **Discord**: https://discord.gg/cpZpH75ajv
+- **YouTube**: https://youtube.com/@snopphin
+- **GitHub**: https://github.com/therealsnopphin
 *Note: This is demo content. Visit our GitHub repository for the latest releases.*`,
             assets: [
                 {
@@ -286,28 +305,28 @@ class GitHubAPI {
                     size: 2457600,
                     download_count: 1247,
                     updated_at: '2025-07-24T00:00:00Z',
-                    browser_download_url: 'https:
+                    browser_download_url: 'https://github.com/therealsnopphin/CBot/releases/download/v3.1.0/cbot-v3.1.jar'
                 },
                 {
                     name: 'cbot-installer.exe',
                     size: 5242880,
                     download_count: 892,
                     updated_at: '2025-07-24T00:00:00Z',
-                    browser_download_url: 'https:
+                    browser_download_url: 'https://github.com/therealsnopphin/CBot/releases/download/v3.1.0/cbot-installer.exe'
                 },
                 {
                     name: 'cbot-v3.1-source.zip',
                     size: 1572864,
                     download_count: 456,
                     updated_at: '2025-07-24T00:00:00Z',
-                    browser_download_url: 'https:
+                    browser_download_url: 'https://github.com/therealsnopphin/CBot/releases/download/v3.1.0/cbot-v3.1-source.zip'
                 },
                 {
                     name: 'cbot-documentation.pdf',
                     size: 3145728,
                     download_count: 234,
                     updated_at: '2025-07-24T00:00:00Z',
-                    browser_download_url: 'https:
+                    browser_download_url: 'https://github.com/therealsnopphin/CBot/releases/download/v3.1.0/cbot-documentation.pdf'
                 }
             ]
         };
@@ -319,7 +338,7 @@ class GitHubAPI {
     }
     async fetchAllReleaseStats() {
         try {
-            const allReleasesUrl = `https:
+            const allReleasesUrl = `https://api.github.com/repos/${this.owner}/${this.repo}/releases`;
             const response = await fetch(allReleasesUrl, {
                 headers: {
                     'Accept': 'application/vnd.github.v3+json',

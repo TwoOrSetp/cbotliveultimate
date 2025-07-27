@@ -6,7 +6,7 @@
     --text-primary: #ffffff;
     --text-secondary: #d1d5db;
     --text-muted: #9ca3af;
-    --background-primary: #000000;
+    --background-primary: #0a0a0a;
     --background-secondary: #0a0a0a;
     --background-card: #1a1a1a;
     --border-color: #374151;
@@ -27,7 +27,7 @@ html {
 
 /* --- Modern, Elegant Global Background --- */
 body {
-    background: radial-gradient(ellipse at 50% 40%, #181a20 60%, #0a0a0a 100%) fixed;
+    background: #0a0a0a;
     color: #e5e7eb;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
@@ -557,6 +557,9 @@ html {
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    pointer-events: none;
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .btn-primary:hover .btn-icon {
@@ -574,11 +577,38 @@ html {
     background: var(--background-secondary);
     border-color: var(--primary-color);
     transform: translateY(-2px);
+    pointer-events: none;
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .btn-secondary:hover .btn-icon {
     transform: scale(1.1) translateX(2px);
     filter: brightness(0) saturate(100%) invert(47%) sepia(58%) saturate(2618%) hue-rotate(229deg) brightness(98%) contrast(94%);
+}
+
+.btn:disabled,
+.btn.disabled,
+.btn-primary:disabled,
+.btn-primary.disabled,
+.btn-secondary:disabled,
+.btn-secondary.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: var(--background-secondary);
+    color: var(--text-muted);
+}
+
+.btn:disabled:hover,
+.btn.disabled:hover,
+.btn-primary:disabled:hover,
+.btn-primary.disabled:hover,
+.btn-secondary:disabled:hover,
+.btn-secondary.disabled:hover {
+    transform: none;
+    box-shadow: none;
+    pointer-events: none;
 }
 
 .hero-visual {
@@ -977,20 +1007,13 @@ html {
 /* Preview Section Styling */
 .preview-section {
     padding: 4rem 0;
-    background: var(--background-secondary);
+    background: #0a0a0a;
     position: relative;
     overflow: hidden;
 }
 
 .preview-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
-    pointer-events: none;
+    display: none;
 }
 
 .preview-header {
@@ -1518,6 +1541,9 @@ html {
 .download-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+    pointer-events: none;
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .social-links {
@@ -1568,7 +1594,7 @@ html {
 }
 
 .footer {
-    background: var(--background-secondary);
+    background: #0a0a0a;
     border-top: 1px solid var(--border-color);
     padding: 2rem;
     text-align: center;
@@ -1785,7 +1811,7 @@ html {
 
 .about-intro {
     padding: 4rem 0;
-    background: var(--background-secondary);
+    background: #0a0a0a;
 }
 
 .intro-grid {
@@ -2010,22 +2036,55 @@ html {
 
 .files-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
 }
 
 .file-card {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
+    align-items: stretch;
+    padding: 2rem;
+    min-height: 200px;
+    background: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+.file-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 30px var(--shadow-color);
+}
+
+.file-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.file-card:hover::before {
+    left: 100%;
 }
 
 .file-info {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
     flex: 1;
+    text-align: center;
 }
 
 .file-icon {
@@ -2060,31 +2119,53 @@ html {
 
 .file-actions {
     flex-shrink: 0;
+    margin-top: auto;
+    width: 100%;
 }
 
 .file-actions .download-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
+    padding: 1rem 1.5rem;
     background: var(--gradient-primary);
     color: white;
     text-decoration: none;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     font-weight: 600;
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
+    width: 100%;
 }
 
 .file-actions .download-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+    pointer-events: none;
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .file-actions .download-btn svg {
     width: 16px;
     height: 16px;
+}
+
+.file-actions .download-btn:disabled,
+.file-actions .download-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    background: var(--background-secondary);
+    color: var(--text-muted);
+}
+
+.file-actions .download-btn:disabled:hover,
+.file-actions .download-btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
 }
 
 .download-success {
@@ -3406,25 +3487,14 @@ html {
     }
 }
 
-/* Background Images for Sections */
+/* Background Images for Sections - Disabled for consistent background */
 .hero {
-    background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    background: #0a0a0a;
     position: relative;
 }
 
 .hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 100%);
-    z-index: 1;
+    display: none;
 }
 
 .hero-content {
@@ -3433,11 +3503,7 @@ html {
 }
 
 .page-hero {
-    background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    background: #0a0a0a;
     position: relative;
     min-height: 60vh;
     display: flex;
@@ -3446,14 +3512,7 @@ html {
 }
 
 .page-hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 100%);
-    z-index: 1;
+    display: none;
 }
 
 .page-hero-content {
@@ -3463,23 +3522,12 @@ html {
 }
 
 .download-section {
-    background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    background: #0a0a0a;
     position: relative;
 }
 
 .download-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
-    z-index: 1;
+    display: none;
 }
 
 .download-section .content-wrapper {
@@ -3487,7 +3535,7 @@ html {
     z-index: 2;
 }
 
-/* Background animation effects */
+/* Background animation effects - Disabled for consistent background */
 @keyframes backgroundFloat {
     0%, 100% {
         transform: translateY(0px);
@@ -3500,7 +3548,7 @@ html {
 .hero,
 .page-hero,
 .download-section {
-    animation: backgroundFloat 20s ease-in-out infinite;
+    animation: none;
 }
 
 /* Enhanced text readability on backgrounds */

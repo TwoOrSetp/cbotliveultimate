@@ -12,27 +12,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Beautiful background override for about page */
+        /* Consistent background for about page */
         body {
-            background: #000000 !important;
+            background: #0a0a0a !important;
             background-image: none !important;
             animation: none !important;
             position: relative;
         }
         
         body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.02) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
+            display: none !important;
         }
         
         .matrix-rain {
@@ -55,54 +44,29 @@
             display: none !important;
         }
         
-        /* Beautiful gradient background with subtle patterns */
+        /* Consistent background */
         .container {
-            background: linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #000000 50%, #0a0a0a 75%, #000000 100%);
-            background-size: 400% 400%;
-            animation: subtleGradient 20s ease infinite;
+            background: #0a0a0a !important;
+            background-image: none !important;
+            animation: none !important;
             min-height: 100vh;
             position: relative;
         }
         
         .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(90deg, rgba(99, 102, 241, 0.01) 1px, transparent 1px),
-                linear-gradient(rgba(99, 102, 241, 0.01) 1px, transparent 1px);
-            background-size: 100px 100px;
-            animation: gridMove 30s linear infinite;
-            pointer-events: none;
-            z-index: 0;
+            display: none !important;
         }
         
-        /* Enhanced page hero section */
+        /* Consistent page hero section */
         .page-hero {
-            background: linear-gradient(135deg, 
-                rgba(99, 102, 241, 0.08) 0%, 
-                rgba(59, 130, 246, 0.05) 50%,
-                rgba(16, 185, 129, 0.03) 100%);
+            background: #0a0a0a !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
             z-index: 1;
         }
         
         .page-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.02) 0%, transparent 50%),
-                radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.02) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
+            display: none !important;
         }
         
         /* Enhanced about intro section */
@@ -206,6 +170,43 @@
     </style>
 </head>
 <body>
+    <div class="matrix-rain"></div>
+    <div class="atom-container">
+        <div class="atom-orbit">
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+        </div>
+        <div class="atom-orbit">
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+        </div>
+        <div class="atom-orbit">
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+            <div class="atom-particle"></div>
+        </div>
+        <div class="atomic-nucleus"></div>
+        <div class="atomic-nucleus"></div>
+        <div class="atomic-nucleus"></div>
+        <div class="quantum-field"></div>
+        <div class="quantum-field"></div>
+        <div class="quantum-field"></div>
+        <div class="advanced-particle"></div>
+        <div class="advanced-particle"></div>
+        <div class="advanced-particle"></div>
+        <div class="advanced-particle"></div>
+        <div class="advanced-particle"></div>
+        <div class="energy-wave"></div>
+        <div class="energy-wave"></div>
+        <div class="energy-wave"></div>
+        <div class="quantum-fluctuation"></div>
+        <div class="quantum-fluctuation"></div>
+    </div>
     <div class="container">
         <header class="header">
             <nav class="nav">
@@ -307,5 +308,6 @@
     <script src="js/fallback.js"></script>
     <script src="js/main.js"></script>
     <script src="js/image-utils.js"></script>
+    <script src="js/button-lock.js"></script>
 </body>
 </html>
